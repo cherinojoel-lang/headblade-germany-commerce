@@ -1,0 +1,26 @@
+name: Lighthouse
+
+on:
+  push:
+    branches: [feat/astro-headblade-premium]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - run: npm install --global npm@11.6.0
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - name: Collect Lighthouse reports
+        run: npx --yes @lhci/cli@0.15.1 collect --config=.lighthouserc.json
+      - name: Assert Lighthouse quality gates
+        run: npx --yes @lhci/cli@0.15.1 assert --config=.lighthouserc.json

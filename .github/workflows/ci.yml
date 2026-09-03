@@ -1,28 +1,31 @@
 name: CI
+
 on:
   push:
     branches: [feat/astro-headblade-premium]
   pull_request:
+
 permissions:
   contents: read
+
 jobs:
-  test:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: '22'
-      - name: Pin npm away from Arborist edgesOut regression
+          package-manager-cache: false
+      - name: Pin stable npm resolver
         run: npm install --global npm@11.6.0
       - name: Install dependencies
-        run: |
-          node --version
-          npm --version
-          npm install --no-audit --no-fund
+        run: npm install --no-audit --no-fund
+      - name: Type and Astro check
+        run: npm run check
       - name: Full test suite
         run: npm test
-      - name: Astro check
-        run: npm run check
-      - name: Static build
+      - name: Static production build
         run: npm run build
+      - name: Enforce preview safety contract
+        run: npm run validate:preview
