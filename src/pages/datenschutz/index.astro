@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../data/site";
+---
+<BaseLayout title="Datenschutz" description="Datenschutzhinweis für die statische HeadBlade Germany Review-Preview.">
+  <section class="section section--white">
+    <div class="section-heading"><p class="eyebrow">Datenschutz</p><h1 class="display">Review ohne Tracking.</h1><p>Die Preview ist bewusst statisch aufgebaut. Sie enthält keine Kontakt- oder Bestellformulare, keine eigenen Analytics- oder Werbeskripte und keine Zahlungsanbieter.</p></div>
+    <div class="number-list">
+      <article><b>01</b><div><h3>Verantwortlicher</h3><p>{site.legalName}, {site.address.street}, {site.address.postalCode} {site.address.city}. Kontakt: {site.email}</p></div></article>
+      <article><b>02</b><div><h3>Technische Bereitstellung</h3><p>Beim Abruf einer Website verarbeitet der Hostinganbieter technisch notwendige Verbindungsdaten, etwa für Auslieferung und Sicherheit. Die Preview selbst legt keine Marketing- oder Analyseprofile an.</p></div></article>
+      <article><b>03</b><div><h3>Keine Kundendaten</h3><p>Es gibt in dieser Review-Phase keine Warenkorb-, Checkout-, Kontakt-, Bestell- oder Zahlungsfunktionen und damit keine dafür vorgesehenen Eingabefelder.</p></div></article>
+      <article><b>04</b><div><h3>Vor Produktion</h3><p>Vor einem Livegang wird die Datenschutzerklärung vollständig auf die tatsächlich eingesetzten Hosting-, Shop-, Consent-, Zahlungs- und Analysesysteme abgestimmt und rechtlich erneut geprüft.</p></div></article>
+    </div>
+  </section>
+</BaseLayout>
