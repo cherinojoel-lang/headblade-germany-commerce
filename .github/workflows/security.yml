@@ -19,12 +19,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  dependency-review:
+  pr-dependency-audit:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/dependency-review-action@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - name: Pin stable npm resolver
+        run: npm install --global npm@11.6.0
+      - name: Install locked dependencies without scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Reject high-severity dependency vulnerabilities
+        run: npm audit --audit-level=high
 
   npm-audit:
     runs-on: ubuntu-latest
