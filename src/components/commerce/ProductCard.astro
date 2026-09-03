@@ -11,7 +11,14 @@ const { product } = Astro.props;
   <a class="product-card__target" href={productHref(product)} aria-label={`${product.name} – Details ansehen`}>
     <div class="product-card__media">
       {product.badge && <span class="product-card__badge">{product.badge}</span>}
-      <img src={product.image} alt={productImageAlt(product)} width="500" height="500" loading="lazy" decoding="async" sizes="(max-width: 620px) 72vw, (max-width: 980px) 36vw, 220px" />
+      {product.secondaryImage ? (
+        <div class="product-card__media-pair">
+          <img src={product.image} alt={productImageAlt(product)} width="500" height="500" loading="lazy" decoding="async" sizes="(max-width: 620px) 34vw, (max-width: 980px) 18vw, 110px" />
+          <img src={product.secondaryImage} alt={`${product.name} – enthaltene Pflege`} width="500" height="500" loading="lazy" decoding="async" sizes="(max-width: 620px) 34vw, (max-width: 980px) 18vw, 110px" />
+        </div>
+      ) : (
+        <img src={product.image} alt={productImageAlt(product)} width="500" height="500" loading="lazy" decoding="async" sizes="(max-width: 620px) 72vw, (max-width: 980px) 36vw, 220px" />
+      )}
     </div>
     <div class="product-card__body">
       <h3>{product.name}</h3>
@@ -24,3 +31,19 @@ const { product } = Astro.props;
     </div>
   </a>
 </article>
+
+<style>
+  .product-card__media-pair {
+    width: 88%;
+    height: 72%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .4rem;
+    align-items: center;
+  }
+  .product-card__media-pair img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+</style>

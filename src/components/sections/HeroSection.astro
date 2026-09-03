@@ -15,7 +15,7 @@ const { product, label = "HeadBlade MOTO" } = Astro.props;
     </div>
   </div>
   <div class="hero__visual">
-    <img src={product.detailImage ?? product.image} alt="HeadBlade MOTO Kopfrasierer" width="700" height="700" fetchpriority="high" />
+    <img src={product.detailImage ?? product.image} alt="HeadBlade MOTO Kopfrasierer" width="700" height="700" fetchpriority="high" decoding="async" sizes="(max-width: 980px) 72vw, 34vw" />
     <p class="hero__tag">Bewegliche Führung. Nachfüllbare Klingen. Entwickelt für die Kontur deines Kopfes.</p>
   </div>
 </section>
