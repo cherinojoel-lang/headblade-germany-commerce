@@ -20,4 +20,9 @@ jobs:
           node --version
           npm --version
           npm install --no-audit --no-fund
-      - run: npm test -- test/preview.test.ts
+      - name: Preview contract
+        run: npm test -- test/preview.test.ts
+      - name: Astro check
+        run: npm run check
+      - name: Static build
+        run: npm run build
