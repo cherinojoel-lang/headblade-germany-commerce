@@ -20,8 +20,8 @@ jobs:
           node --version
           npm --version
           npm install --no-audit --no-fund
-      - name: Domain and SEO contracts
-        run: npm test -- test/preview.test.ts test/catalog.test.ts test/seo.test.ts
+      - name: Review contracts
+        run: npm test -- test/preview.test.ts test/catalog.test.ts test/seo.test.ts test/presentation.test.ts test/homepage.test.ts
       - name: Astro check
         run: npm run check
       - name: Static build
