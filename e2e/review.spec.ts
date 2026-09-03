@@ -17,9 +17,13 @@ test("review preview loads safely and product navigation works", async ({ page }
 
   await page.getByRole("link", { name: "Produkte ansehen" }).first().click();
   await expect(page).toHaveURL(/\/produkte\/?$/);
-  await expect(page.getByRole("heading", { name: "HeadBlade MOTO" })).toBeVisible();
 
-  await page.getByRole("heading", { name: "HeadBlade MOTO" }).getByRole("link").click();
+  const motoCard = page.locator("article.product-card").filter({
+    has: page.getByRole("heading", { name: "HeadBlade MOTO" }),
+  });
+  await expect(motoCard).toBeVisible();
+  await motoCard.getByRole("link").click();
+
   await expect(page).toHaveURL(/\/produkt\/headblade-moto\/?$/);
   await expect(page.getByRole("heading", { level: 1, name: "HeadBlade MOTO" })).toBeVisible();
   await expect(page.getByText(/Checkout bewusst deaktiviert/i)).toBeVisible();
