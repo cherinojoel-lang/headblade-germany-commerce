@@ -18,7 +18,7 @@ jobs:
           node-version: '22'
           package-manager-cache: false
       - run: npm install --global npm@11.6.0
-      - run: npm install --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund
       - run: npm run build
       - name: Collect Lighthouse reports
         run: npx --yes @lhci/cli@0.15.1 collect --config=.lighthouserc.json
