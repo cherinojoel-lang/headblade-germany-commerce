@@ -27,8 +27,8 @@ jobs:
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "CLOUDFLARE_ACCOUNT_ID is not configured"; exit 2; }
       - name: Pin stable npm resolver
         run: npm install --global npm@11.6.0
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
       - name: Verify review safety before upload
         run: npm run verify
       - name: Deploy isolated review Worker
