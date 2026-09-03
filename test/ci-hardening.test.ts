@@ -6,6 +6,7 @@ const workflowPaths = [
   ".github/workflows/e2e.yml",
   ".github/workflows/lighthouse.yml",
   ".github/workflows/security.yml",
+  ".github/workflows/deploy-preview.yml",
 ] as const;
 
 async function readRepoFile(path: string) {

@@ -15,7 +15,7 @@
     "build": "astro build",
     "validate:preview": "node scripts/validate-preview.mjs",
     "verify": "npm run check && npm test && npm run build && npm run validate:preview",
-    "cf:first-deploy": "npm run build && wrangler deploy",
+    "cf:review-bootstrap": "npm run build && wrangler deploy",
     "cf:preview": "npm run build && wrangler versions upload --preview-alias review"
   },
   "dependencies": {

@@ -25,8 +25,11 @@ for (const file of htmlFiles) {
 }
 
 const robots = await readFile(new URL("../dist/robots.txt", import.meta.url), "utf8");
-if (!/User-agent:\s*\*/i.test(robots) || !/Disallow:\s*\//i.test(robots)) {
-  throw new Error("robots.txt must block all crawling in review mode");
+if (!/User-agent:\s*\*/i.test(robots) || !/Allow:\s*\/\s*$/im.test(robots)) {
+  throw new Error("robots.txt must allow crawlers to read the review noindex directives");
+}
+if (/Disallow:\s*\/\s*$/im.test(robots)) {
+  throw new Error("robots.txt must not hide review noindex directives behind Disallow: /");
 }
 
 const headers = await readFile(new URL("../dist/_headers", import.meta.url), "utf8");
@@ -35,4 +38,4 @@ if (!/X-Robots-Tag:\s*noindex/i.test(headers)) {
 }
 
 validateWrangler(await readFile(new URL("../wrangler.jsonc", import.meta.url), "utf8"));
-console.log(`PREVIEW_VALIDATION_OK html=${htmlFiles.length} forms=none payments=none indexing=blocked production_routes=none`);
+console.log(`PREVIEW_VALIDATION_OK html=${htmlFiles.length} forms=none payments=none indexing=noindex crawl=allowed production_routes=none`);

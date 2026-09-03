@@ -26,6 +26,12 @@ export function validateWrangler(source) {
   if (!/"directory"\s*:\s*"\.\/dist"/.test(text)) {
     throw new Error("Review Worker must serve ./dist static assets");
   }
+  if (!/"workers_dev"\s*:\s*true/.test(text)) {
+    throw new Error("Review Worker must remain isolated on workers.dev");
+  }
+  if (!/"preview_urls"\s*:\s*true/.test(text)) {
+    throw new Error("Review Worker must expose version preview URLs");
+  }
 }
 
 export { EXACT_ROBOTS };
