@@ -22,5 +22,29 @@ jobs:
       - run: npm run build
       - name: Collect Lighthouse reports
         run: npx --yes @lhci/cli@0.15.1 collect --config=.lighthouserc.json
+      - name: Print accessibility diagnostics
+        run: |
+          node --input-type=module <<'NODE'
+          import { readdir, readFile } from 'node:fs/promises';
+          const files = (await readdir('.lighthouseci')).filter((name) => name.startsWith('lhr-') && name.endsWith('.json'));
+          for (const file of files) {
+            const report = JSON.parse(await readFile(`.lighthouseci/${file}`, 'utf8'));
+            console.log(`=== ${report.finalDisplayedUrl} accessibility=${report.categories.accessibility.score} ===`);
+            for (const ref of report.categories.accessibility.auditRefs) {
+              const audit = report.audits[ref.id];
+              if (audit && audit.score !== null && audit.score < 1) {
+                console.log(`${ref.id}: score=${audit.score} :: ${audit.title}`);
+                if (audit.displayValue) console.log(`  ${audit.displayValue}`);
+                const items = audit.details?.items ?? [];
+                for (const item of items.slice(0, 10)) {
+                  const node = item.node;
+                  if (node?.selector) console.log(`  selector: ${node.selector}`);
+                  if (node?.snippet) console.log(`  snippet: ${node.snippet}`);
+                  if (node?.explanation) console.log(`  explanation: ${node.explanation}`);
+                }
+              }
+            }
+          }
+          NODE
       - name: Assert Lighthouse quality gates
         run: npx --yes @lhci/cli@0.15.1 assert --config=.lighthouserc.json
