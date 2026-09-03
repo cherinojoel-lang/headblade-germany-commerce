@@ -17,7 +17,7 @@ export function getStaticPaths() {
 }
 
 interface Props { product: Product; }
-const { product } = Astro.props;
+const { product } = Astro.props as Props;
 const reviewLabel = "Review-Preview: Checkout bewusst deaktiviert";
 const related = products
   .filter((candidate) => candidate.slug !== product.slug && candidate.categories.some((category) => product.categories.includes(category)))

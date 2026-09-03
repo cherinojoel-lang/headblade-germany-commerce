@@ -11,7 +11,7 @@ Diese Branch-Version ist ausschließlich für öffentliche Review/Abnahme bestim
 - **keine** Formulare oder Kundendatenerfassung
 - **keine** Analytics-, Ads- oder Consent-abhängigen Drittanbieter-Skripte
 - `noindex,nofollow,noarchive,nosnippet` in jeder Seite
-- `robots.txt` blockiert alle Crawler
+- `robots.txt` erlaubt Crawling bewusst, damit Suchmaschinen die `noindex`-Direktiven lesen können
 - `_headers` erzwingt zusätzlich `X-Robots-Tag: noindex` und Security-Header
 - Cloudflare-Ziel ist ausschließlich der separate Worker `headblade-germany-review` auf `*.workers.dev`
 
@@ -23,13 +23,13 @@ Diese Branch-Version ist ausschließlich für öffentliche Review/Abnahme bestim
 - typisierte Produkt-/Kategorie-/Site-Daten
 - zentrale SEO- und JSON-LD-Helfer
 - semantisches, tastaturbedienbares Layout mit Skip-Link und Reduced-Motion-Support
-- 21 statische Review-Seiten einschließlich Produktdetails, Finder, Anleitung, Rechtstext-Preview und 404
+- 22 statische Review-Seiten einschließlich Produktdetails, Lifestyle-Kategorie, Finder, Anleitung, Rechtstext-Preview und 404
 - Cloudflare Workers Static Assets; kein Astro-Cloudflare-Adapter solange SSR unnötig ist
 
 ## Verifikation
 
 ```bash
-npm install
+npm ci
 npm run check
 npm test
 npm run build
@@ -42,9 +42,9 @@ Oder vollständig:
 npm run verify
 ```
 
-Der Validator stoppt den Build bei Formularen/Kundendatenfeldern, Zahlungsanbietern bzw. transaktionaler Checkout-Sprache, fehlender Review-Robots-Direktive, fehlender Crawling-Sperre oder Produktionsrouting im Wrangler-Setup.
+Der Validator stoppt den Build bei Formularen/Kundendatenfeldern, Zahlungsanbietern bzw. transaktionaler Checkout-Sprache, fehlender `noindex`-Absicherung, einer `robots.txt`-Sperre, die `noindex` vor Crawlern verstecken würde, oder Produktionsrouting im Wrangler-Setup.
 
-GitHub Actions führt zusätzlich getrennte CI-, Secret-/Dependency-/npm-Audit- und Lighthouse-Gates aus. Lighthouse prüft Performance, Accessibility, Best Practices und SEO; nur der Audit `is-crawlable` wird in der Review absichtlich übersprungen, weil `noindex` hier zwingende Sicherheitsanforderung ist.
+GitHub Actions führt zusätzlich getrennte CI-, Secret-/Dependency-/npm-Audit-, Browser-Smoke- und Lighthouse-Gates aus. Lighthouse prüft Performance, Accessibility, Best Practices und SEO; nur der Audit `is-crawlable` wird in der Review absichtlich übersprungen, weil `noindex` hier zwingende Sicherheitsanforderung ist.
 
 ## Cloudflare Workers Static Assets
 
@@ -57,19 +57,19 @@ GitHub Actions führt zusätzlich getrennte CI-, Secret-/Dependency-/npm-Audit- 
 - `preview_urls = true`
 - keine Route und keine Custom Domain für `headblade.info`
 
-Der allererste Worker-Aufbau benötigt einmal:
+Der allererste Aufbau des isolierten Review-Workers benötigt einmalig und manuell:
 
 ```bash
-npm run cf:first-deploy
+npm run cf:review-bootstrap
 ```
 
-Nach angelegtem Worker können weitere Review-Versionen ohne Produktions-Domain mit:
+Danach werden Review-Versionen ohne Produktionsdeployment mit:
 
 ```bash
 npm run cf:preview
 ```
 
-hochgeladen werden. Eine Verbindung oder Migration der Produktionsdomain ist ein separates Owner-Gate und ausdrücklich nicht Teil dieses Branches.
+hochgeladen. Der GitHub-Workflow nutzt bei normalen Branch-Pushes `wrangler versions upload --preview-alias review`; ein `wrangler deploy` ist nur hinter dem expliziten manuellen Bootstrap-Gate möglich. Eine Verbindung oder Migration der Produktionsdomain ist ein separates Owner-Gate und ausdrücklich nicht Teil dieses Branches.
 
 ## Review-Daten und Assets
 
