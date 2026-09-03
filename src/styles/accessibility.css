@@ -1,0 +1,18 @@
+:root {
+  --steel: #62676d;
+  --red-on-dark: #ef4444;
+}
+
+.hero .eyebrow,
+.section--dark .eyebrow,
+.compat-card strong,
+.offer-card span {
+  color: var(--red-on-dark);
+}
+
+.site-footer address a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  margin-right: .75rem;
+}
