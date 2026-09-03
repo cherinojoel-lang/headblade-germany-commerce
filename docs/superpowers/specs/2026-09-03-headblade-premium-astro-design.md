@@ -1,7 +1,9 @@
 # HeadBlade Germany Premium Astro Design
 
+> **SUPERSEDED — HISTORICAL SPEC.** This document is retained for traceability only. The current product/experience design is `docs/superpowers/specs/2026-09-04-headblade-contour-system-design.md`. The Astro 7 + Cloudflare Workers Static Assets engineering decision remains valid where the current spec does not override it.
+
 **Date:** 2026-09-03
-**Status:** Approved after Exa + Context7 + GitHub verification
+**Status:** SUPERSEDED BY HEADBLADE CONTOUR SYSTEM ON 2026-09-04
 **Target:** Public review preview only. Production `https://www.headblade.info/` remains untouched until a later explicit owner gate.
 
 ## 1. Goal
