@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroSection from "../components/sections/HeroSection.astro";
+import PromiseStrip from "../components/sections/PromiseStrip.astro";
+import BestsellerGrid from "../components/sections/BestsellerGrid.astro";
+import MotoSpotlight from "../components/sections/MotoSpotlight.astro";
+import CompatibilitySection from "../components/sections/CompatibilitySection.astro";
+import FinderTeaser from "../components/sections/FinderTeaser.astro";
+import WhyHeadBlade from "../components/sections/WhyHeadBlade.astro";
+import RoutineSection from "../components/sections/RoutineSection.astro";
+import OfferGrid from "../components/sections/OfferGrid.astro";
+import TrustStrip from "../components/sections/TrustStrip.astro";
+import FaqSection from "../components/sections/FaqSection.astro";
+import FinalCTA from "../components/sections/FinalCTA.astro";
+import { getProduct, productsByCategory } from "../lib/catalog";
+import { products } from "../data/products";
+
+const moto = getProduct("headblade-moto")!;
+const bestsellers = [moto, getProduct("klingenset-4blade")!, getProduct("klingenset-6blade")!, getProduct("headslick-5oz")!];
+const offers = productsByCategory("angebote");
+---
+<BaseLayout title="HeadBlade Germany" description="Premium Review-Preview für HeadBlade MOTO, HB4/HB6 Klingen, Pflege und Bundles. Keine Bestellung oder Zahlung möglich." image={moto.image}>
+  <p class="review-note">Keine Bestellung · keine Zahlung · keine Dateneingabe. Diese öffentliche Review-Preview ist vollständig von der Produktion getrennt.</p>
+  <HeroSection product={moto} label="HeadBlade MOTO" />
+  <PromiseStrip />
+  <BestsellerGrid products={bestsellers} heading="Bestseller" />
+  <MotoSpotlight product={moto} />
+  <CompatibilitySection title="HB4 & HB6" />
+  <FinderTeaser title="Produktfinder" />
+  <WhyHeadBlade title="Warum HeadBlade" />
+  <RoutineSection title="Deine Rasur-Routine" />
+  <OfferGrid products={offers} title="Bundles & Angebote" />
+  <TrustStrip />
+  <FaqSection title="Häufige Fragen" />
+  <FinalCTA label="Alle Produkte ansehen" />
+</BaseLayout>

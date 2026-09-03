@@ -1,0 +1,21 @@
+---
+import type { Product } from "../../data/products";
+import { formatPrice } from "../../lib/catalog";
+interface Props { product: Product; label?: string; }
+const { product, label = "HeadBlade MOTO" } = Astro.props;
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__copy">
+    <p class="eyebrow">{label} · Für die Kopfrasur entwickelt</p>
+    <h1 id="hero-title">Dein Kopf.<br /><em>Deine Rasur.</em></h1>
+    <p class="hero__lead">Ein Rasierer, der nicht wie ein normaler Griff funktioniert: kompakt geführt, konturennah und konsequent für die Kopfrasur gedacht.</p>
+    <div class="hero__actions">
+      <a class="button button--red" href={`/produkt/${product.slug}`}>MOTO entdecken · {formatPrice(product.price)}</a>
+      <a class="button button--ghost" href="/produkte">Sortiment ansehen</a>
+    </div>
+  </div>
+  <div class="hero__visual">
+    <img src={product.detailImage ?? product.image} alt="HeadBlade MOTO Kopfrasierer" width="700" height="700" fetchpriority="high" />
+    <p class="hero__tag">Bewegliche Führung. Nachfüllbare Klingen. Entwickelt für die Kontur deines Kopfes.</p>
+  </div>
+</section>

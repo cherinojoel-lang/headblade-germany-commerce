@@ -1,0 +1,12 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+interface Props { title?: string; }
+const { title = "HB4 & HB6" } = Astro.props;
+---
+<section class="section section--dark" aria-labelledby="compat-title">
+  <SectionHeading eyebrow="Klingen verstehen" title={title} description="Zwei Klingensysteme, ein klares Ziel: die passende Kombination für deinen HeadBlade-Rasierer finden." />
+  <div class="compat-grid" id="compat-title">
+    <article class="compat-card"><strong>HB4</strong><h3>Direkt &amp; vertraut</h3><p>Vier-Klingen-System für MOTO, ATX und weitere kompatible HeadBlade-Modelle.</p><a class="button button--ghost" href="/klingen-zubehoer">HB4 ansehen</a></article>
+    <article class="compat-card"><strong>HB6</strong><h3>Sechs Klingen</h3><p>HB6-Nachfüllsystem für kompatible Modelle und Konfigurationen.</p><a class="button button--ghost" href="/klingen-zubehoer">HB6 ansehen</a></article>
+  </div>
+</section>

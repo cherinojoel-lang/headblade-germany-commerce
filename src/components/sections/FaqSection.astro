@@ -1,0 +1,14 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+interface Props { title?: string; }
+const { title = "Häufige Fragen" } = Astro.props;
+---
+<section class="section section--white">
+  <SectionHeading eyebrow="Kurz erklärt" title={title} />
+  <div class="faq-list">
+    <details><summary>Kann ich in dieser Preview bestellen?</summary><p>Nein. Diese Version dient ausschließlich der Design- und Funktionsprüfung. Checkout, Zahlung und Kundendatenerfassung sind bewusst deaktiviert.</p></details>
+    <details><summary>Welche Klinge passt zum MOTO?</summary><p>Der geprüfte Review-Stand führt MOTO mit HB4; HeadBlade beschreibt MOTO außerdem als HB6-kompatibel. Die endgültige Produktionskennzeichnung wird vor Livegang erneut geprüft.</p></details>
+    <details><summary>Sind die Preise final?</summary><p>Die angezeigten Preise wurden am 03.09.2026 gegen das öffentliche deutsche Sortiment geprüft. Vor dem Produktionsstart werden sie erneut verifiziert.</p></details>
+    <details><summary>Warum ist die Seite nicht bei Google?</summary><p>Die Review-Preview ist absichtlich mit noindex und einer vollständigen robots.txt-Sperre versehen.</p></details>
+  </div>
+</section>
