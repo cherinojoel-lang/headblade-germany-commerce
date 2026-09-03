@@ -1,11 +1,13 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/navigation/Breadcrumbs.astro";
 import ProductHero from "../../components/commerce/ProductHero.astro";
 import CompatibilityCard from "../../components/commerce/CompatibilityCard.astro";
 import RelatedProducts from "../../components/commerce/RelatedProducts.astro";
 import { products, type Product } from "../../data/products";
-import { buildBreadcrumbJsonLd, buildProductJsonLd } from "../../lib/schema";
-import { productRoute } from "../../lib/routes";
+import { buildBreadcrumbJsonLd } from "../../lib/schema";
+import { buildProductJsonLd } from "../../lib/schema";
+import { primaryProductCategory, productRoute } from "../../lib/routes";
 
 export function getStaticPaths() {
   return products.map((product) => ({
@@ -20,17 +22,24 @@ const reviewLabel = "Review-Preview: Checkout bewusst deaktiviert";
 const related = products
   .filter((candidate) => candidate.slug !== product.slug && candidate.categories.some((category) => product.categories.includes(category)))
   .slice(0, 4);
+const primaryCategory = primaryProductCategory(product);
+const breadcrumbItems = [
+  { name: "Start", path: "/" },
+  primaryCategory
+    ? { name: primaryCategory.name, path: primaryCategory.path }
+    : { name: "Produkte", path: "/produkte" },
+  { name: product.name, path: productRoute(product) },
+] as const;
 const jsonLd = [
   buildProductJsonLd(product),
-  buildBreadcrumbJsonLd([
-    { name: "Start", path: "/" },
-    { name: "Produkte", path: "/produkte" },
-    { name: product.name, path: productRoute(product) },
-  ]),
+  buildBreadcrumbJsonLd(breadcrumbItems),
 ];
 ---
 
 <BaseLayout title={product.name} description={product.short} image={product.detailImage ?? product.image} {jsonLd}>
+  <div class="section section--compact breadcrumb-shell">
+    <Breadcrumbs items={breadcrumbItems} />
+  </div>
   <ProductHero {product} {reviewLabel} />
   <section class="section section--compact">
     <CompatibilityCard {product} />

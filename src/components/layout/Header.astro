@@ -1,13 +1,30 @@
+---
+const navigation = [
+  { href: "/rasierer", label: "Rasierer" },
+  { href: "/klingen-zubehoer", label: "Klingen" },
+  { href: "/pflege", label: "Pflege" },
+  { href: "/lifestyle", label: "Lifestyle" },
+  { href: "/angebote", label: "Angebote" },
+  { href: "/finder", label: "Finder" },
+] as const;
+---
+
 <header class="site-header">
-  <a class="brand" href="/">
+  <a class="brand" href="/" aria-label="HeadBlade Germany Startseite">
     <span>HEAD</span><strong>BLADE</strong><small>GERMANY</small>
   </a>
-  <nav aria-label="Hauptnavigation">
-    <a href="/rasierer">Rasierer</a>
-    <a href="/klingen-zubehoer">Klingen</a>
-    <a href="/pflege">Pflege</a>
-    <a href="/angebote">Angebote</a>
-    <a href="/finder">Finder</a>
+
+  <nav class="primary-nav" aria-label="Hauptnavigation">
+    {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
   </nav>
+
+  <details class="mobile-nav">
+    <summary>Menü</summary>
+    <nav aria-label="Mobile Hauptnavigation">
+      {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a href="/produkte">Alle Produkte</a>
+    </nav>
+  </details>
+
   <a class="header-cta" href="/produkte">Produkte ansehen</a>
 </header>

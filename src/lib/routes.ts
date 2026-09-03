@@ -1,4 +1,4 @@
-import { categories, type ProductCategoryId } from "../data/categories";
+import { categories, type ProductCategory, type ProductCategoryId } from "../data/categories";
 import { products, type Product } from "../data/products";
 import { productsByCategory } from "./catalog";
 
@@ -12,4 +12,9 @@ export function categoryPagePath(category: ProductCategoryId): string {
 
 export function categoryProducts(category: ProductCategoryId): Product[] {
   return productsByCategory(category, products);
+}
+
+export function primaryProductCategory(product: Product): ProductCategory | undefined {
+  const primaryId = product.categories.find((category) => category !== "angebote") ?? product.categories[0];
+  return categories.find((category) => category.id === primaryId);
 }
