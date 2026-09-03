@@ -8,7 +8,7 @@ const { product } = Astro.props;
 ---
 
 <article class="product-card">
-  <a class="product-card__target" href={productHref(product)} aria-label={`${product.name} – Details ansehen`}>
+  <a class="product-card__target" href={productHref(product)}>
     <div class="product-card__media">
       {product.badge && <span class="product-card__badge">{product.badge}</span>}
       {product.secondaryImage ? (

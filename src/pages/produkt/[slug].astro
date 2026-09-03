@@ -24,7 +24,7 @@ const related = products
   .slice(0, 4);
 const primaryCategory = primaryProductCategory(product);
 const breadcrumbItems = [
-  { name: "Start", path: "/" },
+  { name: "Startseite", path: "/" },
   primaryCategory
     ? { name: primaryCategory.name, path: primaryCategory.path }
     : { name: "Produkte", path: "/produkte" },

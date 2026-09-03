@@ -35,7 +35,7 @@ jobs:
             const report = JSON.parse(await readFile(`.lighthouseci/${file}`, 'utf8'));
             console.log(`=== ${report.finalDisplayedUrl} ===`);
             console.log(`scores performance=${report.categories.performance.score} accessibility=${report.categories.accessibility.score} best-practices=${report.categories['best-practices'].score} seo=${report.categories.seo.score}`);
-            for (const categoryId of ['performance', 'accessibility']) {
+            for (const categoryId of ['performance', 'accessibility', 'seo']) {
               console.log(`-- ${categoryId} audits below 1 --`);
               for (const ref of report.categories[categoryId].auditRefs) {
                 const audit = report.audits[ref.id];

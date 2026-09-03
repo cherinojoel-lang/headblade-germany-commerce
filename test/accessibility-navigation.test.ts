@@ -13,15 +13,17 @@ describe("responsive navigation and card accessibility", () => {
     expect(header).not.toMatch(/<script|client:/i);
   });
 
-  it("exposes exactly one product-detail link per card", async () => {
+  it("exposes exactly one product-detail link per card without overriding visible link text", async () => {
     const card = await readRepoFile("src/components/commerce/ProductCard.astro");
     expect(card.match(/href=\{productHref\(product\)\}/g)).toHaveLength(1);
     expect(card).toContain('class="product-card__target"');
     expect(card).toContain("<h3>{product.name}</h3>");
+    expect(card).not.toContain('aria-label={`${product.name}');
   });
 
-  it("uses the same breadcrumb data for visible and structured navigation", async () => {
+  it("uses the same descriptive breadcrumb data for visible and structured navigation", async () => {
     const page = await readRepoFile("src/pages/produkt/[slug].astro");
+    expect(page).toContain('{ name: "Startseite", path: "/" }');
     expect(page).toContain("buildBreadcrumbJsonLd(breadcrumbItems)");
     expect(page).toContain("<Breadcrumbs items={breadcrumbItems}");
   });
