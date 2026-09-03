@@ -22,28 +22,28 @@ jobs:
       - run: npm run build
       - name: Collect Lighthouse reports
         run: npx --yes @lhci/cli@0.15.1 collect --config=.lighthouserc.json
-      - name: Print accessibility diagnostics
+      - name: Print Lighthouse diagnostics
         run: |
           node --input-type=module <<'NODE'
           import { readdir, readFile } from 'node:fs/promises';
           const files = (await readdir('.lighthouseci')).filter((name) => name.startsWith('lhr-') && name.endsWith('.json'));
           for (const file of files) {
             const report = JSON.parse(await readFile(`.lighthouseci/${file}`, 'utf8'));
-            console.log(`=== ${report.finalDisplayedUrl} accessibility=${report.categories.accessibility.score} ===`);
-            for (const ref of report.categories.accessibility.auditRefs) {
-              const audit = report.audits[ref.id];
-              if (audit && audit.score !== null && audit.score < 1) {
-                console.log(`${ref.id}: score=${audit.score} :: ${audit.title}`);
-                if (audit.displayValue) console.log(`  ${audit.displayValue}`);
-                const items = audit.details?.items ?? [];
-                for (const item of items.slice(0, 10)) {
-                  const node = item.node;
-                  if (node?.selector) console.log(`  selector: ${node.selector}`);
-                  if (node?.snippet) console.log(`  snippet: ${node.snippet}`);
-                  if (node?.explanation) console.log(`  explanation: ${node.explanation}`);
+            console.log(`=== ${report.finalDisplayedUrl} ===`);
+            console.log(`scores performance=${report.categories.performance.score} accessibility=${report.categories.accessibility.score} best-practices=${report.categories['best-practices'].score} seo=${report.categories.seo.score}`);
+            for (const categoryId of ['performance', 'accessibility']) {
+              console.log(`-- ${categoryId} audits below 1 --`);
+              for (const ref of report.categories[categoryId].auditRefs) {
+                const audit = report.audits[ref.id];
+                if (audit && audit.score !== null && audit.score < 1) {
+                  console.log(`${ref.id}: score=${audit.score} weight=${ref.weight ?? 0} :: ${audit.title}${audit.displayValue ? ` :: ${audit.displayValue}` : ''}`);
                 }
               }
             }
+            const requests = report.audits['network-requests']?.details?.items ?? [];
+            const largest = [...requests].sort((a,b) => (b.transferSize ?? 0) - (a.transferSize ?? 0)).slice(0, 12);
+            console.log('-- largest network transfers --');
+            for (const item of largest) console.log(`${item.transferSize ?? 0} bytes :: ${item.resourceType ?? ''} :: ${item.url ?? ''}`);
           }
           NODE
       - name: Assert Lighthouse quality gates
