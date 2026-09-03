@@ -30,4 +30,4 @@ const schemas = jsonLd === undefined ? [] : Array.isArray(jsonLd) ? jsonLd : [js
 <meta name="twitter:description" content={description} />
 {image && <meta name="twitter:image" content={image} />}
 {canonical && <link rel="canonical" href={canonical} />}
-{schemas.map((schema) => <script type="application/ld+json" set:html={sanitizeJsonLd(schema)} />)}
+{schemas.map((schema) => <script is:inline type="application/ld+json" set:html={sanitizeJsonLd(schema)} />)}
