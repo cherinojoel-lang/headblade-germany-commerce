@@ -19,8 +19,8 @@ jobs:
           package-manager-cache: false
       - name: Pin stable npm resolver
         run: npm install --global npm@11.6.0
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
       - name: Install Chromium runtime
         run: npx playwright install --with-deps chromium
       - name: Desktop and mobile smoke tests
