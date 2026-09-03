@@ -10,6 +10,7 @@
     "dev": "astro dev",
     "check": "astro check",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "build": "astro build",
     "validate:preview": "node scripts/validate-preview.mjs",
     "verify": "npm run check && npm test && npm run build && npm run validate:preview",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.9",
+    "@playwright/test": "1.62.1",
     "@types/node": "^22.0.0",
     "typescript": "5.8.3",
     "vite": "8.1.5",
