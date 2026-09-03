@@ -1,0 +1,33 @@
+---
+import { previewRobots } from "../../lib/preview";
+import { canonicalForPreview, pageTitle } from "../../lib/seo";
+import { sanitizeJsonLd } from "../../lib/schema";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  jsonLd?: unknown | readonly unknown[];
+}
+
+const { title, description, image, jsonLd } = Astro.props;
+const resolvedTitle = pageTitle(title);
+const canonical = canonicalForPreview(Astro.url.pathname);
+const schemas = jsonLd === undefined ? [] : Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+---
+
+<title>{resolvedTitle}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={previewRobots()} />
+<meta name="googlebot" content={previewRobots()} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="HeadBlade Germany" />
+<meta property="og:title" content={resolvedTitle} />
+<meta property="og:description" content={description} />
+{image && <meta property="og:image" content={image} />}
+<meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={resolvedTitle} />
+<meta name="twitter:description" content={description} />
+{image && <meta name="twitter:image" content={image} />}
+{canonical && <link rel="canonical" href={canonical} />}
+{schemas.map((schema) => <script type="application/ld+json" set:html={sanitizeJsonLd(schema)} />)}
