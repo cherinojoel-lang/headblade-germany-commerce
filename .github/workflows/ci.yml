@@ -13,14 +13,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Diagnose dependency install
+      - name: Pin npm away from Arborist edgesOut regression
+        run: npm install --global npm@11.6.0
+      - name: Install dependencies
         run: |
           node --version
           npm --version
-          npm config get registry
-          npm install --no-audit --no-fund --verbose || {
-            echo '=== npm debug log ==='
-            cat /home/runner/.npm/_logs/*-debug-0.log || true
-            exit 1
-          }
+          npm install --no-audit --no-fund
       - run: npm test -- test/preview.test.ts
