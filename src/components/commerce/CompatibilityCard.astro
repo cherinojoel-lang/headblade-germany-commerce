@@ -1,0 +1,19 @@
+---
+import type { Product } from "../../data/products";
+interface Props { product: Product; }
+const { product } = Astro.props;
+---
+
+<aside class="compatibility-card" aria-labelledby="compatibility-title">
+  <p class="eyebrow">Kompatibilität</p>
+  <h2 id="compatibility-title">Passt das zu deinem HeadBlade?</h2>
+  <p>{product.compatibility}</p>
+  <a href="/klingen-zubehoer">Klingensysteme vergleichen →</a>
+</aside>
+
+<style>
+  .compatibility-card { padding:clamp(2rem,5vw,4rem); background:var(--ink); color:white; }
+  .compatibility-card h2 { margin:.2rem 0 .8rem; font-size:clamp(2rem,4vw,3.5rem); line-height:.95; letter-spacing:-.045em; text-transform:uppercase; }
+  .compatibility-card p:not(.eyebrow) { max-width:650px; color:#c2c5c8; }
+  .compatibility-card a { min-height:44px; display:inline-flex; align-items:center; color:var(--red); font-weight:700; }
+</style>

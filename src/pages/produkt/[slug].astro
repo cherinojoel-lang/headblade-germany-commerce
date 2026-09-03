@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProductHero from "../../components/commerce/ProductHero.astro";
+import CompatibilityCard from "../../components/commerce/CompatibilityCard.astro";
+import RelatedProducts from "../../components/commerce/RelatedProducts.astro";
+import { products, type Product } from "../../data/products";
+import { buildBreadcrumbJsonLd, buildProductJsonLd } from "../../lib/schema";
+import { productRoute } from "../../lib/routes";
+
+export function getStaticPaths() {
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+interface Props { product: Product; }
+const { product } = Astro.props;
+const reviewLabel = "Review-Preview: Checkout bewusst deaktiviert";
+const related = products
+  .filter((candidate) => candidate.slug !== product.slug && candidate.categories.some((category) => product.categories.includes(category)))
+  .slice(0, 4);
+const jsonLd = [
+  buildProductJsonLd(product),
+  buildBreadcrumbJsonLd([
+    { name: "Start", path: "/" },
+    { name: "Produkte", path: "/produkte" },
+    { name: product.name, path: productRoute(product) },
+  ]),
+];
+---
+
+<BaseLayout title={product.name} description={product.short} image={product.detailImage ?? product.image} {jsonLd}>
+  <ProductHero {product} {reviewLabel} />
+  <section class="section section--compact">
+    <CompatibilityCard {product} />
+  </section>
+  <RelatedProducts products={related} />
+</BaseLayout>

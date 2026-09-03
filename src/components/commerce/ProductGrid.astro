@@ -1,0 +1,19 @@
+---
+import type { Product } from "../../data/products";
+import ProductCard from "./ProductCard.astro";
+
+interface Props {
+  products: readonly Product[];
+  emptyMessage?: string;
+}
+
+const { products, emptyMessage = "Für diese Auswahl sind aktuell keine Review-Produkte hinterlegt." } = Astro.props;
+---
+
+{products.length > 0 ? (
+  <div class="product-grid">
+    {products.map((product) => <ProductCard {product} />)}
+  </div>
+) : (
+  <p>{emptyMessage}</p>
+)}

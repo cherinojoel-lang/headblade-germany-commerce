@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProductGrid from "../../components/commerce/ProductGrid.astro";
+import SectionHeading from "../../components/sections/SectionHeading.astro";
+import { categoryProducts } from "../../lib/routes";
+const products = categoryProducts("angebote");
+---
+
+<BaseLayout title="Angebote & Bundles" description="Verifizierte HeadBlade Germany Bundles und Vorratspakete in der Review-Preview.">
+  <section class="section section--dark">
+    <SectionHeading eyebrow="Sets & Vorrat" title="Angebote & Bundles" description="Die am 03.09.2026 öffentlich verifizierten Angebotskombinationen – in dieser Preview ohne Bestellfunktion." />
+    <ProductGrid {products} />
+  </section>
+</BaseLayout>
