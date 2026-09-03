@@ -1,0 +1,15 @@
+{
+  "name": "headblade-germany-commerce",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "check": "npm test && node scripts/validate.mjs",
+    "cf:first-deploy": "npx wrangler deploy",
+    "cf:preview": "npx wrangler versions upload --preview-alias review"
+  },
+  "devDependencies": {
+    "wrangler": "^4.21.0"
+  }
+}
