@@ -35,5 +35,5 @@ jobs:
           node-version: '22'
           package-manager-cache: false
       - run: npm install --global npm@11.6.0
-      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm audit --audit-level=high
