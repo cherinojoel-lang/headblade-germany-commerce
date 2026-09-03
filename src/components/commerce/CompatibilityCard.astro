@@ -15,5 +15,6 @@ const { product } = Astro.props;
   .compatibility-card { padding:clamp(2rem,5vw,4rem); background:var(--ink); color:white; }
   .compatibility-card h2 { margin:.2rem 0 .8rem; font-size:clamp(2rem,4vw,3.5rem); line-height:.95; letter-spacing:-.045em; text-transform:uppercase; }
   .compatibility-card p:not(.eyebrow) { max-width:650px; color:#c2c5c8; }
-  .compatibility-card a { min-height:44px; display:inline-flex; align-items:center; color:var(--red); font-weight:700; }
+  .compatibility-card .eyebrow, .compatibility-card a { color:var(--red-on-dark); }
+  .compatibility-card a { min-height:44px; display:inline-flex; align-items:center; font-weight:700; }
 </style>
