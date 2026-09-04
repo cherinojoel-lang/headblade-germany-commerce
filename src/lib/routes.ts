@@ -2,6 +2,15 @@ import { categories, type ProductCategory, type ProductCategoryId } from "../dat
 import { products, type Product } from "../data/products";
 import { productsByCategory } from "./catalog";
 
+export const authorityRoutes = [
+  "/vergleich/moto-vs-atx",
+  "/vergleich/hb4-vs-hb6",
+  "/vergleich/manuell-vs-elektrisch",
+  "/anleitungen/kopf-richtig-rasieren",
+  "/anleitungen/erste-kopfrasur",
+  "/anleitungen/kopfhaut-pflegen",
+] as const;
+
 export function productRoute(product: Product): string {
   return `/produkt/${product.slug}`;
 }

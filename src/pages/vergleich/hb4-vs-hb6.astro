@@ -1,0 +1,20 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ComparisonTable from "../../components/commerce/ComparisonTable.astro";
+import { hb4Hb6Rows } from "../../data/decision-content";
+---
+<BaseLayout title="HB4 oder HB6? HeadBlade Klingen vergleichen" description="HB4 oder HB6: HeadBlade-Klingen nach Kompatibilität und System verständlich unterscheiden.">
+  <section class="section section--white contour-section">
+    <div class="section-heading">
+      <p class="eyebrow">Klingen-Kompatibilität</p>
+      <h1 class="display">HB4 oder HB6?</h1>
+      <p><strong>Kompatibilität kommt zuerst.</strong> Die Anzahl der Klingen allein sagt nicht, welches Nachfüllsystem zu deinem vorhandenen HeadBlade passt.</p>
+    </div>
+    <ComparisonTable caption="HB4 und HB6 nach den aktuell verifizierten Review-Angaben" leftLabel="HB4" rightLabel="HB6" rows={hb4Hb6Rows} />
+    <div class="decision-grid decision-grid--two">
+      <article class="decision-card"><p class="eyebrow">HB4</p><h2>Vier-Klingen-System</h2><p>Im aktuellen Katalog für MOTO, ATX und weitere HeadBlade-Modelle angegeben.</p><a class="decision-card__link" href="/produkt/klingenset-4blade">HB4 ansehen →</a></article>
+      <article class="decision-card"><p class="eyebrow">HB6</p><h2>Sechs-Klingen-System</h2><p>Für das HB6-System; bei weiteren Modellen kann laut aktueller Quelle ein Adapter relevant sein.</p><a class="decision-card__link" href="/produkt/klingenset-6blade">HB6 ansehen →</a></article>
+    </div>
+    <p class="authority-note">Vor einer späteren Produktionsfreigabe werden Modell-/Adapter-Kompatibilitäten erneut gegen die autorisierte HeadBlade-Quelle geprüft.</p>
+  </section>
+</BaseLayout>
