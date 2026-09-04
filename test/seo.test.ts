@@ -23,16 +23,15 @@ describe("review SEO contract", () => {
     expect(json).toContain("\\u003c");
   });
 
-  it("builds product schema only from available review fields", () => {
+  it("builds truthful review Product schema without merchant Offer claims", () => {
     const moto = getProduct("headblade-moto");
     expect(moto).toBeDefined();
     const schema = buildProductJsonLd(moto!);
     expect(schema["@type"]).toBe("Product");
     expect(schema.name).toBe("HeadBlade MOTO");
-    expect(schema.offers).toMatchObject({ priceCurrency: "EUR", price: 21.95 });
-
-    const noPrice = buildProductJsonLd({ ...moto!, price: null });
-    expect(noPrice).not.toHaveProperty("offers");
+    expect(schema).not.toHaveProperty("offers");
+    expect(schema).not.toHaveProperty("availability");
+    expect(JSON.stringify(schema)).not.toMatch(/"@type":"Offer"/);
   });
 
   it("builds ordered breadcrumb schema", () => {

@@ -20,6 +20,11 @@ describe("hard preview safety validator", () => {
     expect(() => validateHtml(`${safeHtml}<p>Jetzt bezahlen</p>`, "checkout.html")).toThrow(/transaction/i);
   });
 
+  it("rejects merchant Offer structured data in review HTML", () => {
+    const merchantSchema = `<script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","offers":{"@type":"Offer","price":"21.95","priceCurrency":"EUR"}}</script>`;
+    expect(() => validateHtml(`${safeHtml}${merchantSchema}`, "merchant.html")).toThrow(/offer|merchant|commerce/i);
+  });
+
   it("rejects pages without the immutable preview robots directive", () => {
     expect(() => validateHtml("<html><head></head><body>Preview</body></html>", "bad.html")).toThrow(/robots|noindex/i);
   });
