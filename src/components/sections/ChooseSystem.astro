@@ -1,0 +1,20 @@
+---
+import DecisionCard from "../commerce/DecisionCard.astro";
+import { getProduct } from "../../lib/catalog";
+interface Props { heading?: string; }
+const { heading = "MOTO oder ATX?" } = Astro.props;
+const moto = getProduct("headblade-moto")!;
+const atx = getProduct("headblade-atx-package")!;
+---
+<section class="section section--white contour-section choose-system" aria-labelledby="choose-system-title">
+  <div class="section-heading contour-section__heading">
+    <p class="eyebrow">Choose your HeadBlade</p>
+    <h2 id="choose-system-title">{heading}</h2>
+    <p>Zwei unterschiedliche Arten, ein spezialisiertes HeadBlade-System zu führen. Entscheidend ist nicht „besser“, sondern welches Handling zu deiner Routine passt.</p>
+  </div>
+  <div class="decision-grid decision-grid--two">
+    <DecisionCard eyebrow="Flexible Konturführung" title="HeadBlade MOTO" body={moto.short} meta={moto.compatibility} href={`/produkt/${moto.slug}`} linkLabel="MOTO ansehen" />
+    <DecisionCard eyebrow="Geführter Einstieg" title="HeadBlade ATX" body={atx.short} meta={atx.compatibility} href={`/produkt/${atx.slug}`} linkLabel="ATX ansehen" />
+  </div>
+  <a class="text-link" href="/vergleich/moto-vs-atx">MOTO und ATX direkt vergleichen →</a>
+</section>

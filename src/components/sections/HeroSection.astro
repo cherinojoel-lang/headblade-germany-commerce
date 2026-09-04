@@ -1,21 +1,20 @@
 ---
 import type { Product } from "../../data/products";
-import { formatPrice } from "../../lib/catalog";
-interface Props { product: Product; label?: string; }
-const { product, label = "HeadBlade MOTO" } = Astro.props;
+interface Props { product: Product; label?: string; title?: string; }
+const { product, label = "HEADBLADE CONTOUR SYSTEM", title = "Für deinen Kopf gebaut." } = Astro.props;
 ---
 <section class="hero" aria-labelledby="hero-title">
   <div class="hero__copy">
-    <p class="eyebrow">{label} · Für die Kopfrasur entwickelt</p>
-    <h1 id="hero-title">Dein Kopf.<br /><em>Deine Rasur.</em></h1>
-    <p class="hero__lead">Ein Rasierer, der nicht wie ein normaler Griff funktioniert: kompakt geführt, konturennah und konsequent für die Kopfrasur gedacht.</p>
+    <p class="eyebrow">{label} · Purpose-built Head Shaving</p>
+    <h1 id="hero-title">{title}</h1>
+    <p class="hero__lead">HeadBlade ist kein normaler Rasierer mit anderem Marketing. Das System ist auf die manuelle Kopfrasur, direkte Handführung und verständliche Klingen-Kompatibilität ausgerichtet.</p>
     <div class="hero__actions">
-      <a class="button button--red" href={`/produkt/${product.slug}`}>MOTO entdecken · {formatPrice(product.price)}</a>
-      <a class="button button--ghost" href="/produkte">Sortiment ansehen</a>
+      <a class="button button--red" href="/finder">HeadBlade Fit starten</a>
+      <a class="button button--ghost" href={`/produkt/${product.slug}`}>MOTO entdecken</a>
     </div>
   </div>
   <div class="hero__visual">
     <img src={product.detailImage ?? product.image} alt="HeadBlade MOTO Kopfrasierer" width="700" height="700" fetchpriority="high" decoding="async" sizes="(max-width: 980px) 72vw, 34vw" />
-    <p class="hero__tag">Bewegliche Führung. Nachfüllbare Klingen. Entwickelt für die Kontur deines Kopfes.</p>
+    <p class="hero__tag">Konturorientierte Führung · nachfüllbares Klingensystem · für die Kopfrasur entwickelt.</p>
   </div>
 </section>

@@ -1,0 +1,68 @@
+:root {
+  --contour-red: #d71920;
+  --contour-red-deep: #a80f15;
+  --graphite: #101113;
+  --graphite-soft: #1a1c1f;
+  --paper-warm: #f4f0e8;
+  --steel-500: #72777d;
+  --steel-300: #c5c8cb;
+}
+
+.contour-line { width: 100%; min-height: 4rem; overflow: hidden; pointer-events: none; }
+.contour-line svg { display: block; width: 100%; height: clamp(4rem, 10vw, 9rem); }
+.contour-line[data-compact="true"] svg { height: clamp(3.5rem, 7vw, 6rem); }
+.contour-line__rail,
+.contour-line__accent { fill: none; vector-effect: non-scaling-stroke; }
+.contour-line__rail { stroke: color-mix(in srgb, var(--steel-500) 34%, transparent); stroke-width: 1.5; }
+.contour-line__accent { stroke: var(--contour-red); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 33 9 210 17; }
+
+.contour-intro { margin: -1.2rem 0 -1rem; background: var(--graphite); }
+.contour-section__heading { max-width: 54rem; }
+.decision-grid { display: grid; gap: 1rem; margin-top: 2rem; }
+.decision-grid--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.decision-card { position: relative; padding: clamp(1.3rem, 3vw, 2rem); border-top: 3px solid var(--contour-red); background: #fff; box-shadow: 0 20px 55px rgba(16,17,19,.07); }
+.decision-card h3 { margin: .25rem 0 .7rem; font-size: clamp(1.45rem, 3vw, 2.2rem); }
+.decision-card > p:not(.eyebrow) { color: var(--muted); }
+.decision-card__meta { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--line); font-size: .92rem; }
+.decision-card__link,
+.text-link { display: inline-flex; margin-top: 1rem; font-weight: 850; text-decoration: none; color: var(--contour-red); }
+.decision-card__link:hover,
+.text-link:hover { text-decoration: underline; text-underline-offset: .22em; }
+
+.contour-mechanics { position: relative; overflow: hidden; }
+.contour-mechanics__intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, .8fr); gap: 2rem; align-items: end; }
+.mechanics-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin-top: 2rem; background: rgba(255,255,255,.16); }
+.mechanics-grid article { padding: clamp(1.25rem, 3vw, 2rem); background: var(--graphite-soft); }
+.mechanics-grid b { color: var(--contour-red); letter-spacing: .12em; }
+.mechanics-grid h3 { margin: .8rem 0 .45rem; color: #fff; }
+.mechanics-grid p { color: #d3d4d5; }
+
+.section--warm { background: var(--paper-warm); color: var(--graphite); }
+.manual-electric__grid { display: grid; gap: .8rem; margin-top: 2rem; }
+.manual-electric__grid article { display: grid; grid-template-columns: minmax(8rem,.55fr) repeat(2, minmax(0,1fr)); gap: 1rem; padding: 1.1rem 0; border-top: 1px solid color-mix(in srgb, var(--graphite) 18%, transparent); }
+.manual-electric__criterion { margin: 0; font-weight: 900; text-transform: uppercase; letter-spacing: .07em; font-size: .78rem; }
+.manual-electric__grid strong { display: block; margin-bottom: .3rem; }
+.manual-electric__grid p { margin: 0; color: #4f5358; }
+
+.help-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .7rem; margin-top: 2rem; }
+.help-grid a { min-height: 8rem; padding: 1.1rem; border: 1px solid var(--line); color: var(--graphite); text-decoration: none; transition: transform .16s ease, border-color .16s ease; }
+.help-grid a:hover { transform: translateY(-2px); border-color: var(--contour-red); }
+.help-grid strong,
+.help-grid span { display: block; }
+.help-grid span { margin-top: .5rem; color: var(--muted); line-height: 1.45; }
+
+@media (max-width: 900px) {
+  .contour-mechanics__intro { grid-template-columns: 1fr; }
+  .mechanics-grid { grid-template-columns: 1fr; }
+  .help-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 680px) {
+  .decision-grid--two,
+  .help-grid { grid-template-columns: 1fr; }
+  .manual-electric__grid article { grid-template-columns: 1fr; gap: .5rem; }
+  .manual-electric__grid article > div { padding-left: 1rem; border-left: 2px solid var(--steel-300); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .help-grid a { transition: none; }
+  .help-grid a:hover { transform: none; }
+}

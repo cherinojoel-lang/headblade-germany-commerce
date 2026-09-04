@@ -1,35 +1,44 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ContourLine from "../components/brand/ContourLine.astro";
 import HeroSection from "../components/sections/HeroSection.astro";
 import PromiseStrip from "../components/sections/PromiseStrip.astro";
-import BestsellerGrid from "../components/sections/BestsellerGrid.astro";
-import MotoSpotlight from "../components/sections/MotoSpotlight.astro";
-import CompatibilitySection from "../components/sections/CompatibilitySection.astro";
+import ChooseSystem from "../components/sections/ChooseSystem.astro";
 import FinderTeaser from "../components/sections/FinderTeaser.astro";
-import WhyHeadBlade from "../components/sections/WhyHeadBlade.astro";
+import ContourMechanics from "../components/sections/ContourMechanics.astro";
+import CompatibilitySection from "../components/sections/CompatibilitySection.astro";
 import RoutineSection from "../components/sections/RoutineSection.astro";
+import ManualVsElectric from "../components/sections/ManualVsElectric.astro";
+import BestsellerGrid from "../components/sections/BestsellerGrid.astro";
 import OfferGrid from "../components/sections/OfferGrid.astro";
+import WhyHeadBlade from "../components/sections/WhyHeadBlade.astro";
+import HelpBeforeBuying from "../components/sections/HelpBeforeBuying.astro";
 import TrustStrip from "../components/sections/TrustStrip.astro";
 import FaqSection from "../components/sections/FaqSection.astro";
 import FinalCTA from "../components/sections/FinalCTA.astro";
 import { getProduct, productsByCategory } from "../lib/catalog";
 
 const moto = getProduct("headblade-moto")!;
-const bestsellers = [moto, getProduct("klingenset-4blade")!, getProduct("klingenset-6blade")!, getProduct("headslick-5oz")!];
+const atx = getProduct("headblade-atx-package")!;
+const bestsellers = [moto, atx, getProduct("klingenset-4blade")!, getProduct("headslick-5oz")!];
 const offers = productsByCategory("angebote");
 ---
-<BaseLayout title="HeadBlade Germany" description="Premium Review-Preview für HeadBlade MOTO, HB4/HB6 Klingen, Pflege und Bundles. Keine Bestellung oder Zahlung möglich." image={moto.image}>
+<BaseLayout title="HeadBlade Germany – Für deinen Kopf gebaut" description="HEADBLADE CONTOUR SYSTEM Review-Preview: MOTO, ATX, HB4/HB6, HeadBlade Fit und Kopfrasur-Routine. Keine Bestellung oder Zahlung möglich." image={moto.image}>
   <p class="review-note">Keine Bestellung · keine Zahlung · keine Dateneingabe. Diese öffentliche Review-Preview ist vollständig von der Produktion getrennt.</p>
-  <HeroSection product={moto} label="HeadBlade MOTO" />
+  <div class="contour-intro"><ContourLine /></div>
+  <HeroSection product={moto} label="HEADBLADE CONTOUR SYSTEM" title="Für deinen Kopf gebaut." />
   <PromiseStrip />
-  <BestsellerGrid products={bestsellers} heading="Bestseller" />
-  <MotoSpotlight product={moto} />
+  <ChooseSystem heading="MOTO oder ATX?" />
+  <FinderTeaser title="HeadBlade Fit" />
+  <ContourMechanics />
   <CompatibilitySection title="HB4 & HB6" />
-  <FinderTeaser title="Produktfinder" />
-  <WhyHeadBlade title="Warum HeadBlade" />
   <RoutineSection title="Deine Rasur-Routine" />
-  <OfferGrid products={offers} title="Bundles & Angebote" />
+  <ManualVsElectric />
+  <BestsellerGrid products={bestsellers} heading="Systeme & Essentials" />
+  <OfferGrid products={offers} title="Sets & Angebote" />
+  <WhyHeadBlade title="Warum HeadBlade" />
+  <HelpBeforeBuying />
   <TrustStrip />
   <FaqSection title="Häufige Fragen" />
-  <FinalCTA label="Alle Produkte ansehen" />
+  <FinalCTA label="HeadBlade Fit starten" />
 </BaseLayout>

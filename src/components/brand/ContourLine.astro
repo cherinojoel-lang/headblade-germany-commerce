@@ -1,0 +1,12 @@
+---
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+<div class="contour-line" data-compact={compact ? "true" : "false"} aria-hidden="true">
+  <svg viewBox="0 0 1200 170" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path class="contour-line__rail" d="M0 137 C172 134 214 51 386 48 C574 45 603 137 792 133 C955 130 1030 77 1200 41" />
+    <path class="contour-line__accent" d="M0 137 C172 134 214 51 386 48 C574 45 603 137 792 133 C955 130 1030 77 1200 41" />
+  </svg>
+</div>
