@@ -25,7 +25,7 @@
 .decision-card > p:not(.eyebrow) { color: var(--muted); }
 .decision-card__meta { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--line); font-size: .92rem; }
 .decision-card__link,
-.text-link { display: inline-flex; margin-top: 1rem; font-weight: 850; text-decoration: none; color: var(--contour-red); }
+.text-link { min-height: 44px; display: inline-flex; align-items: center; margin-top: 1rem; font-weight: 850; text-decoration: none; color: var(--contour-red); }
 .decision-card__link:hover,
 .text-link:hover { text-decoration: underline; text-underline-offset: .22em; }
 
@@ -63,6 +63,11 @@
   .manual-electric__grid article > div { padding-left: 1rem; border-left: 2px solid var(--steel-300); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .help-grid a { transition: none; }
+  .contour-line,
+  .contour-line *,
+  .help-grid a {
+    animation: none !important;
+    transition: none !important;
+  }
   .help-grid a:hover { transform: none; }
 }
