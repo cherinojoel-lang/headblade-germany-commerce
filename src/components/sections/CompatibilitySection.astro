@@ -1,12 +1,24 @@
 ---
-import SectionHeading from "./SectionHeading.astro";
+import { getProduct } from "../../lib/catalog";
 interface Props { title?: string; }
-const { title = "HB4 & HB6" } = Astro.props;
+const { title = "Welche Klinge brauchst du?" } = Astro.props;
+const hb4 = getProduct("klingenset-4blade")!;
+const hb6 = getProduct("klingenset-6blade")!;
 ---
-<section class="section section--dark" aria-labelledby="compat-title">
-  <SectionHeading eyebrow="Klingen verstehen" title={title} description="Zwei Klingensysteme, ein klares Ziel: die passende Kombination für deinen HeadBlade-Rasierer finden." />
-  <div class="compat-grid" id="compat-title">
-    <article class="compat-card"><strong>HB4</strong><h3>Direkt &amp; vertraut</h3><p>Vier-Klingen-System für MOTO, ATX und weitere kompatible HeadBlade-Modelle.</p><a class="button button--ghost" href="/klingen-zubehoer">HB4 ansehen</a></article>
-    <article class="compat-card"><strong>HB6</strong><h3>Sechs Klingen</h3><p>HB6-Nachfüllsystem für kompatible Modelle und Konfigurationen.</p><a class="button button--ghost" href="/klingen-zubehoer">HB6 ansehen</a></article>
+<section class="section motion-blades" aria-labelledby="compat-title">
+  <div class="section-heading">
+    <p class="eyebrow">Kompatibilität zuerst</p>
+    <h2 id="compat-title">{title}</h2>
+    <p>Bevor du über Klingenzahl oder Vorrat nachdenkst, muss das System zu deinem HeadBlade passen. Deshalb steht die Kompatibilität hier vor dem Verkaufsargument.</p>
+  </div>
+  <div class="motion-blades__grid">
+    <article class="motion-blade">
+      <div class="motion-blade__media"><img src={hb4.image} alt="HeadBlade HB4 Klingenpackung" width="600" height="600" loading="lazy" decoding="async" /></div>
+      <div><p class="eyebrow">HB4</p><h3>4-Blade-System</h3><p>{hb4.compatibility}</p><a class="button button--ghost" href="/vergleich/hb4-vs-hb6">HB4 mit HB6 vergleichen</a></div>
+    </article>
+    <article class="motion-blade">
+      <div class="motion-blade__media"><img src={hb6.image} alt="HeadBlade HB6 Klingenpackung" width="600" height="600" loading="lazy" decoding="async" /></div>
+      <div><p class="eyebrow">HB6</p><h3>6-Blade-System</h3><p>{hb6.compatibility}</p><a class="button button--ghost" href="/klingen-zubehoer">Klingenübersicht öffnen</a></div>
+    </article>
   </div>
 </section>
