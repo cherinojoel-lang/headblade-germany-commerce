@@ -21,7 +21,7 @@ test("review preview loads safely and product decision journey works", async ({ 
   await expect(page.getByText(/Checkout bewusst deaktiviert/i)).toBeVisible();
   await expect(page.locator("form")).toHaveCount(0);
 
-  await page.locator('a[href="/vergleich/moto-vs-atx"]').first().click();
+  await page.getByRole("link", { name: "Passenden Vergleich öffnen" }).click();
   await expect(page).toHaveURL(/\/vergleich\/moto-vs-atx\/?$/);
   await expect(page.getByRole("heading", { level: 1, name: /MOTO oder ATX/i })).toBeVisible();
 
