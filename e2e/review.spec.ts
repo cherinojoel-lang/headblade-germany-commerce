@@ -58,3 +58,25 @@ test("core review routes keep accessible navigation and one primary heading", as
   await page.goto("/vergleich/moto-vs-atx/");
   await expect(page.locator("table caption")).toContainText(/MOTO und ATX/i);
 });
+
+test("Motion Lab is progressive, source-faithful and reduced-motion safe", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+
+  const heroEyebrow = page.locator(".hero__copy > .eyebrow");
+  const heroImage = page.locator(".hero__visual img");
+  const contourAccent = page.locator(".contour-intro .contour-line__accent");
+
+  await expect(heroImage).toHaveAttribute("src", /headblade\.info\//);
+
+  expect(await heroEyebrow.evaluate((node) => getComputedStyle(node).animationName)).toBe("hb-motion-rise");
+  expect(await heroImage.evaluate((node) => getComputedStyle(node).animationName)).toBe("hb-motion-product");
+  expect(await contourAccent.evaluate((node) => getComputedStyle(node).animationName)).toBe("hb-contour-draw");
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.reload();
+
+  expect(await heroEyebrow.evaluate((node) => getComputedStyle(node).animationName)).toBe("none");
+  expect(await heroImage.evaluate((node) => getComputedStyle(node).animationName)).toBe("none");
+  expect(await contourAccent.evaluate((node) => getComputedStyle(node).animationName)).toBe("none");
+});
