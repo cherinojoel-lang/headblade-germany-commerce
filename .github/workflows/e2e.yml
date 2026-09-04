@@ -25,7 +25,7 @@ jobs:
         run: npm install --global npm@11.6.0
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
-      - name: Install Chromium runtime
-        run: npx playwright install --with-deps chromium
-      - name: Desktop and mobile smoke tests
+      - name: Install browser runtimes
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Desktop and mobile cross-browser smoke tests
         run: npm run test:e2e
