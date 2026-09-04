@@ -1,6 +1,7 @@
 :root {
   --contour-red: #d71920;
   --contour-red-deep: #a80f15;
+  --contour-red-on-dark: #ff5a5f;
   --graphite: #101113;
   --graphite-soft: #1a1c1f;
   --paper-warm: #f4f0e8;
@@ -50,6 +51,15 @@
 .help-grid strong,
 .help-grid span { display: block; }
 .help-grid span { margin-top: .5rem; color: #50555b; line-height: 1.45; }
+
+.hero .eyebrow,
+.section--dark .eyebrow,
+.section--dark .offer-card span,
+.section--dark .product-card__link,
+.section--dark .mechanics-grid b,
+.section--dark .compat-card strong {
+  color: var(--contour-red-on-dark);
+}
 
 @media (max-width: 900px) {
   .contour-mechanics__intro { grid-template-columns: 1fr; }
