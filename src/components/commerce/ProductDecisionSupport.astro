@@ -1,0 +1,64 @@
+---
+import type { Product } from "../../data/products";
+import { getProduct } from "../../lib/catalog";
+import { productRoute } from "../../lib/routes";
+
+interface Props { product: Product; }
+const { product } = Astro.props;
+const alternative = product.nearestAlternativeSlug ? getProduct(product.nearestAlternativeSlug) : undefined;
+const comparisonHref = ["headblade-moto", "headblade-atx-package"].includes(product.slug)
+  ? "/vergleich/moto-vs-atx"
+  : ["klingenset-4blade", "klingenset-6blade"].includes(product.slug)
+    ? "/vergleich/hb4-vs-hb6"
+    : "/finder";
+---
+
+<section class="section section--compact decision-support" aria-labelledby={`decision-${product.slug}`}>
+  <div class="section-heading">
+    <p class="eyebrow">Entscheidungshilfe</p>
+    <h2 id={`decision-${product.slug}`}>Passt zu dir, wenn …</h2>
+  </div>
+  <div class="decision-support__grid">
+    <article>
+      <h3>Wofür dieses Produkt gedacht ist</h3>
+      {product.bestFor?.length ? (
+        <ul>{product.bestFor.map((item) => <li>{item}</li>)}</ul>
+      ) : (
+        <p>{product.short}</p>
+      )}
+    </article>
+    <article>
+      <h3>Kompatibilität</h3>
+      <p>{product.compatibility}</p>
+      <a href={comparisonHref}>Passenden Vergleich öffnen →</a>
+    </article>
+    <article>
+      <h3>Anwendung</h3>
+      {product.usage?.length ? (
+        <ol>{product.usage.map((item) => <li>{item}</li>)}</ol>
+      ) : (
+        <p>Die passende Routine und weitere Anwendungshinweise findest du in den HeadBlade-Anleitungen.</p>
+      )}
+      <a href="/anleitungen">Anleitungen ansehen →</a>
+    </article>
+    {alternative && (
+      <article>
+        <h3>Nächste HeadBlade-Alternative</h3>
+        <p>{alternative.name}</p>
+        <p>{alternative.short}</p>
+        <a href={productRoute(alternative)}>{alternative.name} ansehen →</a>
+      </article>
+    )}
+  </div>
+</section>
+
+<style>
+  .decision-support { background:var(--paper-warm,#f6f3ed); }
+  .decision-support__grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1px; background:rgba(17,18,20,.14); border:1px solid rgba(17,18,20,.14); }
+  .decision-support__grid article { min-width:0; padding:clamp(1.3rem,3vw,2.2rem); background:white; }
+  .decision-support__grid h3 { margin-top:0; }
+  .decision-support__grid ul,.decision-support__grid ol { padding-left:1.2rem; }
+  .decision-support__grid a { font-weight:750; }
+  @media (max-width:980px) { .decision-support__grid { grid-template-columns:1fr 1fr; } }
+  @media (max-width:620px) { .decision-support__grid { grid-template-columns:1fr; } }
+</style>

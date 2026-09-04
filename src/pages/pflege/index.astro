@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProductGrid from "../../components/commerce/ProductGrid.astro";
+import SectionHeading from "../../components/sections/SectionHeading.astro";
+import { categoryProducts } from "../../lib/routes";
+const products = categoryProducts("pflege");
+---
+
+<BaseLayout title="Pflege" description="HeadBlade Pflegeprodukte und Bundles für die vorbereitete Kopfrasur in der Review-Preview.">
+  <section class="section section--white">
+    <SectionHeading eyebrow="Vorbereiten & gleiten" title="Pflege" description="Pflegeprodukte für eine kontrollierte Rasur-Routine rund um den Kopf." />
+    <ProductGrid {products} />
+  </section>
+</BaseLayout>

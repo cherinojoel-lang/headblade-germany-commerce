@@ -1,0 +1,60 @@
+---
+import type { Product } from "../../data/products";
+import { formatPrice } from "../../lib/catalog";
+
+interface Props {
+  product: Product;
+  reviewLabel: string;
+  showVisual?: boolean;
+}
+
+const { product, reviewLabel, showVisual = true } = Astro.props;
+---
+
+<section class:list={["product-hero", { "product-hero--copy-only": !showVisual }]} aria-labelledby="product-title">
+  {showVisual && (
+    <div class="product-hero__visual">
+      {product.badge && <span class="product-hero__badge">{product.badge}</span>}
+      <div class:list={["product-hero__media", { "product-hero__media--pair": product.secondaryImage }]}>
+        <img src={product.detailImage ?? product.image} alt={`${product.name} – Produktansicht`} width="760" height="760" fetchpriority="high" decoding="async" sizes="(max-width: 820px) 72vw, 38vw" />
+        {product.secondaryImage && <img src={product.secondaryImage} alt={`${product.name} – enthaltene Pflege`} width="600" height="600" decoding="async" sizes="(max-width: 820px) 34vw, 18vw" />}
+      </div>
+    </div>
+  )}
+  <div class="product-hero__copy">
+    <p class="eyebrow">HeadBlade Germany · Produktdetail</p>
+    <h1 id="product-title">{product.name}</h1>
+    <p class="product-hero__price">{formatPrice(product.price)} {product.compareAtPrice && <del>{formatPrice(product.compareAtPrice)}</del>}</p>
+    <p class="product-hero__lead">{product.short}</p>
+    <ul>{product.benefits.map((benefit) => <li>{benefit}</li>)}</ul>
+    {product.bestFor?.[0] && <p class="product-hero__fit"><strong>Passt besonders, wenn:</strong> {product.bestFor[0]}</p>}
+    <div class="product-hero__review" role="status">
+      <strong>{reviewLabel}</strong>
+      <span>Preis und Produktdarstellung dienen hier ausschließlich der Inhaberprüfung.</span>
+    </div>
+    <a class="button" href="/produkte">Zur Produktübersicht</a>
+  </div>
+</section>
+
+<style>
+  .product-hero { display:grid; grid-template-columns:1fr 1fr; min-height:650px; background:var(--white); }
+  .product-hero--copy-only { grid-template-columns:1fr; min-height:0; }
+  .product-hero__visual { position:relative; display:grid; place-items:center; min-height:560px; padding:clamp(2rem,6vw,5rem); background:linear-gradient(145deg,#e7e5df,#f8f7f3); }
+  .product-hero__media { width:min(78%,620px); max-height:560px; display:grid; place-items:center; }
+  .product-hero__media img { width:100%; max-height:560px; object-fit:contain; filter:drop-shadow(0 28px 30px rgba(0,0,0,.22)); }
+  .product-hero__media--pair { width:min(88%,700px); grid-template-columns:1fr 1fr; gap:1rem; }
+  .product-hero__media--pair img { min-width:0; }
+  .product-hero__badge { position:absolute; top:1.5rem; left:1.5rem; padding:.45rem .65rem; background:var(--red); color:white; font-size:.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .product-hero__copy { display:flex; flex-direction:column; justify-content:center; padding:clamp(3rem,7vw,7rem); }
+  .product-hero--copy-only .product-hero__copy { padding:clamp(2rem,5vw,5rem); }
+  .product-hero h1 { margin:.3rem 0 1rem; font-size:clamp(3rem,6vw,6.6rem); line-height:.88; letter-spacing:-.06em; text-transform:uppercase; }
+  .product-hero__price { margin:.5rem 0; font-size:1.55rem; font-weight:800; }
+  .product-hero__price del { margin-left:.55rem; color:var(--steel); font-size:1rem; font-weight:500; }
+  .product-hero__lead { max-width:620px; color:var(--steel); font-size:1.12rem; }
+  .product-hero ul { padding-left:1.2rem; }
+  .product-hero__fit { max-width:620px; padding:.9rem 1rem; background:var(--paper-warm,#f6f3ed); }
+  .product-hero__review { display:grid; gap:.2rem; margin:1.3rem 0; padding:1rem; border-left:4px solid var(--red); background:#f1dadb; color:#5f0a0e; }
+  .product-hero__review span { font-size:.88rem; }
+  .product-hero .button { align-self:flex-start; }
+  @media (max-width:820px) { .product-hero { grid-template-columns:1fr; } .product-hero__visual { min-height:380px; } }
+</style>

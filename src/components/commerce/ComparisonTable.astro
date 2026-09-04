@@ -1,0 +1,39 @@
+---
+import type { ComparisonRow } from "../../data/decision-content";
+interface Props {
+  caption: string;
+  leftLabel: string;
+  rightLabel: string;
+  rows: readonly ComparisonRow[];
+}
+const { caption, leftLabel, rightLabel, rows } = Astro.props;
+---
+<div class="comparison-table-wrap" tabindex="0" role="region" aria-label={caption}>
+  <table class="comparison-table">
+    <caption>{caption}</caption>
+    <thead>
+      <tr>
+        <th scope="col">Kriterium</th>
+        <th scope="col">{leftLabel}</th>
+        <th scope="col">{rightLabel}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          <th scope="row">{row.criterion}</th>
+          <td>{row.left}</td>
+          <td>{row.right}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<style>
+  .comparison-table-wrap { margin: 2rem 0; overflow-x: auto; outline-offset: .35rem; }
+  .comparison-table { width: 100%; min-width: 42rem; border-collapse: collapse; background: #fff; color: var(--ink); }
+  caption { padding: 0 0 .8rem; text-align: left; font-weight: 850; }
+  th, td { padding: 1rem; border-top: 1px solid var(--line); text-align: left; vertical-align: top; }
+  thead th { border-top: 3px solid var(--contour-red); background: var(--paper-warm); }
+  tbody th { width: 22%; font-weight: 850; }
+</style>

@@ -1,0 +1,137 @@
+/* Final Motion Lab refinement layer.
+   These overrides deliberately neutralize the remaining Contour-era corporate/card language
+   while preserving the proven information architecture and semantic components. */
+
+.section--warm { background: #f7f8f9; color: var(--ml-ink); }
+
+.contour-intro,
+.contour-line { background: transparent; }
+.contour-line { min-height: 2.5rem; opacity: .52; }
+.contour-line__rail { stroke: rgba(17,18,20,.12); }
+.contour-line__accent { stroke: var(--ml-red); stroke-width: 2; stroke-dasharray: none; }
+
+.contour-mechanics {
+  background: #f5f6f7 !important;
+  color: var(--ml-ink) !important;
+}
+.contour-mechanics__intro {
+  grid-template-columns: minmax(0,.9fr) minmax(280px,.55fr);
+  gap: clamp(2rem,6vw,6rem);
+  align-items: end;
+}
+.contour-mechanics .section-heading h2,
+.contour-mechanics h2,
+.contour-mechanics h3 { color: var(--ml-ink); text-transform: none; }
+.contour-mechanics .section-heading p,
+.contour-mechanics p { color: var(--ml-muted); }
+.mechanics-grid {
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 0;
+  margin-top: 3rem;
+  background: transparent;
+  border-top: 1px solid var(--ml-line);
+  border-bottom: 1px solid var(--ml-line);
+}
+.mechanics-grid article {
+  padding: clamp(1.6rem,3vw,2.4rem) clamp(1rem,2.5vw,2rem);
+  background: transparent;
+}
+.mechanics-grid article + article { border-left: 1px solid var(--ml-line); }
+.mechanics-grid b {
+  color: var(--ml-red);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  font-weight: 760;
+}
+.mechanics-grid h3 { margin: .75rem 0 .45rem; font-size: clamp(1.4rem,2.5vw,2rem); letter-spacing: -.025em; }
+.mechanics-grid p { color: var(--ml-muted); }
+
+.decision-grid { gap: clamp(1rem,2.6vw,2.2rem); }
+.decision-card {
+  padding: clamp(1.5rem,3vw,2.25rem) 0;
+  border: 0;
+  border-top: 1px solid var(--ml-line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transition: none;
+}
+.decision-card:hover,
+.decision-card:focus-within { transform: none; box-shadow: none; }
+.decision-card h3 { margin: .25rem 0 .75rem; font-size: clamp(1.6rem,3vw,2.6rem); letter-spacing: -.035em; }
+.decision-card > p:not(.eyebrow) { color: var(--ml-muted); }
+.decision-card__meta { border-top: 1px solid var(--ml-line); color: var(--ml-ink-soft); }
+.decision-card__link { color: var(--ml-ink); }
+
+.help-grid {
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 0;
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--ml-line);
+}
+.help-grid a {
+  min-height: 9rem;
+  padding: 1.5rem 1.5rem 1.5rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--ml-line);
+  color: var(--ml-ink);
+  transition: color .16s ease;
+}
+.help-grid a:nth-child(even) { padding-left: 1.5rem; border-left: 1px solid var(--ml-line); }
+.help-grid a:hover,
+.help-grid a:focus-visible { transform: none; border-color: var(--ml-line); color: var(--ml-red); }
+.help-grid span { color: var(--ml-muted); }
+
+.manual-electric__grid {
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--ml-line);
+}
+.manual-electric__grid article {
+  grid-template-columns: minmax(9rem,.48fr) repeat(2,minmax(0,1fr));
+  gap: clamp(1rem,3vw,2.5rem);
+  padding: 1.35rem 0;
+  border-top: 0;
+  border-bottom: 1px solid var(--ml-line);
+}
+.manual-electric__criterion {
+  color: var(--ml-muted);
+  font-size: .72rem;
+  font-weight: 760;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.manual-electric__grid p { color: var(--ml-muted); }
+
+/* Finder: decision support should feel like an instrument, not a dashboard of cards. */
+.finder-panel,
+.finder-result,
+.finder-question,
+.finder-option {
+  border-radius: 14px;
+}
+.finder-panel,
+.finder-result { box-shadow: none !important; }
+
+/* Keep one dark technical moment for blade mechanics only; everything else is light/editorial. */
+.section--dark:not(.motion-blades) {
+  background: #17191c;
+}
+
+@media (max-width: 900px) {
+  .contour-mechanics__intro { grid-template-columns: 1fr; }
+  .mechanics-grid { grid-template-columns: 1fr; }
+  .mechanics-grid article + article { border-left: 0; border-top: 1px solid var(--ml-line); }
+}
+
+@media (max-width: 680px) {
+  .help-grid { grid-template-columns: 1fr; }
+  .help-grid a,
+  .help-grid a:nth-child(even) { padding: 1.25rem 0; border-left: 0; }
+  .manual-electric__grid article { grid-template-columns: 1fr; gap: .6rem; }
+  .manual-electric__grid article > div { padding-left: 0; border-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .decision-card,
+  .help-grid a { transition: none !important; }
+}

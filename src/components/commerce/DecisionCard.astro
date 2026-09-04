@@ -1,0 +1,18 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  body: string;
+  href: string;
+  linkLabel: string;
+  meta?: string;
+}
+const { eyebrow, title, body, href, linkLabel, meta } = Astro.props;
+---
+<article class="decision-card">
+  <p class="eyebrow">{eyebrow}</p>
+  <h3>{title}</h3>
+  <p>{body}</p>
+  {meta && <p class="decision-card__meta">{meta}</p>}
+  <a class="decision-card__link" href={href}>{linkLabel} →</a>
+</article>

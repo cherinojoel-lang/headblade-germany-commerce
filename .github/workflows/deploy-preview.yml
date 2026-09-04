@@ -1,0 +1,88 @@
+name: Deploy Review Preview
+
+on:
+  push:
+    branches: [feat/astro-headblade-premium]
+  workflow_dispatch:
+    inputs:
+      bootstrap_review_worker:
+        description: 'Create the isolated review Worker once before version-only previews'
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  deploy-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - name: Require Cloudflare review credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "CLOUDFLARE_API_TOKEN is not configured"; exit 2; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "CLOUDFLARE_ACCOUNT_ID is not configured"; exit 2; }
+      - name: Pin stable npm resolver
+        run: npm install --global npm@11.6.0
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Verify review safety before upload
+        run: npm run verify
+      - name: Upload isolated review version
+        id: upload
+        shell: bash
+        run: |
+          set -euo pipefail
+          LOG=/tmp/wrangler-review.log
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.bootstrap_review_worker }}" == "true" ]]; then
+            echo "BOOTSTRAP_REVIEW_WORKER=true"
+            npm exec -- wrangler deploy 2>&1 | tee "$LOG"
+          else
+            echo "BOOTSTRAP_REVIEW_WORKER=false"
+            npm exec -- wrangler versions upload --preview-alias review 2>&1 | tee "$LOG"
+          fi
+          URL=$(grep -Eo 'https://[A-Za-z0-9.-]+\.workers\.dev' "$LOG" | tail -1 || true)
+          test -n "$URL" || { echo "Wrangler did not return a workers.dev review URL"; exit 3; }
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+      - name: Verify public review endpoint
+        shell: bash
+        env:
+          REVIEW_URL: ${{ steps.upload.outputs.url }}
+        run: |
+          set -euo pipefail
+          STATUS=000
+          for attempt in {1..10}; do
+            STATUS=$(curl --silent --show-error --location --dump-header /tmp/review-headers.txt --output /tmp/review-body.html --write-out '%{http_code}' "$REVIEW_URL/")
+            [[ "$STATUS" == "200" ]] && break
+            echo "Preview not ready yet (HTTP $STATUS, attempt $attempt/10)"
+            sleep 2
+          done
+          test "$STATUS" = "200" || { echo "Review endpoint did not return HTTP 200"; exit 4; }
+          grep -Eiq '^x-robots-tag:.*noindex' /tmp/review-headers.txt || { echo "Missing X-Robots-Tag noindex"; exit 5; }
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          const html = await readFile('/tmp/review-body.html', 'utf8');
+          const robots = html.match(/<meta\b[^>]*\bname=["']robots["'][^>]*>/i)?.[0] ?? '';
+          if (!/\bcontent=["'][^"']*\bnoindex\b/i.test(robots)) {
+            throw new Error('Missing HTML robots noindex on public review endpoint');
+          }
+          NODE
+      - name: Print verified public review URL
+        env:
+          REVIEW_URL: ${{ steps.upload.outputs.url }}
+        run: echo "HEADBLADE_PREVIEW_URL=$REVIEW_URL"

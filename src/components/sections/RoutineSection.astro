@@ -1,0 +1,14 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+interface Props { title?: string; }
+const { title = "Deine Rasur-Routine" } = Astro.props;
+---
+<section class="section">
+  <SectionHeading eyebrow="So funktioniert's" title={title} description="Eine einfache Reihenfolge für eine kontrollierte Kopfrasur." />
+  <div class="number-list">
+    <article><b>01</b><div><h3>Vorbereiten</h3><p>Kopf und Haare mit warmem Wasser vorbereiten.</p></div></article>
+    <article><b>02</b><div><h3>Gleitfläche schaffen</h3><p>Rasierpflege gleichmäßig auf der gewünschten Fläche verteilen.</p></div></article>
+    <article><b>03</b><div><h3>Konturen folgen</h3><p>Mit kurzen, kontrollierten Bahnen über die Kopfform arbeiten.</p></div></article>
+    <article><b>04</b><div><h3>Reinigen</h3><p>Klinge und Haut nach der Rasur gründlich abspülen.</p></div></article>
+  </div>
+</section>

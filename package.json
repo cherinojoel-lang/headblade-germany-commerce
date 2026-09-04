@@ -1,15 +1,36 @@
 {
   "name": "headblade-germany-commerce",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
+  "packageManager": "npm@11.6.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
-    "test": "node --test",
-    "check": "npm test && node scripts/validate.mjs",
-    "cf:first-deploy": "npx wrangler deploy",
-    "cf:preview": "npx wrangler versions upload --preview-alias review"
+    "dev": "astro dev",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "build": "astro build",
+    "validate:preview": "node scripts/validate-preview.mjs",
+    "verify": "npm run check && npm test && npm run build && npm run validate:preview",
+    "cf:review-bootstrap": "npm run build && wrangler deploy",
+    "cf:preview": "npm run build && wrangler versions upload --preview-alias review"
+  },
+  "dependencies": {
+    "@fontsource/outfit": "5.2.8",
+    "@tailwindcss/vite": "4.3.2",
+    "astro": "7.1.1",
+    "tailwindcss": "4.3.2"
   },
   "devDependencies": {
-    "wrangler": "^4.21.0"
+    "@astrojs/check": "0.9.9",
+    "@playwright/test": "1.62.1",
+    "@types/node": "^22.0.0",
+    "typescript": "5.8.3",
+    "vite": "8.1.5",
+    "vitest": "4.1.8",
+    "wrangler": "4.128.0"
   }
 }

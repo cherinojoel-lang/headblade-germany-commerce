@@ -1,0 +1,58 @@
+---
+import type { Product } from "../../data/products";
+import { formatPrice } from "../../lib/catalog";
+import { productHref, productImageAlt } from "../../lib/presentation";
+
+interface Props { product: Product; }
+const { product } = Astro.props;
+---
+
+<article class="product-card">
+  <a class="product-card__target" href={productHref(product)}>
+    <div class="product-card__media">
+      {product.badge && <span class="product-card__badge">{product.badge}</span>}
+      {product.secondaryImage ? (
+        <div class="product-card__media-pair">
+          <img src={product.image} alt={productImageAlt(product)} width="500" height="500" loading="lazy" decoding="async" sizes="(max-width: 620px) 34vw, (max-width: 980px) 18vw, 110px" />
+          <img src={product.secondaryImage} alt={`${product.name} – enthaltene Pflege`} width="500" height="500" loading="lazy" decoding="async" sizes="(max-width: 620px) 34vw, (max-width: 980px) 18vw, 110px" />
+        </div>
+      ) : (
+        <img src={product.image} alt={productImageAlt(product)} width="500" height="500" loading="lazy" decoding="async" sizes="(max-width: 620px) 72vw, (max-width: 980px) 36vw, 220px" />
+      )}
+    </div>
+    <div class="product-card__body">
+      <h3>{product.name}</h3>
+      <p>{product.short}</p>
+      {product.bestFor?.[0] && <p class="product-card__fit"><strong>Passt, wenn:</strong> {product.bestFor[0]}</p>}
+      <p class="product-card__compatibility">{product.compatibility}</p>
+      <div class="product-card__price">
+        <span>{formatPrice(product.price)}</span>
+        {product.compareAtPrice && <del>{formatPrice(product.compareAtPrice)}</del>}
+      </div>
+      <span class="product-card__details" aria-hidden="true">Details ansehen →</span>
+    </div>
+  </a>
+</article>
+
+<style>
+  .product-card__media-pair {
+    width: 88%;
+    height: 72%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .4rem;
+    align-items: center;
+  }
+  .product-card__media-pair img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .product-card__fit,
+  .product-card__compatibility {
+    margin:.45rem 0 0;
+    font-size:.86rem;
+    line-height:1.45;
+  }
+  .product-card__compatibility { color:var(--steel); }
+</style>

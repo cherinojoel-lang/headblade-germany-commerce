@@ -1,0 +1,20 @@
+---
+import { manualElectricRows } from "../../data/decision-content";
+---
+<section class="section section--warm contour-section manual-electric" aria-labelledby="manual-electric-title">
+  <div class="section-heading">
+    <p class="eyebrow">Systemwahl</p>
+    <h2 id="manual-electric-title">Manuell oder elektrisch?</h2>
+    <p>Keine pauschale Siegerbehauptung. Entscheidend ist, welche Art von Führung, Energieversorgung und Wartung zu dir passt.</p>
+  </div>
+  <div class="manual-electric__grid">
+    {manualElectricRows.slice(0, 3).map((row) => (
+      <article>
+        <p class="manual-electric__criterion">{row.criterion}</p>
+        <div><strong>HeadBlade manuell</strong><p>{row.left}</p></div>
+        <div><strong>Elektrisch</strong><p>{row.right}</p></div>
+      </article>
+    ))}
+  </div>
+  <a class="text-link" href="/vergleich/manuell-vs-elektrisch">Beide Konzepte ausführlich vergleichen →</a>
+</section>

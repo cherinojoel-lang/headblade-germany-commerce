@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProductGrid from "../../components/commerce/ProductGrid.astro";
+import SectionHeading from "../../components/sections/SectionHeading.astro";
+import { categoryProducts } from "../../lib/routes";
+const products = categoryProducts("rasierer");
+---
+
+<BaseLayout title="Rasierer" description="HeadBlade Rasierer in der Germany Review-Preview: MOTO, ATX und verifizierte Bundles.">
+  <section class="section section--white">
+    <SectionHeading eyebrow="Für die Kopfrasur" title="Rasierer" description="Kompakte HeadBlade-Systeme, entwickelt für kontrollierte Führung entlang der Kopfform." />
+    <ProductGrid {products} />
+  </section>
+</BaseLayout>

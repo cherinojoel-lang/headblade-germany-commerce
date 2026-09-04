@@ -1,0 +1,223 @@
+import type { ProductCategoryId } from "./categories";
+
+export interface ProductMedia {
+  src: string;
+  alt: string;
+  kind: "product" | "detail" | "context";
+}
+
+export interface Product {
+  slug: string;
+  name: string;
+  price: number | null;
+  compareAtPrice: number | null;
+  categories: readonly ProductCategoryId[];
+  compatibility: string;
+  image: string;
+  detailImage?: string;
+  secondaryImage?: string;
+  badge?: string;
+  short: string;
+  benefits: readonly string[];
+  keywords: readonly string[];
+  bestFor?: readonly string[];
+  nearestAlternativeSlug?: string;
+  usage?: readonly string[];
+  media?: readonly ProductMedia[];
+}
+
+// Review-only remote assets from the current HeadBlade Germany source.
+// They remain hotlinked so this public review repository does not republish third-party product files.
+const motoImage =
+  "https://www.headblade.info/images/product_images/info_images/moto_package_nb_shadow_350x350.png";
+const motoDetail =
+  "https://www.headblade.info/images/product_images/info_images/moto_fire_shdw_350x350.gif";
+const atxPackageImage =
+  "https://www.headblade.info/images/product_images/popup_images/41o8o0bsfjl.jpg";
+const atxPinkImage =
+  "https://www.headblade.info/images/product_images/popup_images/_12.jpg";
+const hb4Image =
+  "https://www.headblade.info/images/product_images/popup_images/HB4_bag_600X600_350x350.png";
+const hb6Image =
+  "https://www.headblade.info/images/product_images/popup_images/HB6_bag_600X600_350x350.png";
+const hb4PowerpackImage =
+  "https://www.headblade.info/images/product_images/popup_images/hb4_powerpack_2013_350x350.jpg";
+const hb6PowerpackImage =
+  "https://www.headblade.info/images/product_images/popup_images/hb6_powerpack_2013_350x350.jpg";
+const slickImage =
+  "https://www.headblade.info/images/product_images/popup_images/5oz-headslick-mentholated-shave-cream-5oz-214356.jpg";
+const headCaseImage =
+  "https://www.headblade.info/images/product_images/popup_images/headcase_04.png";
+
+export const products: readonly Product[] = [
+  {
+    slug: "headblade-moto",
+    name: "HeadBlade MOTO",
+    price: 21.95,
+    compareAtPrice: null,
+    categories: ["rasierer"],
+    compatibility: "HB4; laut HeadBlade auch HB6-kompatibel",
+    image: motoImage,
+    detailImage: motoDetail,
+    badge: "Kernprodukt",
+    short:
+      "Der MOTO folgt mit seiner beweglichen Konstruktion der Kontur des Kopfes.",
+    benefits: [
+      "Für die Kopfrasur entwickelt",
+      "Bewegliche Führung entlang der Kopfform",
+      "Nachfüllbares Klingensystem",
+    ],
+    keywords: ["headblade", "moto", "kopfrasierer", "hb4", "hb6"],
+    bestFor: [
+      "Direkte, kompakte Handführung entlang der Kopfkontur",
+      "Nutzer, die die bewegliche MOTO-Konstruktion bevorzugen",
+    ],
+    usage: [
+      "Kopf und Haut vor der Rasur mit warmem Wasser vorbereiten.",
+      "Mit kurzen, kontrollierten Zügen entlang der Kopfform führen.",
+    ],
+    nearestAlternativeSlug: "headblade-atx-package",
+    media: [
+      {
+        src: motoImage,
+        alt: "HeadBlade MOTO Verpackung und Kopfrasierer",
+        kind: "product",
+      },
+      {
+        src: motoDetail,
+        alt: "HeadBlade MOTO Detailansicht des Rasierers",
+        kind: "detail",
+      },
+    ],
+  },
+  {
+    slug: "headblade-atx-package",
+    name: "ATX Package inkl. HB4",
+    price: 34.9,
+    compareAtPrice: null,
+    categories: ["rasierer", "angebote"],
+    compatibility: "ATX mit HB4-Klingen",
+    image: atxPackageImage,
+    short: "ATX-Paket mit Vorrat an HB4-Klingen.",
+    benefits: ["Einsteigerpaket", "HB4-System", "Direkt kombinierbar mit Pflege"],
+    keywords: ["atx", "package", "hb4", "starter"],
+    bestFor: [
+      "Einstieg mit ATX und HB4-Klingen",
+      "Nutzer, die Rasierer und HB4-Vorrat in einem Paket vergleichen möchten",
+    ],
+    usage: [
+      "Kopf und Haut vor der Rasur mit warmem Wasser vorbereiten.",
+      "ATX kontrolliert und ohne unnötigen Druck entlang der Kopfform führen.",
+    ],
+    nearestAlternativeSlug: "headblade-moto",
+    media: [
+      {
+        src: atxPackageImage,
+        alt: "HeadBlade ATX Package mit HB4-Klingen",
+        kind: "product",
+      },
+    ],
+  },
+  {
+    slug: "atx-pink",
+    name: "ATX pink – limitiert",
+    price: 19.95,
+    compareAtPrice: 21.95,
+    categories: ["rasierer", "angebote"],
+    compatibility: "ATX mit HB4-Klingen",
+    image: atxPinkImage,
+    badge: "Limitiert",
+    short: "Limitierte ATX-Farbvariante aus dem aktuellen deutschen Sortiment.",
+    benefits: ["Limitierte Variante", "HB4-System", "Reduzierter Preis"],
+    keywords: ["atx", "pink", "limitiert"],
+  },
+  {
+    slug: "klingenset-4blade",
+    name: "Klingenset 4Blade (HB4)",
+    price: 14.95,
+    compareAtPrice: null,
+    categories: ["klingen"],
+    compatibility: "MOTO, ATX und weitere HeadBlade-Modelle",
+    image: hb4Image,
+    badge: "Bestseller",
+    short: "Vier-Klingen-Nachfüllsystem für HeadBlade-Rasierer.",
+    benefits: ["Vier-Klingen-System", "Nachfüllset", "Für MOTO und ATX"],
+    keywords: ["hb4", "4blade", "klingen", "nachfüllklingen"],
+  },
+  {
+    slug: "klingenset-6blade",
+    name: "Klingenset 6Blade (HB6)",
+    price: 16.95,
+    compareAtPrice: null,
+    categories: ["klingen"],
+    compatibility: "HB6-System; teils per Adapter mit weiteren Modellen nutzbar",
+    image: hb6Image,
+    short: "Sechs-Klingen-Nachfüllsystem für kompatible HeadBlade-Rasierer.",
+    benefits: ["Sechs-Klingen-System", "Nachfüllset", "Adapterfähig"],
+    keywords: ["hb6", "6blade", "klingen"],
+  },
+  {
+    slug: "4blade-4plus1",
+    name: "4Blade – 4 kaufen, 1 gratis",
+    price: 59.8,
+    compareAtPrice: null,
+    categories: ["klingen", "angebote"],
+    compatibility: "HB4-System",
+    image: hb4PowerpackImage,
+    badge: "Vorratspaket",
+    short: "HB4-Vorratspaket aus dem aktuellen deutschen Shop.",
+    benefits: ["Vorratspaket", "HB4-System", "Paketpreis"],
+    keywords: ["hb4", "4blade", "4+1", "vorrat"],
+  },
+  {
+    slug: "6blade-4plus1",
+    name: "6Blade – 4 kaufen, 1 gratis",
+    price: 67.8,
+    compareAtPrice: null,
+    categories: ["klingen", "angebote"],
+    compatibility: "HB6-System",
+    image: hb6PowerpackImage,
+    badge: "Vorratspaket",
+    short: "HB6-Vorratspaket aus dem aktuellen deutschen Shop.",
+    benefits: ["Vorratspaket", "HB6-System", "Paketpreis"],
+    keywords: ["hb6", "6blade", "4+1", "vorrat"],
+  },
+  {
+    slug: "moto-slick-bundle",
+    name: "MOTO + HeadSlick",
+    price: 32.9,
+    compareAtPrice: 37.9,
+    categories: ["rasierer", "pflege", "angebote"],
+    compatibility: "MOTO plus Rasiercreme",
+    image: motoImage,
+    secondaryImage: slickImage,
+    badge: "Bundle",
+    short: "MOTO und HeadSlick als gemeinsames Starter-Bundle.",
+    benefits: ["Rasierer + Pflege", "Paketpreis", "Für den Einstieg gedacht"],
+    keywords: ["moto", "headslick", "slick", "bundle"],
+  },
+  {
+    slug: "headslick-5oz",
+    name: "HeadSlick ShaveCream 5oz",
+    price: 13.95,
+    compareAtPrice: null,
+    categories: ["pflege"],
+    compatibility: "Pflegeprodukt für die Kopfrasur",
+    image: slickImage,
+    short: "Wasserlösliche Rasiercreme mit Menthol für die Kopfrasur.",
+    benefits: ["Wasserlöslich", "Für die Kopfrasur entwickelt", "Menthol-Effekt"],
+    keywords: ["headslick", "slick", "rasiercreme", "pflege"],
+  },
+  {
+    slug: "moto-headcase",
+    name: "MOTO HeadCase",
+    price: 6.95,
+    compareAtPrice: null,
+    categories: ["lifestyle", "klingen"],
+    compatibility: "Aufbewahrung für MOTO",
+    image: headCaseImage,
+    short: "Kompakte Aufbewahrung für den HeadBlade MOTO.",
+    benefits: ["Transport", "Schutz", "Passend zum MOTO"],
+    keywords: ["moto", "headcase", "case", "zubehör"],
+  },
+];

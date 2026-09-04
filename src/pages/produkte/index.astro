@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProductGrid from "../../components/commerce/ProductGrid.astro";
+import SectionHeading from "../../components/sections/SectionHeading.astro";
+import { products } from "../../data/products";
+---
+
+<BaseLayout title="Produkte" description="Das HeadBlade Germany Review-Sortiment: Rasierer, HB4/HB6 Klingen, Pflege, Zubehör und Bundles.">
+  <section class="section section--white">
+    <SectionHeading eyebrow="HeadBlade Germany" title="Alle Produkte" description="Der vollständig reviewbare Sortimentseinstieg – mit Preisstand vom 03.09.2026 und ohne transaktionale Funktionen." />
+    <ProductGrid {products} />
+  </section>
+</BaseLayout>

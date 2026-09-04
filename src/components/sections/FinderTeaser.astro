@@ -1,0 +1,16 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+interface Props { title?: string; }
+const { title = "Produktfinder" } = Astro.props;
+---
+<section class="section">
+  <div class="split-feature">
+    <SectionHeading eyebrow="Was passt zu dir?" title={title} description="Ohne Dateneingabe und ohne Tracking: vergleiche Rasierer, Klingensysteme und Pflege anhand weniger klarer Kriterien." />
+    <div class="number-list">
+      <article><b>01</b><div><h3>Rasierer wählen</h3><p>MOTO oder ATX nach Führungsgefühl und Einstieg wählen.</p></div></article>
+      <article><b>02</b><div><h3>Klingen zuordnen</h3><p>HB4 und HB6 anhand der Kompatibilität vergleichen.</p></div></article>
+      <article><b>03</b><div><h3>Pflege ergänzen</h3><p>HeadSlick als Gleit- und Rasurpflege einordnen.</p></div></article>
+      <a class="button" href="/finder">Zum Produktfinder</a>
+    </div>
+  </div>
+</section>

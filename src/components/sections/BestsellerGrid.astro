@@ -1,0 +1,13 @@
+---
+import type { Product } from "../../data/products";
+import ProductCard from "../commerce/ProductCard.astro";
+import SectionHeading from "./SectionHeading.astro";
+interface Props { products: readonly Product[]; heading?: string; }
+const { products, heading = "Bestseller" } = Astro.props;
+---
+<section class="section section--white" aria-labelledby="bestseller-title">
+  <SectionHeading eyebrow="Aus dem Sortiment" title={heading} description="Die Produkte, mit denen HeadBlade Germany die Kopfrasur in wenigen klaren Entscheidungen abbildet." />
+  <div class="product-grid" id="bestseller-title">
+    {products.map((product) => <ProductCard {product} />)}
+  </div>
+</section>

@@ -1,0 +1,32 @@
+---
+const navigation = [
+  { href: "/rasierer", label: "Rasierer" },
+  { href: "/klingen-zubehoer", label: "Klingen" },
+  { href: "/pflege", label: "Pflege" },
+  { href: "/angebote", label: "Sets" },
+  { href: "/finder", label: "Finder" },
+  { href: "/anleitungen", label: "So geht’s" },
+  { href: "/vergleich/moto-vs-atx", label: "Vergleichen" },
+] as const;
+---
+
+<header class="site-header">
+  <a class="brand" href="/" title="HeadBlade Germany Startseite">
+    <span>HEAD</span><strong>BLADE</strong><small>GERMANY</small>
+  </a>
+
+  <nav class="primary-nav" aria-label="Hauptnavigation">
+    {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+  </nav>
+
+  <details class="mobile-nav">
+    <summary>Menü</summary>
+    <nav aria-label="Mobile Hauptnavigation">
+      {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a href="/produkte">Alle Produkte</a>
+      <a href="/lifestyle">Lifestyle & Zubehör</a>
+    </nav>
+  </details>
+
+  <a class="header-cta" href="/finder">HeadBlade Fit</a>
+</header>

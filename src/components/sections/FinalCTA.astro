@@ -1,0 +1,10 @@
+---
+interface Props { label?: string; }
+const { label = "Alle Produkte ansehen" } = Astro.props;
+---
+<section class="section section--dark">
+  <div class="final-cta">
+    <div><p class="eyebrow">HeadBlade Germany</p><h2>Bereit für eine bessere Kopfrasur?</h2></div>
+    <a class="button button--red" href="/produkte">{label}</a>
+  </div>
+</section>
