@@ -18,19 +18,33 @@ const sourceMedia = product.media?.length ? [...product.media] : fallbackMedia;
 const media = sourceMedia.filter(
   (item, index, items) => items.findIndex((candidate) => candidate.src === item.src) === index,
 );
+const [firstMedia, ...remainingMedia] = media;
 ---
 
 <section class="product-gallery" aria-label={`Produktbilder zu ${product.name}`}>
   <div class:list={["product-gallery__stage", { "product-gallery__stage--multi": media.length > 1 }]}>
-    {media.map((item, index) => (
-      <figure id={`media-${product.slug}-${index + 1}`} class="product-gallery__figure">
+    {firstMedia && (
+      <figure id={`media-${product.slug}-1`} class="product-gallery__figure">
+        <img
+          src={firstMedia.src}
+          alt={firstMedia.alt}
+          width="760"
+          height="760"
+          fetchpriority="high"
+          decoding="async"
+          sizes="(max-width: 820px) 92vw, 44vw"
+        />
+      </figure>
+    )}
+    {remainingMedia.map((item, index) => (
+      <figure id={`media-${product.slug}-${index + 2}`} class="product-gallery__figure">
         <img
           src={item.src}
           alt={item.alt}
           width="760"
           height="760"
-          loading={index === 0 ? undefined : "lazy"}
-          fetchpriority={index === 0 ? "high" : "auto"}
+          loading="lazy"
+          fetchpriority="auto"
           decoding="async"
           sizes="(max-width: 820px) 92vw, 44vw"
         />
