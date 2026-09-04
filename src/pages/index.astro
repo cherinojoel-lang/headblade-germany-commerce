@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ContourLine from "../components/brand/ContourLine.astro";
 import HeroSection from "../components/sections/HeroSection.astro";
 import PromiseStrip from "../components/sections/PromiseStrip.astro";
 import ChooseSystem from "../components/sections/ChooseSystem.astro";
@@ -23,22 +22,21 @@ const atx = getProduct("headblade-atx-package")!;
 const bestsellers = [moto, atx, getProduct("klingenset-4blade")!, getProduct("headslick-5oz")!];
 const offers = productsByCategory("angebote");
 ---
-<BaseLayout title="HeadBlade Germany – Für deinen Kopf gebaut" description="HEADBLADE CONTOUR SYSTEM Review-Preview: MOTO, ATX, HB4/HB6, HeadBlade Fit und Kopfrasur-Routine. Keine Bestellung oder Zahlung möglich." image={moto.image}>
-  <p class="review-note">Keine Bestellung · keine Zahlung · keine Dateneingabe. Diese öffentliche Review-Preview ist vollständig von der Produktion getrennt.</p>
-  <div class="contour-intro"><ContourLine /></div>
-  <HeroSection product={moto} label="HEADBLADE CONTOUR SYSTEM" title="Für deinen Kopf gebaut." />
+<BaseLayout title="HeadBlade Germany – Für die Kopfrasur entwickelt" description="HeadBlade Germany Review-Preview mit MOTO, ATX, HB4/HB6, HeadBlade Fit und verständlicher Kopfrasur-Routine. Keine Bestellung oder Zahlung möglich." image={moto.image}>
+  <p class="review-note">Review-Preview · keine Bestellung · keine Zahlung · keine Dateneingabe · vollständig von der Produktion getrennt.</p>
+  <HeroSection product={moto} />
   <PromiseStrip />
-  <ChooseSystem heading="MOTO oder ATX?" />
-  <FinderTeaser title="HeadBlade Fit" />
+  <ChooseSystem heading="Welcher HeadBlade passt zu dir?" />
+  <FinderTeaser title="In drei Fragen zum passenden System" />
   <ContourMechanics />
-  <CompatibilitySection title="HB4 & HB6" />
-  <RoutineSection title="Deine Rasur-Routine" />
+  <CompatibilitySection title="Welche Klinge brauchst du?" />
+  <RoutineSection title="Eine Routine, die du wiederholen kannst" />
   <ManualVsElectric />
-  <BestsellerGrid products={bestsellers} heading="Systeme & Essentials" />
-  <OfferGrid products={offers} title="Sets & Angebote" />
-  <WhyHeadBlade title="Warum HeadBlade" />
+  <BestsellerGrid products={bestsellers} heading="Rasierer, Klingen und Pflege" />
+  <WhyHeadBlade title="Aus der Kopfrasur heraus entwickelt" />
+  <OfferGrid products={offers} title="Sets für den Einstieg" />
   <HelpBeforeBuying />
   <TrustStrip />
-  <FaqSection title="Häufige Fragen" />
+  <FaqSection title="Fragen vor der ersten Rasur" />
   <FinalCTA label="HeadBlade Fit starten" />
 </BaseLayout>
