@@ -2,12 +2,14 @@ import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 
 const pageUrl = new URL("../src/pages/index.astro", import.meta.url);
+const heroUrl = new URL("../src/components/sections/HeroSection.astro", import.meta.url);
+const choiceUrl = new URL("../src/components/sections/ChooseSystem.astro", import.meta.url);
 
-describe("HEADBLADE CONTOUR SYSTEM homepage", () => {
-  it("composes the approved decision journey instead of a generic product dump", async () => {
+describe("HeadBlade Motion Lab homepage", () => {
+  it("composes the approved product-led decision journey", async () => {
     const source = await readFile(pageUrl, "utf8");
     for (const component of [
-      "ContourLine",
+      "HeroSection",
       "ChooseSystem",
       "ContourMechanics",
       "CompatibilitySection",
@@ -17,22 +19,24 @@ describe("HEADBLADE CONTOUR SYSTEM homepage", () => {
     ]) {
       expect(source).toContain(component);
     }
-    for (const phrase of [
-      "Für deinen Kopf gebaut.",
-      "HeadBlade Fit",
-      "MOTO",
-      "ATX",
-      "HB4",
-      "HB6",
-      "Häufige Fragen",
-    ]) {
-      expect(source).toContain(phrase);
-    }
+    expect(source).not.toContain("ContourLine");
+    expect(source).not.toContain("HEADBLADE CONTOUR SYSTEM");
+  });
+
+  it("puts the real MOTO product and the MOTO/ATX decision in the first journey", async () => {
+    const hero = await readFile(heroUrl, "utf8");
+    const choice = await readFile(choiceUrl, "utf8");
+    expect(hero).toContain("HeadBlade MOTO");
+    expect(hero).toContain("Für die Kopfrasur entwickelt.");
+    expect(hero).toContain("product.detailImage ?? product.image");
+    expect(choice).toContain("moto.image");
+    expect(choice).toContain("atx.image");
+    expect(choice).toContain("/vergleich/moto-vs-atx");
   });
 
   it("keeps the homepage visibly review-only", async () => {
     const source = await readFile(pageUrl, "utf8");
-    expect(source).toContain("Keine Bestellung");
+    expect(source).toContain("keine Bestellung");
     expect(source).not.toMatch(/Jetzt bezahlen|Kreditkarte|PayPal|Klarna/i);
   });
 });
