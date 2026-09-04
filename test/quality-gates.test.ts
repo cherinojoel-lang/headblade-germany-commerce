@@ -22,7 +22,7 @@ describe("Contour System accessibility and performance contracts", () => {
   });
 
   it("explicitly neutralizes Contour Line motion when reduced motion is requested", async () => {
-    const css = await read("src/styles/global.css");
+    const css = await read("src/styles/contour.css");
     const reducedMotionStart = css.indexOf("@media (prefers-reduced-motion: reduce)");
     expect(reducedMotionStart).toBeGreaterThanOrEqual(0);
     const reducedMotion = css.slice(reducedMotionStart);
