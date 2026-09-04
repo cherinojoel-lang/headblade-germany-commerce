@@ -34,3 +34,27 @@ test("review preview loads safely and product decision journey works", async ({ 
   expect(pageErrors).toEqual([]);
   expect(consoleErrors).toEqual([]);
 });
+
+test("core review routes keep accessible navigation and one primary heading", async ({ page }, testInfo) => {
+  for (const path of ["/", "/finder/", "/vergleich/moto-vs-atx/", "/produkt/headblade-moto/"]) {
+    await page.goto(path);
+    await expect(page.locator("h1")).toHaveCount(1);
+  }
+
+  await page.goto("/");
+  const skipLink = page.getByRole("link", { name: "Zum Inhalt springen" });
+  await skipLink.focus();
+  await expect(skipLink).toBeVisible();
+
+  if (testInfo.project.name.includes("mobile")) {
+    const menu = page.locator("details.mobile-nav");
+    const summary = menu.locator("summary");
+    await summary.focus();
+    await page.keyboard.press("Enter");
+    await expect(menu).toHaveAttribute("open", "");
+    await expect(menu.getByRole("link", { name: "Vergleichen" })).toBeVisible();
+  }
+
+  await page.goto("/vergleich/moto-vs-atx/");
+  await expect(page.locator("table caption")).toContainText(/MOTO und ATX/i);
+});
