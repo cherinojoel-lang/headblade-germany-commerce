@@ -11,6 +11,12 @@ const routes = [
   "src/pages/404.astro",
 ] as const;
 
+const authorityGuides = [
+  "src/pages/anleitungen/kopf-richtig-rasieren.astro",
+  "src/pages/anleitungen/erste-kopfrasur.astro",
+  "src/pages/anleitungen/kopfhaut-pflegen.astro",
+] as const;
+
 describe("informational route contract", () => {
   it("ships every owner-review information route", async () => {
     for (const route of routes) {
@@ -18,10 +24,34 @@ describe("informational route contract", () => {
     }
   });
 
+  it("ships three substantial first-party authority guides", async () => {
+    for (const route of authorityGuides) {
+      const source = await read(route);
+      expect(source.length).toBeGreaterThan(1200);
+      expect(source).toContain("<BaseLayout");
+      expect(source).toMatch(/href="\/produkt\//);
+      expect(source).toMatch(/href="\/anleitungen\//);
+      expect(source).not.toMatch(/heilt|therapiert|garantiert reizungsfrei/i);
+    }
+  });
+
+  it("makes the beginner guide explicitly non-medical and safety-oriented", async () => {
+    const beginner = await read(authorityGuides[1]);
+    expect(beginner).toMatch(/Verletzung|anhaltend|medizinisch|ärztlich/i);
+    expect(beginner).toMatch(/Pause|stoppen|unterbrechen/i);
+  });
+
+  it("promotes the authority guides from the guide index", async () => {
+    const index = await read(routes[1]);
+    expect(index).toContain('href="/anleitungen/kopf-richtig-rasieren"');
+    expect(index).toContain('href="/anleitungen/erste-kopfrasur"');
+    expect(index).toContain('href="/anleitungen/kopfhaut-pflegen"');
+  });
+
   it("finder and guide never collect customer data", async () => {
     const source = `${await read(routes[0])}\n${await read(routes[1])}`;
     expect(source).not.toMatch(/<form\b|type=["'](?:email|tel|password)["']/i);
-    expect(source).toMatch(/Produktfinder/i);
+    expect(source).toMatch(/HeadBlade Fit|Produktfinder/i);
     expect(source).toMatch(/Kopfrasur|Rasur/i);
   });
 
