@@ -23,16 +23,40 @@ describe("review product media contract", () => {
 
   it("keeps review media remote on the authorized HeadBlade source", () => {
     for (const product of products) {
-      for (const source of [product.image, product.detailImage, product.secondaryImage].filter(Boolean)) {
+      for (const source of [product.image, product.detailImage, product.secondaryImage, ...(product.media ?? []).map((item) => item.src)].filter(Boolean)) {
         expect(source).toMatch(/^https:\/\/www\.headblade\.info\/images\/product_images\//);
       }
     }
+  });
+
+  it("requires useful alt text for explicit product media entries", () => {
+    for (const product of products) {
+      for (const media of product.media ?? []) {
+        expect(media.alt.trim().length).toBeGreaterThan(8);
+        expect(media.src).toMatch(/^https:\/\//);
+      }
+    }
+  });
+
+  it("composes the PDP from a gallery and decision-support layer", async () => {
+    const route = await readFile(new URL("../src/pages/produkt/[slug].astro", import.meta.url), "utf8");
+    expect(route).toContain("ProductMediaGallery");
+    expect(route).toContain("ProductDecisionSupport");
+  });
+
+  it("keeps the first gallery image eager and dimensioned", async () => {
+    const gallery = await readFile(new URL("../src/components/commerce/ProductMediaGallery.astro", import.meta.url), "utf8");
+    expect(gallery).toContain('fetchpriority="high"');
+    expect(gallery).toContain('width="760"');
+    expect(gallery).toContain('height="760"');
+    expect(gallery).not.toMatch(/first[^\n]{0,80}loading="lazy"/i);
   });
 
   it("supplies responsive sizing hints at every primary product-image surface", async () => {
     for (const path of [
       "src/components/commerce/ProductCard.astro",
       "src/components/commerce/ProductHero.astro",
+      "src/components/commerce/ProductMediaGallery.astro",
       "src/components/sections/HeroSection.astro",
       "src/components/sections/MotoSpotlight.astro",
     ]) {
