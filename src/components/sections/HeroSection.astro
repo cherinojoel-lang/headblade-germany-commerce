@@ -1,20 +1,25 @@
 ---
 import type { Product } from "../../data/products";
-interface Props { product: Product; label?: string; title?: string; }
-const { product, label = "HEADBLADE CONTOUR SYSTEM", title = "Für deinen Kopf gebaut." } = Astro.props;
+interface Props { product: Product; title?: string; }
+const { product, title = "Für die Kopfrasur entwickelt." } = Astro.props;
 ---
-<section class="hero" aria-labelledby="hero-title">
-  <div class="hero__copy">
-    <p class="eyebrow">{label} · Purpose-built Head Shaving</p>
+<section class="motion-hero" aria-labelledby="hero-title">
+  <div class="motion-hero__copy">
+    <p class="motion-hero__name">HeadBlade MOTO</p>
     <h1 id="hero-title">{title}</h1>
-    <p class="hero__lead">HeadBlade ist kein normaler Rasierer mit anderem Marketing. Das System ist auf die manuelle Kopfrasur, direkte Handführung und verständliche Klingen-Kompatibilität ausgerichtet.</p>
-    <div class="hero__actions">
-      <a class="button button--red" href="/finder">HeadBlade Fit starten</a>
-      <a class="button button--ghost" href={`/produkt/${product.slug}`}>MOTO entdecken</a>
+    <p class="motion-hero__lead">Direkte Handführung, bewegliche Konstruktion und ein Klingensystem für die Kopfrasur. MOTO folgt der Kopfform, während deine Hand nah am Kopf bleibt.</p>
+    <div class="motion-hero__actions">
+      <a class="button button--red" href={`/produkt/${product.slug}`}>MOTO entdecken</a>
+      <a class="button button--ghost" href="/vergleich/moto-vs-atx">MOTO mit ATX vergleichen</a>
     </div>
+    <dl class="motion-hero__facts" aria-label="MOTO Kerndaten">
+      <div><dt>Führung</dt><dd>Direkt an der Hand</dd></div>
+      <div><dt>Bewegung</dt><dd>Pivot + seitliches Neigen</dd></div>
+      <div><dt>Klingen</dt><dd>HB4 / HB6-kompatibel</dd></div>
+    </dl>
   </div>
-  <div class="hero__visual">
-    <img src={product.detailImage ?? product.image} alt="HeadBlade MOTO Kopfrasierer" width="700" height="700" fetchpriority="high" decoding="async" sizes="(max-width: 980px) 72vw, 34vw" />
-    <p class="hero__tag">Konturorientierte Führung · nachfüllbares Klingensystem · für die Kopfrasur entwickelt.</p>
+  <div class="motion-hero__stage" aria-label="HeadBlade MOTO Produktansicht">
+    <img class="motion-hero__product" src={product.detailImage ?? product.image} alt="HeadBlade MOTO Kopfrasierer" width="700" height="700" fetchpriority="high" decoding="async" sizes="(max-width: 980px) 72vw, 40vw" />
+    <p class="motion-hero__caption">Das reale MOTO-Produktbild stammt aus dem aktuellen HeadBlade-Germany-Sortiment. Die Preview zeigt keine erfundene Produktdarstellung.</p>
   </div>
 </section>
