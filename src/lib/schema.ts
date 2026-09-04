@@ -12,23 +12,33 @@ export function sanitizeJsonLd(value: unknown): string {
 }
 
 export function buildProductJsonLd(product: Product): JsonLdRecord {
-  const schema: JsonLdRecord = {
+  return {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     description: product.short,
     image: [product.detailImage ?? product.image],
+    brand: {
+      "@type": "Brand",
+      name: "HeadBlade",
+    },
   };
+}
 
-  if (product.price !== null) {
-    schema.offers = {
-      "@type": "Offer",
-      priceCurrency: "EUR",
-      price: product.price,
-    };
-  }
+export interface ArticleSchemaInput {
+  headline: string;
+  description: string;
+  path: string;
+}
 
-  return schema;
+export function buildArticleJsonLd(input: ArticleSchemaInput): JsonLdRecord {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: input.headline,
+    description: input.description,
+    url: input.path,
+  };
 }
 
 export interface BreadcrumbItem {

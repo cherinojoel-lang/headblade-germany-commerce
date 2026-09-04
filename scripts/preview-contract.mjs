@@ -2,16 +2,22 @@ const EXACT_ROBOTS = "noindex,nofollow,noarchive,nosnippet";
 const DATA_COLLECTION = /<form\b|type=["'](?:email|tel|password)["']/i;
 const PAYMENT_PROVIDER = /paypal|stripe|klarna|checkout\.com/i;
 const TRANSACTIONAL_COPY = /jetzt bezahlen|bestellung absenden/i;
+const MERCHANT_SCHEMA = /"(?:offers|availability)"\s*:|"@type"\s*:\s*"Offer"/i;
+const CHECKOUT_ENDPOINT = /(?:href|action)=["'][^"']*(?:\/checkout\b|\/warenkorb\b|\/cart\b)/i;
 
 export function validateHtml(html, label = "document") {
-  if (!String(html).includes(EXACT_ROBOTS)) {
+  const text = String(html);
+  if (!text.includes(EXACT_ROBOTS)) {
     throw new Error(`Missing immutable preview robots/noindex directive: ${label}`);
   }
-  if (DATA_COLLECTION.test(html)) {
+  if (DATA_COLLECTION.test(text)) {
     throw new Error(`Form or customer-data collection detected: ${label}`);
   }
-  if (PAYMENT_PROVIDER.test(html) || TRANSACTIONAL_COPY.test(html)) {
+  if (PAYMENT_PROVIDER.test(text) || TRANSACTIONAL_COPY.test(text) || CHECKOUT_ENDPOINT.test(text)) {
     throw new Error(`Payment or transactional behavior detected: ${label}`);
+  }
+  if (MERCHANT_SCHEMA.test(text)) {
+    throw new Error(`Merchant Offer structured data detected in review HTML: ${label}`);
   }
 }
 
