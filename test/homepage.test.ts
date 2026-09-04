@@ -3,19 +3,28 @@ import { describe, expect, it } from "vitest";
 
 const pageUrl = new URL("../src/pages/index.astro", import.meta.url);
 
-describe("premium homepage composition", () => {
-  it("contains the required product-led information architecture", async () => {
+describe("HEADBLADE CONTOUR SYSTEM homepage", () => {
+  it("composes the approved decision journey instead of a generic product dump", async () => {
     const source = await readFile(pageUrl, "utf8");
+    for (const component of [
+      "ContourLine",
+      "ChooseSystem",
+      "ContourMechanics",
+      "CompatibilitySection",
+      "RoutineSection",
+      "ManualVsElectric",
+      "HelpBeforeBuying",
+    ]) {
+      expect(source).toContain(component);
+    }
     for (const phrase of [
-      "HeadBlade MOTO",
-      "Bestseller",
-      "HB4 & HB6",
-      "Produktfinder",
-      "Warum HeadBlade",
-      "Deine Rasur-Routine",
-      "Bundles & Angebote",
+      "Für deinen Kopf gebaut.",
+      "HeadBlade Fit",
+      "MOTO",
+      "ATX",
+      "HB4",
+      "HB6",
       "Häufige Fragen",
-      "Alle Produkte ansehen",
     ]) {
       expect(source).toContain(phrase);
     }
