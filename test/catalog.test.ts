@@ -32,4 +32,16 @@ describe("typed HeadBlade catalog", () => {
   it("contains the verified review seed catalog", () => {
     expect(products.length).toBeGreaterThanOrEqual(10);
   });
+
+  it("gives MOTO and ATX explainable decision metadata with resolvable alternatives", () => {
+    for (const slug of ["headblade-moto", "headblade-atx-package"]) {
+      const product = getProduct(slug)!;
+      expect(product.bestFor?.length).toBeGreaterThanOrEqual(2);
+      expect(product.usage?.length).toBeGreaterThanOrEqual(2);
+      expect(product.nearestAlternativeSlug).toBeTruthy();
+      expect(getProduct(product.nearestAlternativeSlug!)).toBeDefined();
+    }
+    expect(getProduct("headblade-moto")?.nearestAlternativeSlug).toBe("headblade-atx-package");
+    expect(getProduct("headblade-atx-package")?.nearestAlternativeSlug).toBe("headblade-moto");
+  });
 });
