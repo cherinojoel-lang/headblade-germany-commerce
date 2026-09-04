@@ -23,6 +23,8 @@ const { product } = Astro.props;
     <div class="product-card__body">
       <h3>{product.name}</h3>
       <p>{product.short}</p>
+      {product.bestFor?.[0] && <p class="product-card__fit"><strong>Passt, wenn:</strong> {product.bestFor[0]}</p>}
+      <p class="product-card__compatibility">{product.compatibility}</p>
       <div class="product-card__price">
         <span>{formatPrice(product.price)}</span>
         {product.compareAtPrice && <del>{formatPrice(product.compareAtPrice)}</del>}
@@ -46,4 +48,11 @@ const { product } = Astro.props;
     height: 100%;
     object-fit: contain;
   }
+  .product-card__fit,
+  .product-card__compatibility {
+    margin:.45rem 0 0;
+    font-size:.86rem;
+    line-height:1.45;
+  }
+  .product-card__compatibility { color:var(--steel); }
 </style>

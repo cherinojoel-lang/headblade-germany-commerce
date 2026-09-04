@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("review preview loads safely and product navigation works", async ({ page }) => {
+test("review preview loads safely and product decision journey works", async ({ page }) => {
   const consoleErrors: string[] = [];
   const pageErrors: string[] = [];
 
@@ -15,19 +15,21 @@ test("review preview loads safely and product navigation works", async ({ page }
   await expect(page.getByText(/Review-Preview/i).first()).toBeVisible();
   await expect(page.locator("form")).toHaveCount(0);
 
-  await page.getByRole("link", { name: "Produkte ansehen" }).first().click();
-  await expect(page).toHaveURL(/\/produkte\/?$/);
-
-  const motoCard = page.locator("article.product-card").filter({
-    has: page.getByRole("heading", { name: "HeadBlade MOTO" }),
-  });
-  await expect(motoCard).toBeVisible();
-  await motoCard.getByRole("link").click();
-
+  await page.getByRole("link", { name: "MOTO entdecken" }).click();
   await expect(page).toHaveURL(/\/produkt\/headblade-moto\/?$/);
   await expect(page.getByRole("heading", { level: 1, name: "HeadBlade MOTO" })).toBeVisible();
   await expect(page.getByText(/Checkout bewusst deaktiviert/i)).toBeVisible();
   await expect(page.locator("form")).toHaveCount(0);
+
+  await page.locator('a[href="/vergleich/moto-vs-atx"]').first().click();
+  await expect(page).toHaveURL(/\/vergleich\/moto-vs-atx\/?$/);
+  await expect(page.getByRole("heading", { level: 1, name: /MOTO oder ATX/i })).toBeVisible();
+
+  await page.goBack();
+  await expect(page).toHaveURL(/\/produkt\/headblade-moto\/?$/);
+  await page.getByRole("link", { name: "Zur Produktübersicht" }).click();
+  await expect(page).toHaveURL(/\/produkte\/?$/);
+  await expect(page.locator("article.product-card").filter({ has: page.getByRole("heading", { name: "HeadBlade MOTO" }) })).toBeVisible();
 
   expect(pageErrors).toEqual([]);
   expect(consoleErrors).toEqual([]);

@@ -2,11 +2,12 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Breadcrumbs from "../../components/navigation/Breadcrumbs.astro";
 import ProductHero from "../../components/commerce/ProductHero.astro";
+import ProductMediaGallery from "../../components/commerce/ProductMediaGallery.astro";
+import ProductDecisionSupport from "../../components/commerce/ProductDecisionSupport.astro";
 import CompatibilityCard from "../../components/commerce/CompatibilityCard.astro";
 import RelatedProducts from "../../components/commerce/RelatedProducts.astro";
 import { products, type Product } from "../../data/products";
-import { buildBreadcrumbJsonLd } from "../../lib/schema";
-import { buildProductJsonLd } from "../../lib/schema";
+import { buildBreadcrumbJsonLd, buildProductJsonLd } from "../../lib/schema";
 import { primaryProductCategory, productRoute } from "../../lib/routes";
 
 export function getStaticPaths() {
@@ -40,9 +41,18 @@ const jsonLd = [
   <div class="section section--compact breadcrumb-shell">
     <Breadcrumbs items={breadcrumbItems} />
   </div>
-  <ProductHero {product} {reviewLabel} />
+  <div class="pdp-grid">
+    <ProductMediaGallery {product} />
+    <ProductHero {product} {reviewLabel} showVisual={false} />
+  </div>
+  <ProductDecisionSupport {product} />
   <section class="section section--compact">
     <CompatibilityCard {product} />
   </section>
   <RelatedProducts products={related} />
 </BaseLayout>
+
+<style>
+  .pdp-grid { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); background:white; }
+  @media (max-width:900px) { .pdp-grid { grid-template-columns:1fr; } }
+</style>

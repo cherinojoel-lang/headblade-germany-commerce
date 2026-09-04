@@ -1,5 +1,11 @@
 import type { ProductCategoryId } from "./categories";
 
+export interface ProductMedia {
+  src: string;
+  alt: string;
+  kind: "product" | "detail" | "context";
+}
+
 export interface Product {
   slug: string;
   name: string;
@@ -14,6 +20,10 @@ export interface Product {
   short: string;
   benefits: readonly string[];
   keywords: readonly string[];
+  bestFor?: readonly string[];
+  nearestAlternativeSlug?: string;
+  usage?: readonly string[];
+  media?: readonly ProductMedia[];
 }
 
 // Review-only remote assets from the current HeadBlade Germany source.
@@ -58,6 +68,27 @@ export const products: readonly Product[] = [
       "Nachfüllbares Klingensystem",
     ],
     keywords: ["headblade", "moto", "kopfrasierer", "hb4", "hb6"],
+    bestFor: [
+      "Direkte, kompakte Handführung entlang der Kopfkontur",
+      "Nutzer, die die bewegliche MOTO-Konstruktion bevorzugen",
+    ],
+    usage: [
+      "Kopf und Haut vor der Rasur mit warmem Wasser vorbereiten.",
+      "Mit kurzen, kontrollierten Zügen entlang der Kopfform führen.",
+    ],
+    nearestAlternativeSlug: "headblade-atx-package",
+    media: [
+      {
+        src: motoImage,
+        alt: "HeadBlade MOTO Verpackung und Kopfrasierer",
+        kind: "product",
+      },
+      {
+        src: motoDetail,
+        alt: "HeadBlade MOTO Detailansicht des Rasierers",
+        kind: "detail",
+      },
+    ],
   },
   {
     slug: "headblade-atx-package",
@@ -70,6 +101,22 @@ export const products: readonly Product[] = [
     short: "ATX-Paket mit Vorrat an HB4-Klingen.",
     benefits: ["Einsteigerpaket", "HB4-System", "Direkt kombinierbar mit Pflege"],
     keywords: ["atx", "package", "hb4", "starter"],
+    bestFor: [
+      "Einstieg mit ATX und HB4-Klingen",
+      "Nutzer, die Rasierer und HB4-Vorrat in einem Paket vergleichen möchten",
+    ],
+    usage: [
+      "Kopf und Haut vor der Rasur mit warmem Wasser vorbereiten.",
+      "ATX kontrolliert und ohne unnötigen Druck entlang der Kopfform führen.",
+    ],
+    nearestAlternativeSlug: "headblade-moto",
+    media: [
+      {
+        src: atxPackageImage,
+        alt: "HeadBlade ATX Package mit HB4-Klingen",
+        kind: "product",
+      },
+    ],
   },
   {
     slug: "atx-pink",
