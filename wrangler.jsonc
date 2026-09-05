@@ -1,11 +1,19 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "headblade-germany-review",
-  "compatibility_date": "2026-09-03",
+  "compatibility_date": "2026-09-05",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "workers_dev": true,
   "preview_urls": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
   }
 }
