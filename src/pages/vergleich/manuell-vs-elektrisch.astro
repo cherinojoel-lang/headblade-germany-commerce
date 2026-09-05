@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ComparisonTable from "../../components/commerce/ComparisonTable.astro";
+import { manualElectricRows } from "../../data/decision-content";
+---
+<BaseLayout title="Manuell oder elektrisch? Kopfrasur-Systeme vergleichen" description="Manuelle HeadBlade-Kopfrasur und elektrische Kopfrasierer neutral nach Führung, Energie und Wartung vergleichen.">
+  <section class="section section--white contour-section">
+    <div class="section-heading">
+      <p class="eyebrow">System statt Schlagwort</p>
+      <h1 class="display">Manuell oder elektrisch?</h1>
+      <p>Es gibt keinen universellen Gewinner. HeadBlade ist für direkte manuelle Handführung gebaut; elektrische Systeme lösen die Aufgabe mit motorisierten Scherelementen. Welches Konzept passt, hängt von deiner gewünschten Bedienart ab.</p>
+    </div>
+    <ComparisonTable caption="Manuelle HeadBlade-Kopfrasur und elektrische Systeme nach Nutzungskonzept" leftLabel="HeadBlade manuell" rightLabel="Elektrisch" rows={manualElectricRows} />
+    <div class="authority-callout"><h2>HeadBlade bewusst wählen</h2><p>Wenn du direkte Handführung, ein nachfüllbares Klingensystem und ein spezialisiertes manuelles Kopfrasur-Konzept suchst, vergleiche MOTO und ATX im nächsten Schritt.</p><a class="button button--red" href="/vergleich/moto-vs-atx">MOTO vs. ATX</a></div>
+  </section>
+</BaseLayout>

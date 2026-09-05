@@ -1,0 +1,42 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HeroSection from "../components/sections/HeroSection.astro";
+import PromiseStrip from "../components/sections/PromiseStrip.astro";
+import ChooseSystem from "../components/sections/ChooseSystem.astro";
+import FinderTeaser from "../components/sections/FinderTeaser.astro";
+import ContourMechanics from "../components/sections/ContourMechanics.astro";
+import CompatibilitySection from "../components/sections/CompatibilitySection.astro";
+import RoutineSection from "../components/sections/RoutineSection.astro";
+import ManualVsElectric from "../components/sections/ManualVsElectric.astro";
+import BestsellerGrid from "../components/sections/BestsellerGrid.astro";
+import OfferGrid from "../components/sections/OfferGrid.astro";
+import WhyHeadBlade from "../components/sections/WhyHeadBlade.astro";
+import HelpBeforeBuying from "../components/sections/HelpBeforeBuying.astro";
+import TrustStrip from "../components/sections/TrustStrip.astro";
+import FaqSection from "../components/sections/FaqSection.astro";
+import FinalCTA from "../components/sections/FinalCTA.astro";
+import { getProduct, productsByCategory } from "../lib/catalog";
+
+const moto = getProduct("headblade-moto")!;
+const atx = getProduct("headblade-atx-package")!;
+const bestsellers = [moto, atx, getProduct("klingenset-4blade")!, getProduct("headslick-5oz")!];
+const offers = productsByCategory("angebote");
+---
+<BaseLayout title="HeadBlade Germany – Für die Kopfrasur entwickelt" description="HeadBlade Germany Review-Preview mit MOTO, ATX, HB4/HB6, HeadBlade Fit und verständlicher Kopfrasur-Routine. Keine Bestellung oder Zahlung möglich." image={moto.image}>
+  <p class="review-note">Review-Preview · keine Bestellung · keine Zahlung · keine Dateneingabe · vollständig von der Produktion getrennt.</p>
+  <HeroSection product={moto} />
+  <PromiseStrip />
+  <ChooseSystem heading="Welcher HeadBlade passt zu dir?" />
+  <FinderTeaser title="In drei Fragen zum passenden System" />
+  <ContourMechanics />
+  <CompatibilitySection title="Welche Klinge brauchst du?" />
+  <RoutineSection title="Eine Routine, die du wiederholen kannst" />
+  <ManualVsElectric />
+  <BestsellerGrid products={bestsellers} heading="Rasierer, Klingen und Pflege" />
+  <WhyHeadBlade title="Aus der Kopfrasur heraus entwickelt" />
+  <OfferGrid products={offers} title="Sets für den Einstieg" />
+  <HelpBeforeBuying />
+  <TrustStrip />
+  <FaqSection title="Fragen vor der ersten Rasur" />
+  <FinalCTA label="HeadBlade Fit starten" />
+</BaseLayout>

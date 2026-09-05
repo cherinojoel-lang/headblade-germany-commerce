@@ -1,0 +1,41 @@
+---
+import { getProduct } from "../../lib/catalog";
+interface Props { heading?: string; }
+const { heading = "Welcher HeadBlade passt zu dir?" } = Astro.props;
+const moto = getProduct("headblade-moto")!;
+const atx = getProduct("headblade-atx-package")!;
+---
+<section class="section motion-choice" aria-labelledby="choose-system-title">
+  <div class="motion-choice__intro">
+    <h2 id="choose-system-title">{heading}</h2>
+    <p>MOTO und ATX lösen dieselbe Aufgabe unterschiedlich. Entscheide nach Handführung und gewünschter Beweglichkeit – nicht nach einer künstlichen „besser oder schlechter“-Rangliste.</p>
+  </div>
+
+  <div class="motion-choice__grid">
+    <article class="motion-choice__product">
+      <div class="motion-choice__media">
+        <img src={moto.image} alt="HeadBlade MOTO aus dem aktuellen deutschen Sortiment" width="700" height="700" loading="lazy" decoding="async" sizes="(max-width:700px) 86vw, 44vw" />
+      </div>
+      <div class="motion-choice__body">
+        <h3>MOTO</h3>
+        <p>Für direkte Handführung mit beweglicher Konstruktion, die sich beim Führen an die Kopfform anpasst.</p>
+        <p class="motion-choice__meta"><strong>Klingen:</strong> {moto.compatibility}</p>
+        <a class="text-link" href={`/produkt/${moto.slug}`}>MOTO ansehen →</a>
+      </div>
+    </article>
+
+    <article class="motion-choice__product">
+      <div class="motion-choice__media">
+        <img src={atx.image} alt="HeadBlade ATX Package aus dem aktuellen deutschen Sortiment" width="700" height="700" loading="lazy" decoding="async" sizes="(max-width:700px) 86vw, 38vw" />
+      </div>
+      <div class="motion-choice__body">
+        <h3>ATX</h3>
+        <p>Für einen stärker geführten Einstieg mit rigiderem Körper und vertrauterer Bewegungslogik.</p>
+        <p class="motion-choice__meta"><strong>Klingen:</strong> {atx.compatibility}</p>
+        <a class="text-link" href={`/produkt/${atx.slug}`}>ATX ansehen →</a>
+      </div>
+    </article>
+  </div>
+
+  <a class="motion-choice__compare text-link" href="/vergleich/moto-vs-atx">MOTO und ATX Punkt für Punkt vergleichen →</a>
+</section>

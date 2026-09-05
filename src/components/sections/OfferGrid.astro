@@ -1,0 +1,13 @@
+---
+import type { Product } from "../../data/products";
+import { formatPrice } from "../../lib/catalog";
+import SectionHeading from "./SectionHeading.astro";
+interface Props { products: readonly Product[]; title?: string; }
+const { products, title = "Bundles & Angebote" } = Astro.props;
+---
+<section class="section section--dark">
+  <SectionHeading eyebrow="Mehr im Set" title={title} description="Verifizierte Bundle- und Vorratsangebote aus dem deutschen Sortiment – im Review-Modus ohne Kaufmöglichkeit." />
+  <div class="offer-grid">
+    {products.slice(0, 3).map((product) => <article class="offer-card"><span>{product.badge ?? "Angebot"}</span><h3>{product.name}</h3><p>{product.short}</p><strong>{formatPrice(product.price)}</strong><a class="product-card__link" href={`/produkt/${product.slug}`}>Angebot ansehen →</a></article>)}
+  </div>
+</section>

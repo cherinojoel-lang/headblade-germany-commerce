@@ -1,0 +1,17 @@
+---
+import type { Product } from "../../data/products";
+import { formatPrice } from "../../lib/catalog";
+interface Props { product: Product; }
+const { product } = Astro.props;
+---
+<section class="spotlight" aria-labelledby="moto-spotlight-title">
+  <div class="spotlight__visual"><img src={product.image} alt="HeadBlade MOTO Produktansicht" width="700" height="700" loading="lazy" decoding="async" sizes="(max-width: 980px) 68vw, 34vw" /></div>
+  <div class="spotlight__copy">
+    <p class="eyebrow">Kernprodukt</p>
+    <h2 id="moto-spotlight-title">MOTO</h2>
+    <p>{product.short}</p>
+    <ul>{product.benefits.map((benefit) => <li>{benefit}</li>)}</ul>
+    <p><strong>{formatPrice(product.price)}</strong> · Preisstand der Review-Verifikation vom 03.09.2026</p>
+    <a class="button button--light" href={`/produkt/${product.slug}`}>MOTO im Detail</a>
+  </div>
+</section>

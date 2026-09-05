@@ -1,0 +1,14 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+interface Props { title?: string; }
+const { title = "Warum HeadBlade" } = Astro.props;
+---
+<section class="section section--white">
+  <SectionHeading eyebrow="Kopfrasur statt Kompromiss" title={title} description="Die Form folgt der Aufgabe: kurze Führung, direkte Kontrolle und ein Klingensystem, das auf die Rasur des Kopfes ausgerichtet ist." />
+  <div class="promise-grid">
+    <div><strong>Konturennah</strong><span>Die Führung liegt dicht an der Hand.</span></div>
+    <div><strong>Beweglich</strong><span>MOTO folgt der Kopfform statt dagegen zu arbeiten.</span></div>
+    <div><strong>Nachfüllbar</strong><span>Klingen werden gewechselt, nicht der ganze Rasierer.</span></div>
+    <div><strong>Systematisch</strong><span>Rasierer, Klingen und Pflege greifen ineinander.</span></div>
+  </div>
+</section>

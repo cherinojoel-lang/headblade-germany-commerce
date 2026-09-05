@@ -1,0 +1,235 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  recommendHeadBlade,
+  type Experience,
+  type GuidancePreference,
+  type Need,
+} from "../../lib/finder";
+import { products } from "../../data/products";
+
+const experiences: readonly { value: Experience; label: string; detail: string }[] = [
+  { value: "first", label: "Erste Kopfrasuren", detail: "Ich möchte möglichst klar verstehen, womit ich starte." },
+  { value: "experienced", label: "Schon Erfahrung", detail: "Ich kenne die manuelle Kopfrasur und will gezielter wählen." },
+];
+
+const guidances: readonly { value: GuidancePreference; label: string; detail: string }[] = [
+  { value: "guided", label: "Mehr Führung", detail: "Ein klar geführtes Handling ist mir wichtiger." },
+  { value: "flexible", label: "Mehr Konturbewegung", detail: "Flexible Führung entlang der Kopfform ist mir wichtiger." },
+];
+
+const needs: readonly { value: Need; label: string; detail: string }[] = [
+  { value: "starter", label: "Komplett starten", detail: "Rasierer und sinnvollen Einstieg zusammen verstehen." },
+  { value: "razor", label: "Rasierer wählen", detail: "MOTO und ATX direkt einordnen." },
+  { value: "blades", label: "Klingen wählen", detail: "HB4/HB6 und Kompatibilität klären." },
+  { value: "routine", label: "Routine aufbauen", detail: "Vorbereitung und Pflege in den Ablauf einordnen." },
+];
+
+const productNames = Object.fromEntries(products.map((product) => [product.slug, product.name]));
+const recommendationMap = Object.fromEntries(
+  experiences.flatMap(({ value: experience }) =>
+    guidances.flatMap(({ value: guidance }) =>
+      needs.map(({ value: need }) => {
+        const recommendation = recommendHeadBlade({ experience, guidance, need });
+        return [
+          `${experience}|${guidance}|${need}`,
+          {
+            ...recommendation,
+            primaryName: productNames[recommendation.primarySlug] ?? recommendation.primarySlug,
+            alternativeName: recommendation.alternativeSlug
+              ? productNames[recommendation.alternativeSlug] ?? recommendation.alternativeSlug
+              : null,
+          },
+        ];
+      }),
+    ),
+  ),
+);
+const initial = recommendationMap["first|guided|starter"];
+---
+<BaseLayout
+  title="HeadBlade Fit – Produktfinder"
+  description="Erklärbarer HeadBlade Produktfinder für MOTO, ATX, HB4, HB6 und Pflege – ohne Formulare, Tracking oder Datenspeicherung."
+>
+  <section class="section section--white fit-shell" data-headblade-fit data-recommendations={JSON.stringify(recommendationMap)}>
+    <div class="section-heading fit-heading">
+      <p class="eyebrow">HeadBlade Fit</p>
+      <h1 class="display">Welches HeadBlade-System passt zu deiner Routine?</h1>
+      <p>Beantworte drei kurze Produktfragen. Die Empfehlung entsteht transparent im Browser; nichts wird übertragen, gespeichert oder einem Profil zugeordnet.</p>
+    </div>
+
+    <div class="fit-layout">
+      <div class="fit-questions" aria-label="HeadBlade Fit Auswahl">
+        <section class="fit-question" data-finder-question="experience" aria-labelledby="fit-experience">
+          <div class="fit-question__number">01</div>
+          <div>
+            <h2 id="fit-experience">Wie vertraut bist du mit der Kopfrasur?</h2>
+            <div class="fit-options">
+              {experiences.map((option, index) => (
+                <button type="button" class="fit-option" data-value={option.value} aria-pressed={index === 0 ? "true" : "false"}>
+                  <strong>{option.label}</strong><span>{option.detail}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section class="fit-question" data-finder-question="guidance" aria-labelledby="fit-guidance">
+          <div class="fit-question__number">02</div>
+          <div>
+            <h2 id="fit-guidance">Welche Art der Führung suchst du?</h2>
+            <div class="fit-options">
+              {guidances.map((option, index) => (
+                <button type="button" class="fit-option" data-value={option.value} aria-pressed={index === 0 ? "true" : "false"}>
+                  <strong>{option.label}</strong><span>{option.detail}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section class="fit-question" data-finder-question="need" aria-labelledby="fit-need">
+          <div class="fit-question__number">03</div>
+          <div>
+            <h2 id="fit-need">Was möchtest du gerade entscheiden?</h2>
+            <div class="fit-options fit-options--wide">
+              {needs.map((option, index) => (
+                <button type="button" class="fit-option" data-value={option.value} aria-pressed={index === 0 ? "true" : "false"}>
+                  <strong>{option.label}</strong><span>{option.detail}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="fit-result" aria-live="polite" aria-atomic="true">
+        <p class="eyebrow">Dein Fit</p>
+        <h2 data-result-name>{initial.primaryName}</h2>
+        <p class="fit-result__kicker">Warum diese Empfehlung</p>
+        <ul data-result-reasons>
+          {initial.reasons.map((reason) => <li>{reason}</li>)}
+        </ul>
+        <div class="fit-result__actions">
+          <a class="button button--primary" data-result-product href={`/produkt/${initial.primarySlug}`}>Produkt ansehen</a>
+          <a class="button button--ghost" data-result-next href={initial.nextHref}>Entscheidung vertiefen</a>
+        </div>
+        <p class="fit-result__alternative" data-result-alternative>
+          {initial.alternativeName ? <>Alternative zum Vergleichen: <strong>{initial.alternativeName}</strong></> : ""}
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section section--dark">
+    <div class="section-heading">
+      <p class="eyebrow">Direkt entscheiden</p>
+      <h2>Alle Wege bleiben auch ohne JavaScript erreichbar.</h2>
+      <p>Der Finder ergänzt die statische Navigation. Die zugrunde liegenden Vergleiche bleiben eigenständige, verlinkbare Seiten.</p>
+    </div>
+    <div class="fit-fallbacks">
+      <a href="/vergleich/moto-vs-atx">MOTO vs. ATX →</a>
+      <a href="/vergleich/hb4-vs-hb6">HB4 vs. HB6 →</a>
+      <a href="/pflege">Pflege & Routine →</a>
+      <a href="/angebote">Sets & Angebote →</a>
+    </div>
+  </section>
+
+  <script is:inline>
+    (() => {
+      const root = document.querySelector("[data-headblade-fit]");
+      if (!(root instanceof HTMLElement)) return;
+
+      let recommendations = {};
+      try {
+        recommendations = JSON.parse(root.dataset.recommendations || "{}");
+      } catch {
+        return;
+      }
+
+      const state = { experience: "first", guidance: "guided", need: "starter" };
+      const name = root.querySelector("[data-result-name]");
+      const reasons = root.querySelector("[data-result-reasons]");
+      const productLink = root.querySelector("[data-result-product]");
+      const nextLink = root.querySelector("[data-result-next]");
+      const alternative = root.querySelector("[data-result-alternative]");
+
+      const render = () => {
+        const recommendation = recommendations[`${state.experience}|${state.guidance}|${state.need}`];
+        if (!recommendation) return;
+
+        if (name) name.textContent = recommendation.primaryName;
+        if (reasons) {
+          reasons.replaceChildren(...recommendation.reasons.map((reason) => {
+            const item = document.createElement("li");
+            item.textContent = reason;
+            return item;
+          }));
+        }
+        if (productLink instanceof HTMLAnchorElement) productLink.href = `/produkt/${recommendation.primarySlug}`;
+        if (nextLink instanceof HTMLAnchorElement) nextLink.href = recommendation.nextHref;
+        if (alternative) {
+          alternative.textContent = recommendation.alternativeName
+            ? `Alternative zum Vergleichen: ${recommendation.alternativeName}`
+            : "";
+        }
+      };
+
+      root.querySelectorAll("[data-finder-question]").forEach((group) => {
+        if (!(group instanceof HTMLElement)) return;
+        const key = group.dataset.finderQuestion;
+        if (!key || !(key in state)) return;
+        group.querySelectorAll("button[data-value]").forEach((button) => {
+          button.addEventListener("click", () => {
+            if (!(button instanceof HTMLButtonElement)) return;
+            state[key] = button.dataset.value;
+            group.querySelectorAll("button[data-value]").forEach((candidate) => {
+              candidate.setAttribute("aria-pressed", candidate === button ? "true" : "false");
+            });
+            render();
+          });
+        });
+      });
+    })();
+  </script>
+
+  <style>
+    .fit-heading { max-width: 58rem; }
+    .fit-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(18rem, .65fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+    .fit-questions { display: grid; gap: 1.2rem; }
+    .fit-question { display: grid; grid-template-columns: 3rem 1fr; gap: 1rem; padding: 1.25rem 0; border-top: 1px solid var(--line); }
+    .fit-question__number { font-family: var(--font-display); font-weight: 900; color: var(--red); letter-spacing: .08em; }
+    .fit-question h2 { margin: 0 0 .8rem; font-size: clamp(1.15rem, 2vw, 1.45rem); }
+    .fit-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+    .fit-options--wide { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .fit-option { min-height: 5.5rem; padding: .9rem; border: 1px solid var(--line); background: #fff; color: var(--ink); text-align: left; cursor: pointer; transition: border-color .16s ease, transform .16s ease, box-shadow .16s ease; }
+    .fit-option strong, .fit-option span { display: block; }
+    .fit-option span { margin-top: .25rem; color: var(--muted); font-size: .9rem; line-height: 1.45; }
+    .fit-option[aria-pressed="true"] { border-color: var(--red); box-shadow: inset 3px 0 0 var(--red); }
+    .fit-option:hover { transform: translateY(-1px); border-color: var(--ink); }
+    .fit-result { position: sticky; top: 7.5rem; padding: clamp(1.35rem, 3vw, 2rem); background: var(--ink); color: #fff; border-top: 4px solid var(--red); }
+    .fit-result h2 { margin: .25rem 0 1rem; font-size: clamp(1.8rem, 4vw, 3rem); }
+    .fit-result__kicker { margin: 0 0 .4rem; color: #fff; font-weight: 800; }
+    .fit-result ul { margin: 0; padding-left: 1.15rem; color: #e8e8e8; }
+    .fit-result li + li { margin-top: .5rem; }
+    .fit-result__actions { display: grid; gap: .55rem; margin-top: 1.35rem; }
+    .fit-result__alternative { min-height: 1.4rem; margin: 1rem 0 0; color: #cfcfcf; font-size: .9rem; }
+    .fit-fallbacks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .7rem; }
+    .fit-fallbacks a { padding: 1rem; border: 1px solid rgba(255,255,255,.24); color: #fff; text-decoration: none; font-weight: 800; }
+    .fit-fallbacks a:hover { border-color: var(--red); }
+    @media (max-width: 840px) {
+      .fit-layout { grid-template-columns: 1fr; }
+      .fit-result { position: static; }
+      .fit-fallbacks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      .fit-question { grid-template-columns: 1fr; }
+      .fit-options, .fit-options--wide, .fit-fallbacks { grid-template-columns: 1fr; }
+      .fit-option { min-height: 4.75rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fit-option { transition: none; }
+      .fit-option:hover { transform: none; }
+    }
+  </style>
+</BaseLayout>

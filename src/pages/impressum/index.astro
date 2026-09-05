@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../data/site";
+---
+<BaseLayout title="Impressum" description="Impressumsangaben der HeadBlade Germany Review-Preview.">
+  <section class="section section--white">
+    <div class="section-heading"><p class="eyebrow">Rechtliches</p><h1 class="display">Impressum</h1><p>Unternehmens- und Kontaktdaten für die nicht indexierbare Review-Preview.</p></div>
+    <div class="split-feature">
+      <div><h2>Anbieter</h2><p><strong>{site.legalName}</strong><br />{site.address.street}<br />{site.address.postalCode} {site.address.city}<br />{site.address.country}</p></div>
+      <div><h2>Kontakt</h2><p>Telefon: {site.phone}<br />E-Mail: <a class="product-card__link" href={`mailto:${site.email}`}>{site.email}</a></p><p>Diese Seite dient der Inhaberabnahme. Sämtliche rechtlichen Pflichtangaben werden vor einem späteren Produktionswechsel noch einmal gegen den dann gültigen Unternehmens- und Shopstand geprüft.</p></div>
+    </div>
+  </section>
+</BaseLayout>

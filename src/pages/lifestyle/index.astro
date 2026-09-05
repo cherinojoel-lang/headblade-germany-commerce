@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProductGrid from "../../components/commerce/ProductGrid.astro";
+import SectionHeading from "../../components/sections/SectionHeading.astro";
+import { categoryProducts } from "../../lib/routes";
+const products = categoryProducts("lifestyle");
+---
+
+<BaseLayout title="Lifestyle" description="HeadBlade Lifestyle-Zubehör in der Germany Review-Preview: Cases und Ergänzungen für unterwegs.">
+  <section class="section section--white">
+    <SectionHeading eyebrow="Zubehör für unterwegs" title="Lifestyle" description="Aufbewahrung und ergänzendes HeadBlade-Zubehör für Alltag und Reise." />
+    <ProductGrid {products} />
+  </section>
+</BaseLayout>

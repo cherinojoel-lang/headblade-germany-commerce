@@ -1,0 +1,40 @@
+---
+import Footer from "../components/layout/Footer.astro";
+import Header from "../components/layout/Header.astro";
+import PreviewBanner from "../components/layout/PreviewBanner.astro";
+import SEOHead from "../components/seo/SEOHead.astro";
+import "../styles/global.css";
+import "../styles/accessibility.css";
+import "../styles/contour.css";
+import "../styles/motion-lab.css";
+import "../styles/motion-lab-refine.css";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  jsonLd?: unknown | readonly unknown[];
+}
+
+const { title, description, image, jsonLd } = Astro.props;
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="theme-color" content="#ffffff" />
+    <SEOHead {title} {description} {image} {jsonLd} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
+    <PreviewBanner />
+    <Header />
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

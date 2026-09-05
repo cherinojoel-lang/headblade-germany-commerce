@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProductGrid from "../../components/commerce/ProductGrid.astro";
+import CompatibilitySection from "../../components/sections/CompatibilitySection.astro";
+import SectionHeading from "../../components/sections/SectionHeading.astro";
+import { categoryProducts } from "../../lib/routes";
+const products = categoryProducts("klingen");
+---
+
+<BaseLayout title="Klingen & Zubehör" description="HB4- und HB6-Klingen sowie kompatibles HeadBlade Zubehör in der Review-Preview.">
+  <section class="section section--white">
+    <SectionHeading eyebrow="HB4 & HB6" title="Klingen & Zubehör" description="Nachfüllklingen und Zubehör mit klar sichtbarer Kompatibilität." />
+    <ProductGrid {products} />
+  </section>
+  <CompatibilitySection />
+</BaseLayout>

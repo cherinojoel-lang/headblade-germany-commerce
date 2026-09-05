@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ComparisonTable from "../../components/commerce/ComparisonTable.astro";
+import { motoAtxRows } from "../../data/decision-content";
+import { getProduct } from "../../lib/catalog";
+const moto = getProduct("headblade-moto")!;
+const atx = getProduct("headblade-atx-package")!;
+---
+<BaseLayout title="MOTO oder ATX? HeadBlade Vergleich" description="MOTO oder ATX: HeadBlade-Systeme nach Führung, Einstieg und Klingen-Kompatibilität verständlich vergleichen.">
+  <section class="section section--white contour-section">
+    <div class="section-heading">
+      <p class="eyebrow">HeadBlade vergleichen</p>
+      <h1 class="display">MOTO oder ATX?</h1>
+      <p><strong>Kurz gesagt:</strong> MOTO ist das konturorientierte Kernprodukt; das aktuelle ATX-Paket ist die stärker geführte Einstiegsoption mit HB4. Entscheidend ist, welche Art der Handführung du bevorzugst.</p>
+    </div>
+    <div class="decision-grid decision-grid--two">
+      <article class="decision-card"><p class="eyebrow">MOTO</p><h2>Flexible Konturführung</h2><p>{moto.short}</p><p class="decision-card__meta">{moto.compatibility}</p><a class="decision-card__link" href={`/produkt/${moto.slug}`}>MOTO ansehen →</a></article>
+      <article class="decision-card"><p class="eyebrow">ATX</p><h2>Geführter Einstieg</h2><p>{atx.short}</p><p class="decision-card__meta">{atx.compatibility}</p><a class="decision-card__link" href={`/produkt/${atx.slug}`}>ATX ansehen →</a></article>
+    </div>
+    <ComparisonTable caption="MOTO und ATX im direkten HeadBlade-Systemvergleich" leftLabel="MOTO" rightLabel="ATX" rows={motoAtxRows} />
+    <div class="authority-callout"><h2>Wenn du noch unsicher bist</h2><p>HeadBlade Fit übersetzt dieselben transparenten Kriterien in eine kurze Empfehlung – ohne Profil, Speicherung oder Tracking.</p><a class="button button--red" href="/finder">HeadBlade Fit starten</a></div>
+  </section>
+</BaseLayout>

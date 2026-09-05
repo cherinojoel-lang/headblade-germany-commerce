@@ -1,0 +1,54 @@
+name: Lighthouse
+
+on:
+  push:
+    branches: [feat/astro-headblade-premium]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - run: npm install --global npm@11.6.0
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - name: Collect Lighthouse reports
+        run: npx --yes @lhci/cli@0.15.1 collect --config=.lighthouserc.json
+      - name: Print Lighthouse diagnostics
+        run: |
+          node --input-type=module <<'NODE'
+          import { readdir, readFile } from 'node:fs/promises';
+          const files = (await readdir('.lighthouseci')).filter((name) => name.startsWith('lhr-') && name.endsWith('.json'));
+          for (const file of files) {
+            const report = JSON.parse(await readFile(`.lighthouseci/${file}`, 'utf8'));
+            console.log(`=== ${report.finalDisplayedUrl} ===`);
+            console.log(`scores performance=${report.categories.performance.score} accessibility=${report.categories.accessibility.score} best-practices=${report.categories['best-practices'].score} seo=${report.categories.seo.score}`);
+            for (const categoryId of ['performance', 'accessibility', 'seo']) {
+              console.log(`-- ${categoryId} audits below 1 --`);
+              for (const ref of report.categories[categoryId].auditRefs) {
+                const audit = report.audits[ref.id];
+                if (audit && audit.score !== null && audit.score < 1) {
+                  console.log(`${ref.id}: score=${audit.score} weight=${ref.weight ?? 0} :: ${audit.title}${audit.displayValue ? ` :: ${audit.displayValue}` : ''}`);
+                }
+              }
+            }
+            const requests = report.audits['network-requests']?.details?.items ?? [];
+            const largest = [...requests].sort((a,b) => (b.transferSize ?? 0) - (a.transferSize ?? 0)).slice(0, 12);
+            console.log('-- largest network transfers --');
+            for (const item of largest) console.log(`${item.transferSize ?? 0} bytes :: ${item.resourceType ?? ''} :: ${item.url ?? ''}`);
+          }
+          NODE
+      - name: Assert Lighthouse quality gates
+        run: npx --yes @lhci/cli@0.15.1 assert --config=.lighthouserc.json

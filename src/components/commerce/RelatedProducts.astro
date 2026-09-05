@@ -1,0 +1,14 @@
+---
+import type { Product } from "../../data/products";
+import ProductGrid from "./ProductGrid.astro";
+import SectionHeading from "../sections/SectionHeading.astro";
+interface Props { products: readonly Product[]; }
+const { products } = Astro.props;
+---
+
+{products.length > 0 && (
+  <section class="section section--white">
+    <SectionHeading eyebrow="Weiter entdecken" title="Dazu passend" description="Weitere Produkte aus derselben HeadBlade-Kategorie." />
+    <ProductGrid products={products} />
+  </section>
+)}
