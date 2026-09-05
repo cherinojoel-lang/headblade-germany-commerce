@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "headblade-germany-review",
-  "account_id": "01dc37803d1c687b4f9d6249ec89f700",
+  "account_id": "043ec899a435f150995d89f402ed7b12",
   "compatibility_date": "2026-09-05",
   "compatibility_flags": [
     "nodejs_compat"
