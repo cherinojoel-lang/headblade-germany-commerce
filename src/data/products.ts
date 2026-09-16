@@ -26,28 +26,20 @@ export interface Product {
   media?: readonly ProductMedia[];
 }
 
-// Review-only remote assets from the current HeadBlade Germany source.
-// They remain hotlinked so this public review repository does not republish third-party product files.
-const motoImage =
-  "https://www.headblade.info/images/product_images/info_images/moto_package_nb_shadow_350x350.png";
-const motoDetail =
-  "https://www.headblade.info/images/product_images/info_images/moto_fire_shdw_350x350.gif";
-const atxPackageImage =
-  "https://www.headblade.info/images/product_images/popup_images/41o8o0bsfjl.jpg";
-const atxPinkImage =
-  "https://www.headblade.info/images/product_images/popup_images/_12.jpg";
-const hb4Image =
-  "https://www.headblade.info/images/product_images/popup_images/HB4_bag_600X600_350x350.png";
-const hb6Image =
-  "https://www.headblade.info/images/product_images/popup_images/HB6_bag_600X600_350x350.png";
-const hb4PowerpackImage =
-  "https://www.headblade.info/images/product_images/popup_images/hb4_powerpack_2013_350x350.jpg";
-const hb6PowerpackImage =
-  "https://www.headblade.info/images/product_images/popup_images/hb6_powerpack_2013_350x350.jpg";
-const slickImage =
-  "https://www.headblade.info/images/product_images/popup_images/5oz-headslick-mentholated-shave-cream-5oz-214356.jpg";
-const headCaseImage =
-  "https://www.headblade.info/images/product_images/popup_images/headcase_04.png";
+// First-party product assets, taken over from the HeadBlade Germany source with owner
+// approval (2026-09-16) and served from this deployment instead of hotlinked.
+// Source files carried misleading extensions (JPEG bytes named .png/.gif) and two 300 KB
+// PNGs whose alpha channel was fully opaque; both were normalised on import.
+const motoImage = "/media/produkte/moto-package.jpg";
+const motoDetail = "/media/produkte/moto-detail.jpg";
+const atxPackageImage = "/media/produkte/atx-package.jpg";
+const atxPinkImage = "/media/produkte/atx-pink.jpg";
+const hb4Image = "/media/produkte/hb4-klingen.jpg";
+const hb6Image = "/media/produkte/hb6-klingen.jpg";
+const hb4PowerpackImage = "/media/produkte/hb4-powerpack.jpg";
+const hb6PowerpackImage = "/media/produkte/hb6-powerpack.jpg";
+const slickImage = "/media/produkte/headslick-5oz.jpg";
+const headCaseImage = "/media/produkte/moto-headcase.jpg";
 
 export const products: readonly Product[] = [
   {

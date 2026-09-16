@@ -5,27 +5,43 @@ import { products } from "../src/data/products";
 const bySlug = (slug: string) => products.find((product) => product.slug === slug)!;
 
 describe("review product media contract", () => {
-  it("uses SKU-specific HeadBlade source media instead of MOTO placeholders", () => {
-    expect(bySlug("headblade-atx-package").image).toContain("41o8o0bsfjl.jpg");
-    expect(bySlug("atx-pink").image).toContain("_12.jpg");
-    expect(bySlug("klingenset-4blade").image).toContain("HB4_bag_600X600_350x350.png");
-    expect(bySlug("klingenset-6blade").image).toContain("HB6_bag_600X600_350x350.png");
-    expect(bySlug("4blade-4plus1").image).toContain("hb4_powerpack_2013_350x350.jpg");
-    expect(bySlug("6blade-4plus1").image).toContain("hb6_powerpack_2013_350x350.jpg");
-    expect(bySlug("moto-headcase").image).toContain("headcase_04.png");
+  it("uses SKU-specific media instead of MOTO placeholders", () => {
+    expect(bySlug("headblade-atx-package").image).toContain("atx-package");
+    expect(bySlug("atx-pink").image).toContain("atx-pink");
+    expect(bySlug("klingenset-4blade").image).toContain("hb4-klingen");
+    expect(bySlug("klingenset-6blade").image).toContain("hb6-klingen");
+    expect(bySlug("4blade-4plus1").image).toContain("hb4-powerpack");
+    expect(bySlug("6blade-4plus1").image).toContain("hb6-powerpack");
+    expect(bySlug("moto-headcase").image).toContain("moto-headcase");
   });
 
   it("represents the MOTO + HeadSlick bundle with both included products", () => {
     const bundle = bySlug("moto-slick-bundle");
-    expect(bundle.image).toContain("moto_package");
+    expect(bundle.image).toContain("moto-package");
     expect(bundle.secondaryImage).toContain("headslick");
   });
 
-  it("keeps review media remote on the authorized HeadBlade source", () => {
+  it("serves every product image first-party, never hotlinked from production", () => {
     for (const product of products) {
       for (const source of [product.image, product.detailImage, product.secondaryImage, ...(product.media ?? []).map((item) => item.src)].filter(Boolean)) {
-        expect(source).toMatch(/^https:\/\/www\.headblade\.info\/images\/product_images\//);
+        expect(source).toMatch(/^\/media\/produkte\/[a-z0-9-]+\.(jpg|png|webp)$/);
       }
+    }
+  });
+
+  it("ships every referenced product image as a real file in public/", async () => {
+    const referenced = new Set(
+      products.flatMap((product) =>
+        [product.image, product.detailImage, product.secondaryImage, ...(product.media ?? []).map((item) => item.src)].filter(
+          (source): source is string => Boolean(source),
+        ),
+      ),
+    );
+
+    for (const source of referenced) {
+      const file = new URL(`../public${source}`, import.meta.url);
+      const bytes = await readFile(file);
+      expect(bytes.byteLength, `${source} must not be empty`).toBeGreaterThan(1024);
     }
   });
 
@@ -33,7 +49,7 @@ describe("review product media contract", () => {
     for (const product of products) {
       for (const media of product.media ?? []) {
         expect(media.alt.trim().length).toBeGreaterThan(8);
-        expect(media.src).toMatch(/^https:\/\//);
+        expect(media.src).toMatch(/^\/media\/produkte\//);
       }
     }
   });

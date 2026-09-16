@@ -73,4 +73,8 @@ hochgeladen. Der GitHub-Workflow nutzt bei normalen Branch-Pushes `wrangler vers
 
 ## Review-Daten und Assets
 
-Produktnamen und Preise wurden am 03.09.2026 gegen den öffentlich sichtbaren deutschen Shop geprüft. Die derzeitigen Produktbilder werden für die Review teilweise aus der bestehenden öffentlichen HeadBlade-Quelle geladen. Vor Produktion müssen freigegebene Originalassets lokal/first-party übernommen und Preise, Rechtstexte, Versand-/Shopangaben und alle produktiven Integrationen erneut freigegeben werden.
+Produktnamen und Preise wurden am 03.09.2026 gegen den öffentlich sichtbaren deutschen Shop geprüft.
+
+Die Produktbilder wurden am 16.09.2026 mit Inhaberfreigabe aus der HeadBlade-Germany-Quelle übernommen und liegen seitdem first-party unter `public/media/produkte/`. Es wird nichts mehr von `headblade.info` hotverlinkt — die Review-Preview lädt keine externen Assets mehr. Beim Import normalisiert: drei Dateien trugen falsche Endungen (JPEG-Bytes als `.png`/`.gif`), zwei 600×600-PNGs mit ungenutztem Alphakanal wurden zu JPEG umgesetzt (zusammen 606 KB → 105 KB). `test/media.test.ts` erzwingt den First-Party-Vertrag und prüft, dass jede referenzierte Datei tatsächlich ausgeliefert wird.
+
+Weiterhin offen vor Produktion: Preise, Rechtstexte, Versand-/Shopangaben und alle produktiven Integrationen müssen erneut freigegeben werden.

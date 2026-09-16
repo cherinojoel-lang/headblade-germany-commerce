@@ -67,7 +67,7 @@ test("Motion Lab is progressive, source-faithful and reduced-motion safe", async
   const heroImage = page.locator(".hero__visual img");
   const contourAccent = page.locator(".contour-intro .contour-line__accent");
 
-  await expect(heroImage).toHaveAttribute("src", /headblade\.info\//);
+  await expect(heroImage).toHaveAttribute("src", /^\/media\/produkte\//);
 
   expect(await heroEyebrow.evaluate((node) => getComputedStyle(node).animationName)).toBe("hb-motion-rise");
   expect(await heroImage.evaluate((node) => getComputedStyle(node).animationName)).toBe("hb-motion-product");

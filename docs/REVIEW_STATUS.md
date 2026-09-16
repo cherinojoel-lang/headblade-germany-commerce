@@ -32,3 +32,19 @@ A full local verification pass (`npm run check`, `npm test`, `npm run build`, `n
 - **Missing favicon**: no `<link rel="icon">` or favicon asset existed, so every page load produced a browser-logged `404` console error for `/favicon.ico`, tripping the Owner Review Checklist's "no console errors" bar. Added `public/favicon.svg` (brand ink/red mark) and wired it into `BaseLayout.astro`.
 
 All four `npm run verify` gates and the Chromium desktop/mobile Playwright specs are green after these fixes. Firefox/WebKit e2e and the Cloudflare `workers.dev` endpoint check were not re-run locally (no matching browser binaries / no Cloudflare review credentials in this environment) — both run automatically in CI on push/PR and remain the authoritative gate before declaring `PREVIEW_READY_FOR_OWNER_REVIEW`.
+
+## First-party Produktbilder (2026-09-16)
+
+Auf ausdrückliche Inhaberfreigabe wurden die zehn Produktbilder aus der HeadBlade-Germany-Quelle
+übernommen und liegen jetzt unter `public/media/produkte/`; `src/data/products.ts` referenziert nur noch
+lokale Pfade. Damit lädt die Review-Preview **keine externen Assets** mehr.
+
+- Normalisiert beim Import: `moto_package_nb_shadow_350x350.png`, `moto_fire_shdw_350x350.gif` und
+  `headcase_04.png` enthielten JPEG-Bytes und heißen jetzt `.jpg`; `HB4_bag`/`HB6_bag` waren
+  600×600-PNGs mit vollständig opakem Alphakanal und wurden zu JPEG q88 umgesetzt (298 KB → 52 KB
+  bzw. 307 KB → 53 KB). Gesamtgewicht aller Produktbilder: 292 KB.
+- Testvertrag umgestellt: `test/media.test.ts` verlangt jetzt First-Party-Pfade statt der früheren
+  Remote-URLs und prüft zusätzlich, dass jede referenzierte Datei real ausgeliefert wird;
+  `test/motion-lab.test.ts` und `e2e/review.spec.ts` entsprechend nachgezogen.
+- Nebeneffekt: Der e2e-Test `review preview loads safely` ist erstmals vollständig grün, weil die
+  bisherigen Konsolenfehler ausschließlich aus den externen Bild-Requests stammten.
