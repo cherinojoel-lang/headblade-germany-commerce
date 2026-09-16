@@ -2,9 +2,12 @@
 import type { Product } from "../../data/products";
 import { formatPrice } from "../../lib/catalog";
 import { productHref, productImageAlt } from "../../lib/presentation";
+import { imageSize } from "../../lib/media";
 
 interface Props { product: Product; }
 const { product } = Astro.props;
+const cardSize = imageSize(product.image);
+const cardSecondarySize = imageSize(product.secondaryImage);
 ---
 
 <article class="product-card">
@@ -13,11 +16,11 @@ const { product } = Astro.props;
       {product.badge && <span class="product-card__badge">{product.badge}</span>}
       {product.secondaryImage ? (
         <div class="product-card__media-pair">
-          <img src={product.image} alt={productImageAlt(product)} width="500" height="500" loading="lazy" decoding="async" sizes="(max-width: 620px) 34vw, (max-width: 980px) 18vw, 110px" />
-          <img src={product.secondaryImage} alt={`${product.name} – enthaltene Pflege`} width="500" height="500" loading="lazy" decoding="async" sizes="(max-width: 620px) 34vw, (max-width: 980px) 18vw, 110px" />
+          <img src={product.image} alt={productImageAlt(product)} width={cardSize.width} height={cardSize.height} loading="lazy" decoding="async" />
+          <img src={product.secondaryImage} alt={`${product.name} – enthaltene Pflege`} width={cardSecondarySize.width} height={cardSecondarySize.height} loading="lazy" decoding="async" />
         </div>
       ) : (
-        <img src={product.image} alt={productImageAlt(product)} width="500" height="500" loading="lazy" decoding="async" sizes="(max-width: 620px) 72vw, (max-width: 980px) 36vw, 220px" />
+        <img src={product.image} alt={productImageAlt(product)} width={cardSize.width} height={cardSize.height} loading="lazy" decoding="async" />
       )}
     </div>
     <div class="product-card__body">

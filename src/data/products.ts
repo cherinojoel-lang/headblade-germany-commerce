@@ -30,16 +30,16 @@ export interface Product {
 // approval (2026-09-16) and served from this deployment instead of hotlinked.
 // Source files carried misleading extensions (JPEG bytes named .png/.gif) and two 300 KB
 // PNGs whose alpha channel was fully opaque; both were normalised on import.
-const motoImage = "/media/produkte/moto-package.jpg";
-const motoDetail = "/media/produkte/moto-detail.jpg";
-const atxPackageImage = "/media/produkte/atx-package.jpg";
-const atxPinkImage = "/media/produkte/atx-pink.jpg";
-const hb4Image = "/media/produkte/hb4-klingen.jpg";
-const hb6Image = "/media/produkte/hb6-klingen.jpg";
-const hb4PowerpackImage = "/media/produkte/hb4-powerpack.jpg";
-const hb6PowerpackImage = "/media/produkte/hb6-powerpack.jpg";
-const slickImage = "/media/produkte/headslick-5oz.jpg";
-const headCaseImage = "/media/produkte/moto-headcase.jpg";
+const motoImage = "/media/produkte/moto-package.webp";
+const motoDetail = "/media/produkte/moto-detail.webp";
+const atxPackageImage = "/media/produkte/atx-package.webp";
+const atxPinkImage = "/media/produkte/atx-pink.webp";
+const hb4Image = "/media/produkte/hb4-klingen.webp";
+const hb6Image = "/media/produkte/hb6-klingen.webp";
+const hb4PowerpackImage = "/media/produkte/hb4-powerpack.webp";
+const hb6PowerpackImage = "/media/produkte/hb6-powerpack.webp";
+const slickImage = "/media/produkte/headslick-5oz.webp";
+const headCaseImage = "/media/produkte/moto-headcase.webp";
 
 export const products: readonly Product[] = [
   {
@@ -49,7 +49,10 @@ export const products: readonly Product[] = [
     compareAtPrice: null,
     categories: ["rasierer"],
     compatibility: "HB4; laut HeadBlade auch HB6-kompatibel",
-    image: motoImage,
+    // The cut-out razor leads: the retail blister is 2010s packaging art with
+    // promo copy printed on it, which is the weakest image in the set to put on
+    // the flagship product's card. It stays in `media` as the packaging view.
+    image: motoDetail,
     detailImage: motoDetail,
     badge: "Kernprodukt",
     short:
@@ -71,13 +74,13 @@ export const products: readonly Product[] = [
     nearestAlternativeSlug: "headblade-atx-package",
     media: [
       {
-        src: motoImage,
-        alt: "HeadBlade MOTO Verpackung und Kopfrasierer",
+        src: motoDetail,
+        alt: "HeadBlade MOTO Kopfrasierer in der Seitenansicht",
         kind: "product",
       },
       {
-        src: motoDetail,
-        alt: "HeadBlade MOTO Detailansicht des Rasierers",
+        src: motoImage,
+        alt: "HeadBlade MOTO Verpackung",
         kind: "detail",
       },
     ],

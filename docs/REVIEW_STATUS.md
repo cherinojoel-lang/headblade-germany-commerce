@@ -106,3 +106,72 @@ Live nachgeprüft unter `https://review-headblade-germany-review.cherinojoel.wor
   und `.decision-support` liegt auf `#f7f8f9`
 
 Produktionsdomain, DNS und Routing bleiben unberührt — weiterhin Owner-Gate nach `docs/OWNER_GATE.md`.
+
+## Design-Durchgang (2026-09-16)
+
+Vollständiger Designdurchgang auf Basis von Screenshots des gebauten Stands, nicht des Quelltexts.
+
+### Befund
+
+Die zentrale Schwäche lag nicht im CSS, sondern im Bildmaterial. Alle zehn Produktbilder trugen
+einen eingebrannten Studiohintergrund — neun weiß mit 49–81 % Flächenanteil, die MOTO-Verpackung
+schwarz. Das Layout hat darauf reagiert, indem es jedes Produkt hinter eine helle Kachel gestellt
+hat. Auf der dunklen Klingen-Sektion ergab das weiße Kästen, in denen der Beutel rund ein Drittel
+einnahm; der Rest las sich als leerer Platzhalter. Gleichzeitig tat der Hero so, als sei sein Bild
+freigestellt: Produktschatten, Kreisgeometrie, helle Bühne — tatsächlich stand dort ein weißes
+Rechteck mit Schlagschatten darauf.
+
+Zwei weitere Punkte kamen dazu:
+
+- Das Hero-Bild ist nativ 350 px breit und wurde auf 520 CSS-px gezeigt — auf einem 2×-Display eine
+  Dreifach-Skalierung. Eine Prüfung der Quelle ergab, dass es dort **keine** höher aufgelösten
+  Originale gibt; alles ist auf 350×350 bzw. 600×600 gedeckelt.
+- Im Hero-Bild war ein „reddot design award winner 2017"-Badge eingebrannt. Ein von hier aus nicht
+  belegbarer Zertifizierungsclaim, den die Non-Negotiables ausschließen.
+
+### Umsetzung
+
+- **Freisteller-Pipeline** (`npm run images`, `scripts/cutout-product-images.mjs`). Motiverkennung
+  über „dunkel ODER farbig" statt über Helligkeit — Helligkeit allein hätte das gelbe Chassis als
+  Hintergrund eingestuft und den grauen Produktschatten behalten, der auf diesen Quellen als
+  ausgefranster Fleck erscheint. Dann größte zusammenhängende Komponente, morphologisches Schließen
+  (Innenlöcher füllen, damit Glanzlichter nicht durch das Produkt stanzen; anschließend erodieren,
+  damit kein heller Saum bleibt) und eine Alpha-Rampe nur auf der Silhouette.
+- **Vier Quellen bleiben Packshots**, weil sie sich nicht trennen lassen: beide Vorratspakete
+  (der Promo-Block ist selbst weiß), HeadSlick (weiße Tube auf Weiß) und die MOTO-Verpackung. Sie
+  werden stattdessen auf einen einheitlichen Rand normalisiert — vorher schwankte ihr Weißanteil
+  zwischen 49 % und 81 %, wodurch dasselbe Produkt in jeder Rasterzelle anders groß wirkte.
+- **Hero neu komponiert**: Produkt auf native Größe begrenzt, Bühne enger, mehr Raum für die
+  Typografie. Der CSS-Schlagschatten entfiel, weil er zusammen mit dem fotografierten Schatten zwei
+  Lichtquellen ergeben hätte.
+- **Kacheln entfernt**, die es nur wegen der Bildhintergründe gab: weiße Kachel auf der dunklen
+  Klingen-Sektion, Silberfläche der Auswahlkarten, Rahmen der Produktkarten.
+- **MOTO-Kartenbild getauscht**: Das Flaggschiff zeigte den Blisterkarton mit aufgedruckter
+  Werbesprache; jetzt den freigestellten Rasierer. Die Verpackung bleibt als Ansicht in der Galerie.
+- **Doppelte Review-Banner zusammengeführt.** `preview-banner` und `review-note` standen gestapelt
+  und sagten fast dasselbe; zusammen etwa 150 px des ersten Viewports.
+- **Bildmaße korrigiert.** Alle `<img>` trugen fest `width="700" height="700"` o. ä., bei nun teils
+  querformatigen Freistellern reserviert der Browser damit ein quadratisches Feld. Die Maße kommen
+  jetzt aus `src/data/product-image-sizes.ts`, das die Pipeline miterzeugt.
+
+### Nebenbefund: `sizes` ohne `srcset`
+
+Fünf Komponenten trugen `sizes`-Attribute, und ein Test (`supplies responsive sizing hints at every
+primary product-image surface`) erzwang deren Vorhandensein. Im gesamten Projekt gibt es jedoch
+**kein einziges `srcset`** — ohne das ignoriert der Browser `sizes` vollständig. Der Test hat damit
+eine Wirkung abgesichert, die es nie gab. Da die Assets einzelne feste Dateien sind, die auf oder
+unter ihrer nativen Breite gezeigt werden, wäre echtes `srcset` hier Mehrgewicht ohne Gegenwert.
+Der Vertrag wurde daher ersetzt: explizite echte Bildmaße an jeder Fläche, und `sizes` darf nur
+gemeinsam mit `srcset` auftreten.
+
+### Verifikation
+
+`npm run verify` grün (81 Tests, 28 Seiten, `PREVIEW_VALIDATION_OK`), 6 Chromium-e2e grün,
+Lighthouse lokal auf beiden von CI geprüften Seiten **Performance 1.0 · Accessibility 1.0 ·
+Best Practices 1.0 · SEO 1.0**.
+
+### Bekannte Grenze
+
+Drei der vier Packshots behalten ihren weißen Grund und zeigen im Produktraster eine feine Kante
+gegen die hellgraue Kachel. Das ist eine Eigenschaft des Quellmaterials, keine Layout-Entscheidung;
+sauber lösbar wäre es nur mit neuen Produktfotos.

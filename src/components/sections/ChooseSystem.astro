@@ -1,9 +1,12 @@
 ---
 import { getProduct } from "../../lib/catalog";
+import { imageSize } from "../../lib/media";
 interface Props { heading?: string; }
 const { heading = "Welcher HeadBlade passt zu dir?" } = Astro.props;
 const moto = getProduct("headblade-moto")!;
 const atx = getProduct("headblade-atx-package")!;
+const motoSize = imageSize(moto.image);
+const atxSize = imageSize(atx.image);
 ---
 <section class="section motion-choice" aria-labelledby="choose-system-title">
   <div class="motion-choice__intro">
@@ -14,7 +17,7 @@ const atx = getProduct("headblade-atx-package")!;
   <div class="motion-choice__grid">
     <article class="motion-choice__product">
       <div class="motion-choice__media">
-        <img src={moto.image} alt="HeadBlade MOTO aus dem aktuellen deutschen Sortiment" width="700" height="700" loading="lazy" decoding="async" sizes="(max-width:700px) 86vw, 44vw" />
+        <img src={moto.image} alt="HeadBlade MOTO aus dem aktuellen deutschen Sortiment" width={motoSize.width} height={motoSize.height} loading="lazy" decoding="async" />
       </div>
       <div class="motion-choice__body">
         <h3>MOTO</h3>
@@ -26,7 +29,7 @@ const atx = getProduct("headblade-atx-package")!;
 
     <article class="motion-choice__product">
       <div class="motion-choice__media">
-        <img src={atx.image} alt="HeadBlade ATX Package aus dem aktuellen deutschen Sortiment" width="700" height="700" loading="lazy" decoding="async" sizes="(max-width:700px) 86vw, 38vw" />
+        <img src={atx.image} alt="HeadBlade ATX Package aus dem aktuellen deutschen Sortiment" width={atxSize.width} height={atxSize.height} loading="lazy" decoding="async" />
       </div>
       <div class="motion-choice__body">
         <h3>ATX</h3>
