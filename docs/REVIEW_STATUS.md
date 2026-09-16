@@ -88,3 +88,21 @@ Farbregeln aus `contour.css` weiter an `.section--dark` hingen.
 Behoben ausschließlich mit vorhandenen Palettenwerten — keine neuen Farben. Ergebnis auf beiden
 von CI geprüften Seiten: **Performance 1.0, Accessibility 1.0, Best Practices 1.0**, `color-contrast`
 ohne Treffer.
+
+## Deploy-Stand (2026-09-16, Branch-Head `3f6bf06`)
+
+Die Kontrast-Korrekturen sind ausgeliefert. Deploy-Lauf 110 (`workflow_dispatch`,
+`bootstrap_review_worker=false`) ist erfolgreich; alle sieben PR-Checks auf `3f6bf06` sind grün
+(`verify`, `smoke`, `lighthouse`, `npm-audit`, `pr-dependency-audit`, `secret-scan`,
+`deploy-review`) und `lhci assert` meldet keine Verletzung mehr.
+
+Live nachgeprüft unter `https://review-headblade-germany-review.cherinojoel.workers.dev`:
+
+- alle acht Review-Routen `200`, unbekannte Pfade `404`, Header `x-robots-tag: noindex`
+- alle zehn Produktbilder unter `/media/produkte/` `200` als `image/jpeg`, zusammen 292 KB;
+  keine Referenz auf `headblade.info/images` im ausgelieferten HTML
+- Kontrast-Fixes im ausgelieferten CSS belegt: `.motion-blades` trägt jetzt `section--dark`,
+  die Refine-Regel für `.offer-card` steht nach der `contour.css`-Regel (gewinnt die Kaskade),
+  und `.decision-support` liegt auf `#f7f8f9`
+
+Produktionsdomain, DNS und Routing bleiben unberührt — weiterhin Owner-Gate nach `docs/OWNER_GATE.md`.
