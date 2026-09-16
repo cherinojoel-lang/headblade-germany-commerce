@@ -21,7 +21,9 @@ describe("Motion Lab visual contract", () => {
     const hero = read("src/components/sections/HeroSection.astro");
     const motion = read("src/styles/motion-lab.css");
 
-    expect(products).toContain("https://www.headblade.info/images/product_images/");
+    // Product media is first-party since 2026-09-16; nothing may be hotlinked from production.
+    expect(products).toContain('"/media/produkte/');
+    expect(products).not.toContain("https://www.headblade.info/images/");
     expect(hero).toContain("motion-hero__product");
     expect(hero).toContain("product.detailImage ?? product.image");
     expect(motion).toContain("--ml-canvas: #ffffff");

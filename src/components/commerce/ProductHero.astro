@@ -1,6 +1,7 @@
 ---
 import type { Product } from "../../data/products";
 import { formatPrice } from "../../lib/catalog";
+import { imageSize } from "../../lib/media";
 
 interface Props {
   product: Product;
@@ -9,6 +10,9 @@ interface Props {
 }
 
 const { product, reviewLabel, showVisual = true } = Astro.props;
+const mainImage = product.detailImage ?? product.image;
+const mainSize = imageSize(mainImage);
+const secondarySize = imageSize(product.secondaryImage);
 ---
 
 <section class:list={["product-hero", { "product-hero--copy-only": !showVisual }]} aria-labelledby="product-title">
@@ -16,8 +20,8 @@ const { product, reviewLabel, showVisual = true } = Astro.props;
     <div class="product-hero__visual">
       {product.badge && <span class="product-hero__badge">{product.badge}</span>}
       <div class:list={["product-hero__media", { "product-hero__media--pair": product.secondaryImage }]}>
-        <img src={product.detailImage ?? product.image} alt={`${product.name} – Produktansicht`} width="760" height="760" fetchpriority="high" decoding="async" sizes="(max-width: 820px) 72vw, 38vw" />
-        {product.secondaryImage && <img src={product.secondaryImage} alt={`${product.name} – enthaltene Pflege`} width="600" height="600" decoding="async" sizes="(max-width: 820px) 34vw, 18vw" />}
+        <img src={mainImage} alt={`${product.name} – Produktansicht`} width={mainSize.width} height={mainSize.height} fetchpriority="high" decoding="async" />
+        {product.secondaryImage && <img src={product.secondaryImage} alt={`${product.name} – enthaltene Pflege`} width={secondarySize.width} height={secondarySize.height} decoding="async" />}
       </div>
     </div>
   )}

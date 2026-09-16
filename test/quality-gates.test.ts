@@ -33,8 +33,8 @@ describe("Contour System accessibility and performance contracts", () => {
   it("keeps the primary PDP image dimensioned and high priority without lazy loading", async () => {
     const gallery = await read("src/components/commerce/ProductMediaGallery.astro");
     const primary = gallery.slice(gallery.indexOf("{firstMedia &&"), gallery.indexOf("{remainingMedia.map"));
-    expect(primary).toContain('width="760"');
-    expect(primary).toContain('height="760"');
+    expect(primary).toContain("width={imageSize(firstMedia.src).width}");
+    expect(primary).toContain("height={imageSize(firstMedia.src).height}");
     expect(primary).toContain('fetchpriority="high"');
     expect(primary).not.toContain('loading="lazy"');
   });

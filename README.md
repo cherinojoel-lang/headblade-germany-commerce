@@ -73,4 +73,22 @@ hochgeladen. Der GitHub-Workflow nutzt bei normalen Branch-Pushes `wrangler vers
 
 ## Review-Daten und Assets
 
-Produktnamen und Preise wurden am 03.09.2026 gegen den öffentlich sichtbaren deutschen Shop geprüft. Die derzeitigen Produktbilder werden für die Review teilweise aus der bestehenden öffentlichen HeadBlade-Quelle geladen. Vor Produktion müssen freigegebene Originalassets lokal/first-party übernommen und Preise, Rechtstexte, Versand-/Shopangaben und alle produktiven Integrationen erneut freigegeben werden.
+Produktnamen und Preise wurden am 03.09.2026 gegen den öffentlich sichtbaren deutschen Shop geprüft.
+
+Die Produktbilder wurden am 16.09.2026 mit Inhaberfreigabe aus der HeadBlade-Germany-Quelle übernommen und liegen seitdem first-party unter `public/media/produkte/`. Es wird nichts mehr von `headblade.info` hotverlinkt — die Review-Preview lädt keine externen Assets mehr. `test/media.test.ts` erzwingt den First-Party-Vertrag und prüft, dass jede referenzierte Datei tatsächlich ausgeliefert wird.
+
+### Bildaufbereitung
+
+Die unveränderten Importe liegen in `assets/produkte-quelle/` und werden **nicht** ausgeliefert. Was die Seite zeigt, erzeugt:
+
+```bash
+npm run images
+```
+
+Das Skript stellt die Motive frei (der eingebrannte weiße Studiohintergrund nahm 49–81 % der Fläche ein und zwang das Layout dazu, jedes Produkt hinter einer hellen Kachel zu verstecken), normalisiert die nicht freistellbaren Packshots auf einen einheitlichen Rand und schreibt `src/data/product-image-sizes.ts` mit den echten Maßen für die `width`/`height`-Attribute.
+
+Vier Quellen lassen sich nicht sauber freistellen und bleiben bewusst Packshots: die beiden Vorratspakete (der „BUY 4 – GET 1 FREE"-Block ist selbst weiß), HeadSlick (weiße Tube auf Weiß) und die MOTO-Verpackung (Blisterkarton auf dunklem Grund). Die Quelle liefert alles nur bis 350×350 bzw. 600×600 — größere Originale existieren dort nicht, deshalb werden die Bilder nirgends über ihre native Größe hinaus skaliert.
+
+Aus dem Hero-Bild wurde beim Freistellen der eingebrannte „reddot design award winner 2017"-Badge herausgeschnitten: ein Zertifizierungsclaim, der sich hier nicht belegen lässt, und damit ein Fall für die Non-Negotiables.
+
+Weiterhin offen vor Produktion: Preise, Rechtstexte, Versand-/Shopangaben und alle produktiven Integrationen müssen erneut freigegeben werden.

@@ -1,7 +1,10 @@
 ---
 import type { Product } from "../../data/products";
+import { imageSize } from "../../lib/media";
 interface Props { product: Product; title?: string; }
 const { product, title = "Für die Kopfrasur entwickelt." } = Astro.props;
+const heroImage = product.detailImage ?? product.image;
+const heroSize = imageSize(heroImage);
 ---
 <section class="motion-hero" aria-labelledby="hero-title">
   <div class="motion-hero__copy hero__copy">
@@ -19,7 +22,7 @@ const { product, title = "Für die Kopfrasur entwickelt." } = Astro.props;
     </dl>
   </div>
   <div class="motion-hero__stage hero__visual" aria-label="HeadBlade MOTO Produktansicht">
-    <img class="motion-hero__product" src={product.detailImage ?? product.image} alt="HeadBlade MOTO Kopfrasierer" width="700" height="700" fetchpriority="high" decoding="async" sizes="(max-width: 980px) 72vw, 40vw" />
+    <img class="motion-hero__product" src={heroImage} alt="HeadBlade MOTO Kopfrasierer" width={heroSize.width} height={heroSize.height} fetchpriority="high" decoding="async" />
     <p class="motion-hero__caption">MOTO · bewegliche Konstruktion für kontrollierte Führung entlang der Kopfkontur.</p>
   </div>
 </section>

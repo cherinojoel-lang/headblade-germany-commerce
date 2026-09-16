@@ -1,11 +1,13 @@
 ---
 import type { Product } from "../../data/products";
 import { formatPrice } from "../../lib/catalog";
+import { imageSize } from "../../lib/media";
 interface Props { product: Product; }
 const { product } = Astro.props;
+const spotSize = imageSize(product.image);
 ---
 <section class="spotlight" aria-labelledby="moto-spotlight-title">
-  <div class="spotlight__visual"><img src={product.image} alt="HeadBlade MOTO Produktansicht" width="700" height="700" loading="lazy" decoding="async" sizes="(max-width: 980px) 68vw, 34vw" /></div>
+  <div class="spotlight__visual"><img src={product.image} alt="HeadBlade MOTO Produktansicht" width={spotSize.width} height={spotSize.height} loading="lazy" decoding="async" /></div>
   <div class="spotlight__copy">
     <p class="eyebrow">Kernprodukt</p>
     <h2 id="moto-spotlight-title">MOTO</h2>
