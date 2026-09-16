@@ -68,3 +68,23 @@ Nach dem Upload unabhängig nachgeprüft:
 `headblade.info`, DNS und Produktionsrouting wurden nicht berührt. Die Verbindung der
 Produktionsdomain bleibt ein separates Owner-Gate gemäß `docs/OWNER_GATE.md` und erfordert die
 Nameserver-Umstellung beim Registrar.
+
+## Kontrast-Korrekturen (2026-09-16)
+
+Der Lighthouse-Lauf auf dem Deploy-Stand meldete `color-contrast` als fehlgeschlagen (Gewicht 7);
+Accessibility lag dadurch bei 0.95 bzw. 0.96 — der CI-Schwellwert ist exakt 0.95. Lokal mit
+Lighthouse 12 nachgestellt und vier Stellen gefunden, alle mit derselben Ursache: Der
+Motion-Lab-Layer hat Flächen aufgehellt bzw. neue dunkle Flächen eingeführt, während die
+Farbregeln aus `contour.css` weiter an `.section--dark` hingen.
+
+| Stelle | vorher | Ursache |
+| --- | --- | --- |
+| `.motion-blade .button--ghost` | **1.08:1** | `.motion-blades` trug kein `section--dark`, Ghost-Button blieb `#111214` auf `#181b1e` — praktisch unsichtbar |
+| `.motion-blades` Eyebrow / Fließtext | 3.70:1 | gleiche Ursache, Grundfarbe `#6b7077` auf `#121416` |
+| `.mechanics-grid b` | 2.82:1 | `contour.css` färbt `.section--dark .mechanics-grid b` mit `#ff5a5f` (für dunkle Flächen), `.contour-mechanics` ist per Refine-Layer aber hell |
+| `.offer-card` Badge / Link | 3.05:1 | `.offer-card` wurde weiß, `.section--dark .offer-card span` blieb bei `#ff5a5f` |
+| `.decision-support` Eyebrow | 4.38:1 | Fläche nutzte noch `--paper-warm` `#f4f0e8`; alle übrigen warmen Flächen hatte der Refine-Layer auf `#f7f8f9` gezogen |
+
+Behoben ausschließlich mit vorhandenen Palettenwerten — keine neuen Farben. Ergebnis auf beiden
+von CI geprüften Seiten: **Performance 1.0, Accessibility 1.0, Best Practices 1.0**, `color-contrast`
+ohne Treffer.

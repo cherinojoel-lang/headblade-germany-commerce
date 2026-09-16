@@ -37,7 +37,11 @@
   background: transparent;
 }
 .mechanics-grid article + article { border-left: 1px solid var(--ml-line); }
-.mechanics-grid b {
+/* Same cause as the .offer-card rule below: contour.css assigns --contour-red-on-dark
+   to elements inside `.section--dark`, but the Motion Lab layer turned those surfaces
+   light. Match the specificity so the step numbers stay readable on #f5f6f7
+   instead of rendering at 2.8:1. */
+.contour-mechanics .mechanics-grid b {
   color: var(--ml-red);
   font-size: .72rem;
   letter-spacing: .1em;
@@ -115,6 +119,14 @@
 /* Keep one dark technical moment for blade mechanics only; everything else is light/editorial. */
 .section--dark:not(.motion-blades) {
   background: #17191c;
+}
+
+/* .offer-card became a white card inside a still-dark section, so contour.css's
+   `.section--dark .offer-card span` / `.product-card__link` painted #ff5a5f onto
+   #ffffff at 3.05:1. The standard red clears AA on white. */
+.section--dark .offer-card span,
+.section--dark .offer-card .product-card__link {
+  color: var(--ml-red);
 }
 
 @media (max-width: 900px) {
