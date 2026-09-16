@@ -48,3 +48,23 @@ lokale Pfade. Damit lädt die Review-Preview **keine externen Assets** mehr.
   `test/motion-lab.test.ts` und `e2e/review.spec.ts` entsprechend nachgezogen.
 - Nebeneffekt: Der e2e-Test `review preview loads safely` ist erstmals vollständig grün, weil die
   bisherigen Konsolenfehler ausschließlich aus den externen Bild-Requests stammten.
+
+## Live Review-Preview (2026-09-16)
+
+Auf Inhaberanweisung wurde der Deploy-Workflow (`workflow_dispatch`, `bootstrap_review_worker=false`,
+Worker `headblade-germany-review` bestand bereits seit 2026-09-05) gegen den Branch-Stand `fdbac91`
+ausgeführt und ist erfolgreich durchgelaufen.
+
+**Verifizierte URL:** `https://review-headblade-germany-review.cherinojoel.workers.dev`
+
+Nach dem Upload unabhängig nachgeprüft:
+
+- Startseite `HTTP 200`, Header `x-robots-tag: noindex`, Meta `noindex,nofollow,noarchive,nosnippet`
+- `/produkte/`, `/produkt/headblade-moto/`, `/finder/`, `/vergleich/moto-vs-atx/`, `/rasierer/`,
+  `/anleitungen/`, `/impressum/` liefern `200`; unbekannte Pfade korrekt `404`
+- Produktbilder unter `/media/produkte/` liefern `200` mit `image/jpeg` in exakt der erwarteten Größe
+- **keine** verbliebene Referenz auf `headblade.info/images` im ausgelieferten HTML
+
+`headblade.info`, DNS und Produktionsrouting wurden nicht berührt. Die Verbindung der
+Produktionsdomain bleibt ein separates Owner-Gate gemäß `docs/OWNER_GATE.md` und erfordert die
+Nameserver-Umstellung beim Registrar.
