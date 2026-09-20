@@ -1,24 +1,9 @@
-import { readFile, readdir } from "node:fs/promises";
-import { extname, join } from "node:path";
+import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import { getAnalyticsConfig } from "../src/lib/analytics";
 
 async function readRepoFile(path: string) {
   return readFile(new URL(`../${path}`, import.meta.url), "utf8");
-}
-
-async function distHtmlFiles(): Promise<string[]> {
-  const dir = new URL("../dist/", import.meta.url);
-  const out: string[] = [];
-  async function walk(path: string) {
-    for (const entry of await readdir(path, { withFileTypes: true })) {
-      const full = join(path, entry.name);
-      if (entry.isDirectory()) await walk(full);
-      else if (extname(entry.name) === ".html") out.push(full);
-    }
-  }
-  await walk(new URL(dir).pathname);
-  return out;
 }
 
 describe("analytics gate (src/lib/analytics.ts)", () => {
@@ -74,13 +59,14 @@ describe("analytics stays out of the review preview", () => {
     }
   });
 
-  it("ships zero GTM/GA4/GSC markers in the built preview HTML", async () => {
-    const files = await distHtmlFiles();
-    expect(files.length, "run `npm run build` before this test").toBeGreaterThan(0);
-    const marker = /googletagmanager\.com|google-analytics\.com|google-site-verification|gtag\(|dataLayer/i;
-    for (const file of files) {
-      const html = await readFile(file, "utf8");
-      expect(html, file).not.toMatch(marker);
-    }
-  });
+  // The built-HTML check ("does dist/ actually contain zero tracking markers")
+  // is deliberately NOT a vitest test: `npm run verify` runs `npm test` before
+  // `npm run build`, so dist/ does not exist yet at this point in a clean CI
+  // checkout (it only did locally because an earlier manual build had left one
+  // behind). No other file in this directory reads from dist/ for the same
+  // reason. The equivalent assertion already runs post-build, in
+  // scripts/preview-contract.mjs's ANALYTICS_MARKER check, invoked by
+  // `npm run validate:preview` -- the last step of `npm run verify` and the
+  // established place in this repo for anything that inspects the built
+  // output.
 });
