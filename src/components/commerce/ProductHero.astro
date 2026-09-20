@@ -44,7 +44,10 @@ const secondarySize = imageSize(product.secondaryImage);
   .product-hero { display:grid; grid-template-columns:1fr 1fr; min-height:650px; background:var(--white); }
   .product-hero--copy-only { grid-template-columns:1fr; min-height:0; }
   .product-hero__visual { position:relative; display:grid; place-items:center; min-height:560px; padding:clamp(2rem,6vw,5rem); background:linear-gradient(145deg,#e7e5df,#f8f7f3); }
-  .product-hero__media { width:min(78%,620px); max-height:560px; display:grid; place-items:center; }
+  /* Capped to what the sources actually hold. The largest product cut-out is
+     473px wide; 620px meant a 2.6x upscale on a 2x screen, which was the most
+     visible softness anywhere on the site. */
+  .product-hero__media { width:min(70%,470px); max-height:560px; display:grid; place-items:center; }
   .product-hero__media img { width:100%; max-height:560px; object-fit:contain; filter:drop-shadow(0 28px 30px rgba(0,0,0,.22)); }
   .product-hero__media--pair { width:min(88%,700px); grid-template-columns:1fr 1fr; gap:1rem; }
   .product-hero__media--pair img { min-width:0; }

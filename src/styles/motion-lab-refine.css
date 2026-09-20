@@ -175,19 +175,25 @@
 /* ---------------------------------------------------------------------------
    Hero (2026-09-16)
 
-   The source tops out at 350px and nothing larger exists upstream, so the old
-   520px display width meant a 3x upscale on a 2x screen. The product is now
-   shown at roughly its native size and the composition carries the viewport
+   The hero source is 473px wide (the shop's popup_images/ variant; the 350x350
+   in the filename is misleading). Nothing larger exists upstream, so display
+   width is capped near native and the composition carries the viewport
    instead: more room for the headline, a tighter stage.
    --------------------------------------------------------------------------- */
 .motion-hero {
   grid-template-columns: minmax(0, 1.04fr) minmax(420px, 0.96fr);
 }
-.motion-hero__product {
-  width: min(78%, 360px);
+/* Selector carries the stage class on purpose. `global.css` styles this image as
+   `.hero__visual img`, specificity (0,1,1); a bare `.motion-hero__product` is
+   (0,1,0) and loses no matter how late it is declared. Both the width cap and
+   the filter reset below were silently doing nothing until this was raised. */
+.hero__visual img.motion-hero__product {
+  /* Source is 473px wide. Anything past ~430 is visible upscaling on a 2x
+     screen, and no larger original exists upstream. */
+  width: min(70%, 400px);
   max-height: none;
-  /* The cut-out keeps the photographed contact shadow; a CSS drop-shadow on top
-     of it reads as two light sources. */
+  /* The cut-out keeps the photographed contact shadow; the drop-shadow that
+     global.css adds on top of it reads as two light sources. */
   filter: none;
 }
 .motion-hero__stage::before {
@@ -222,4 +228,19 @@
 @media (prefers-reduced-motion: reduce) {
   .decision-card,
   .help-grid a { transition: none !important; }
+}
+
+/* Remaining image surfaces, capped against the real source resolution.
+   `global.css` and `motion-lab.css` size these with descendant selectors
+   (`.spotlight__visual img`, specificity (0,1,1)), so these have to match or
+   exceed that to take effect at all. */
+.spotlight__visual img.spotlight__product,
+.spotlight__visual img {
+  width: min(66%, 420px);
+}
+.motion-choice__media img {
+  /* ATX is the weakest source at 301px; MOTO holds 473px. A single cap has to
+     serve both, so it follows the weaker one. */
+  width: min(58%, 290px);
+  max-height: 300px;
 }

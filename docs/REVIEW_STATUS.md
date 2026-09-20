@@ -175,3 +175,41 @@ Best Practices 1.0 · SEO 1.0**.
 Drei der vier Packshots behalten ihren weißen Grund und zeigen im Produktraster eine feine Kante
 gegen die hellgraue Kachel. Das ist eine Eigenschaft des Quellmaterials, keine Layout-Entscheidung;
 sauber lösbar wäre es nur mit neuen Produktfotos.
+
+## Bildschärfe (2026-09-20)
+
+Der Inhaber meldete sichtbare Verpixelung. Gemessen statt geschätzt: Anzeigebreite
+gegen native Bildbreite, gerechnet für ein 2x-Display.
+
+**Vorher, schlechtester Fall:** Produktdetailseite zeigte ein 277 px breites Bild
+auf 644 px — Faktor **4,65**. Startseite 3,49. Insgesamt sichtbar weich.
+
+Drei Ursachen, zwei davon Fehler auf unserer Seite:
+
+1. **Zwei Quellen waren unnötig klein.** `moto-detail` und `moto-package` lagen als
+   350×350 vor. Auf headblade.info liegen unter `popup_images/` dieselben Motive in
+   **600×600** — der Dateiname sagt weiterhin `_350x350`, deshalb beim ersten Import
+   übersehen. Neu importiert: der Hero-Freisteller ist jetzt 473 px statt 277 px
+   breit, die Verpackung 582 px statt 340 px.
+2. **Das Breitenlimit im Refine-Layer hat nie gegriffen.** `global.css` stylt das
+   Hero-Bild als `.hero__visual img` mit Spezifität (0,1,1); die Refine-Regel war
+   `.motion-hero__product` mit (0,1,0) und verlor unabhängig von der Reihenfolge.
+   Betroffen war nicht nur die Breite, sondern auch das Abschalten des
+   CSS-Schlagschattens — der lag die ganze Zeit zusätzlich über dem
+   fotografierten Schatten. Selbe Fehlerklasse wie bei den Kontrastfehlern.
+3. **Anzeigegrößen lagen deutlich über der Quelle.** Die Produktgalerie zeigte auf
+   660 px, die Detailseite auf 644 px. Gekappt auf 470 px, den Hero auf 400 px,
+   die Auswahlkarten auf 290 px (dort ist ATX mit 301 px die schwächste Quelle und
+   gibt das Limit vor).
+
+**Nachher:** schlechtester Wert **1,99** statt 4,65; von 28 gemessenen Bildern
+liegen noch 4 über 1,6. Lighthouse unverändert 1.0/1.0/1.0/1.0 auf beiden
+CI-Seiten, 81 Tests und 6 e2e grün.
+
+### Grenze
+
+Mehr gibt das Material des deutschen Shops nicht her — 600×600 ist dort das
+Maximum. Der US-Herstellershop `headblade.com` (Shopify) führt dieselben Produkte
+in bis zu **1251×1250**. Das würde die Verpixelung vollständig beseitigen, ist
+aber eine andere Quelle als die freigegebene eigene Seite und daher nicht ohne
+Rücksprache verwendet.

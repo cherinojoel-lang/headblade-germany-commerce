@@ -68,7 +68,10 @@ const [firstMedia, ...remainingMedia] = media;
   .product-gallery__stage--multi { grid-template-columns:1fr; }
   .product-gallery__figure { min-height:420px; display:grid; place-items:center; margin:0; scroll-margin-top:7rem; }
   .product-gallery__figure:not(:first-child) { min-height:320px; }
-  .product-gallery__figure img { width:min(100%,660px); max-height:620px; object-fit:contain; filter:drop-shadow(0 26px 28px rgba(0,0,0,.18)); }
+  /* 660px meant a 2.7x upscale on a 2x screen: the largest product cut-out is
+     473px wide and the shop holds nothing bigger. Capped to roughly native so
+     the detail page stops being the blurriest view of a product. */
+  .product-gallery__figure img { width:min(100%,470px); max-height:470px; object-fit:contain; filter:drop-shadow(0 26px 28px rgba(0,0,0,.18)); }
   .product-gallery__thumbs { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1rem; }
   .product-gallery__thumbs a { display:grid; place-items:center; width:72px; height:72px; border:1px solid rgba(17,18,20,.18); background:white; }
   .product-gallery__thumbs img { width:64px; height:64px; object-fit:contain; }

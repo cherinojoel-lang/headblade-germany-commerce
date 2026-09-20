@@ -46,11 +46,14 @@ const KEEP_AS_PACKSHOT = new Set([
 /** Per-file overrides. `crop` is applied before the cutout, in source pixels. */
 const OVERRIDES = {
   // Crops away the "reddot design award winner 2017" badge in the top-left -- a
-  // certification claim we cannot substantiate. Row 82 is the gap between badge
-  // and product; the right and bottom edges follow the content extent (col 348,
-  // row 329) so the photographed contact shadow is kept whole. Cutting inside it
-  // leaves a hard straight edge where the shadow is sliced.
-  "moto-detail.jpg": { crop: { left: 2, top: 82, width: 347, height: 248 } },
+  // certification claim we cannot substantiate. Cutting inside the photographed
+  // contact shadow leaves a hard straight edge, so the crop follows the content
+  // extent rather than a round number.
+  // Source is the 600x600 variant from the shop's popup_images/ (the 350x350 in
+  // the filename is misleading). Row 133 is the gap between badge and product,
+  // and the right/bottom edges follow the content extent (col 598, row 566) so
+  // the photographed contact shadow stays whole.
+  "moto-detail.jpg": { crop: { left: 12, top: 133, width: 587, height: 434 } },
 };
 
 /**

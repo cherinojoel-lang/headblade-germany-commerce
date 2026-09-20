@@ -29,15 +29,15 @@ export const productImageSizes: Record<string, readonly [number, number]> = {
     467
   ],
   "/media/produkte/moto-detail.webp": [
-    277,
-    216
+    473,
+    375
   ],
   "/media/produkte/moto-headcase.webp": [
     300,
     322
   ],
   "/media/produkte/moto-package.webp": [
-    340,
-    340
+    582,
+    582
   ]
 };
