@@ -14,6 +14,7 @@
     "test:e2e": "playwright test",
     "build": "astro build",
     "validate:preview": "node scripts/validate-preview.mjs",
+    "assert:production": "node scripts/assert-production-ready.mjs",
     "images": "node scripts/cutout-product-images.mjs",
     "verify": "npm run check && npm test && npm run build && npm run validate:preview",
     "cf:review-bootstrap": "npm run build && wrangler deploy",

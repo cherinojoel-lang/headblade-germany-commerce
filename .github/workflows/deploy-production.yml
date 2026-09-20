@@ -1,0 +1,91 @@
+name: Deploy Production
+
+# Manual gate, mirroring hsb-boden's production workflow: production deploys are
+# workflow_dispatch-only and run in the `production` GitHub Environment so a
+# human approval is required before any job starts.
+#
+# Unlike hsb-boden, this workflow is NOT yet a working release path, and that is
+# deliberate. hsb-boden could cut over because its build was a complete
+# replacement for the old site. This repository currently builds a review
+# preview: no cart, no checkout, no payment, `noindex` on every page. The domain
+# it would target, www.headblade.info, serves a live Gambio shop today.
+# Repointing it would take a working shop offline and de-index the domain.
+#
+# `scripts/assert-production-ready.mjs` therefore runs before anything is
+# uploaded and fails closed while those preview properties are still present.
+# The workflow exists so the release path is reviewed and ready, not so it can
+# be fired today. See docs/PRODUCTION_CUTOVER.md.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_cutover:
+        description: 'I understand this replaces whatever currently serves the target domain'
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Require explicit cutover confirmation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${{ inputs.confirm_cutover }}" = "true" || {
+            echo "confirm_cutover was not checked; refusing to deploy to production"
+            exit 2
+          }
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Require Cloudflare credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "CLOUDFLARE_API_TOKEN is not configured"; exit 2; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "CLOUDFLARE_ACCOUNT_ID is not configured"; exit 2; }
+
+      - name: Pin stable npm resolver
+        run: npm install --global npm@11.6.0
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Quality gate
+        run: |
+          npm run check
+          npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Production readiness gate
+        # Fails closed while the build is still a review preview. This is the
+        # step that stops a cart-less, noindexed site from reaching a live
+        # commercial domain.
+        env:
+          PRODUCTION_CONTENT_APPROVED: ${{ vars.PRODUCTION_CONTENT_APPROVED }}
+          PRODUCTION_CUTOVER_ACKNOWLEDGED: ${{ vars.PRODUCTION_CUTOVER_ACKNOWLEDGED }}
+        run: node scripts/assert-production-ready.mjs
+
+      - name: Deploy
+        run: npm exec -- wrangler deploy
