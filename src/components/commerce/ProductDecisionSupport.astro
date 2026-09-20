@@ -53,7 +53,9 @@ const comparisonHref = ["headblade-moto", "headblade-atx-package"].includes(prod
 </section>
 
 <style>
-  .decision-support { background:var(--paper-warm,#f6f3ed); }
+  /* Matches the Motion Lab warm surface (motion-lab-refine.css `.section--warm`).
+     The old --paper-warm #f4f0e8 left the muted eyebrow at 4.38:1, just under AA. */
+  .decision-support { background:#f7f8f9; }
   .decision-support__grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1px; background:rgba(17,18,20,.14); border:1px solid rgba(17,18,20,.14); }
   .decision-support__grid article { min-width:0; padding:clamp(1.3rem,3vw,2.2rem); background:white; }
   .decision-support__grid h3 { margin-top:0; }

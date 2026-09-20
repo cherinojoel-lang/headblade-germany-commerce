@@ -36,7 +36,17 @@ describe("HeadBlade Motion Lab homepage", () => {
 
   it("keeps the homepage visibly review-only", async () => {
     const source = await readFile(pageUrl, "utf8");
-    expect(source).toContain("keine Bestellung");
     expect(source).not.toMatch(/Jetzt bezahlen|Kreditkarte|PayPal|Klarna/i);
+
+    // The notice lives in the layout banner shown on every page. It used to be
+    // duplicated as a second strip on the homepage; the two together ate roughly
+    // 150px of the first viewport while saying the same thing.
+    const banner = await readFile(
+      new URL("../src/components/layout/PreviewBanner.astro", import.meta.url),
+      "utf8",
+    );
+    expect(banner).toContain("keine Bestellung");
+    expect(banner).toContain("keine Zahlung");
+    expect(banner).toContain("keine Dateneingabe");
   });
 });

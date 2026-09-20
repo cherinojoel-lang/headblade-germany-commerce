@@ -2,7 +2,13 @@ name: Deploy Review Preview
 
 on:
   push:
-    branches: [feat/astro-headblade-premium]
+    # `feat/astro-headblade-premium` was merged in #2 and is no longer the
+    # working branch, so pushes stopped triggering a preview deploy and every
+    # upload had to be dispatched by hand.
+    branches:
+      - main
+      - 'claude/**'
+      - 'feat/**'
   workflow_dispatch:
     inputs:
       bootstrap_review_worker:
