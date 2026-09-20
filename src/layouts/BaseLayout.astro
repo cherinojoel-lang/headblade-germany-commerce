@@ -2,6 +2,8 @@
 import Footer from "../components/layout/Footer.astro";
 import Header from "../components/layout/Header.astro";
 import PreviewBanner from "../components/layout/PreviewBanner.astro";
+import Analytics from "../components/seo/Analytics.astro";
+import AnalyticsNoScript from "../components/seo/AnalyticsNoScript.astro";
 import SEOHead from "../components/seo/SEOHead.astro";
 import "../styles/global.css";
 import "../styles/accessibility.css";
@@ -28,8 +30,10 @@ const { title, description, image, jsonLd } = Astro.props;
     <meta name="theme-color" content="#ffffff" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <SEOHead {title} {description} {image} {jsonLd} />
+    <Analytics />
   </head>
   <body>
+    <AnalyticsNoScript />
     <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
     <PreviewBanner />
     <Header />

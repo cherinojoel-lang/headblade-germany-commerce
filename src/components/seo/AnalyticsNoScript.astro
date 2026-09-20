@@ -1,0 +1,23 @@
+---
+/**
+ * GTM requires its <noscript><iframe> immediately after the opening <body>
+ * tag — a separate element from the head script in Analytics.astro because
+ * of where it has to sit in the document, not a separate decision. Same gate,
+ * same config helper.
+ */
+import { getAnalyticsConfig } from "../../lib/analytics";
+
+const { enabled, gtmId } = getAnalyticsConfig();
+---
+
+{enabled && gtmId && (
+  <noscript>
+    <iframe
+      src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+      height="0"
+      width="0"
+      style="display:none;visibility:hidden"
+      title="Google Tag Manager"
+    ></iframe>
+  </noscript>
+)}

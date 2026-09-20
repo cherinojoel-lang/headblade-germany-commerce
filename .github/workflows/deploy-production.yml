@@ -76,6 +76,17 @@ jobs:
           npm test
 
       - name: Build
+        # Analytics (GTM/GA4/GSC) only compiles into the build when the
+        # `production` Environment carries PRODUCTION_ANALYTICS_APPROVED =
+        # "true" -- docs/OWNER_GATE.md treats that as its own explicit
+        # decision, separate from this workflow's cutover confirmation above.
+        # Without it these three vars are empty and src/lib/analytics.ts
+        # stays disabled, same as on the preview path.
+        env:
+          PUBLIC_ANALYTICS_ENABLED: ${{ vars.PRODUCTION_ANALYTICS_APPROVED == 'true' && 'true' || 'false' }}
+          PUBLIC_GA4_ID: ${{ vars.PRODUCTION_ANALYTICS_APPROVED == 'true' && vars.PUBLIC_GA4_ID || '' }}
+          PUBLIC_GTM_ID: ${{ vars.PRODUCTION_ANALYTICS_APPROVED == 'true' && vars.PUBLIC_GTM_ID || '' }}
+          PUBLIC_GSC_VERIFICATION: ${{ vars.PRODUCTION_ANALYTICS_APPROVED == 'true' && vars.PUBLIC_GSC_VERIFICATION || '' }}
         run: npm run build
 
       - name: Production readiness gate
@@ -85,6 +96,7 @@ jobs:
         env:
           PRODUCTION_CONTENT_APPROVED: ${{ vars.PRODUCTION_CONTENT_APPROVED }}
           PRODUCTION_CUTOVER_ACKNOWLEDGED: ${{ vars.PRODUCTION_CUTOVER_ACKNOWLEDGED }}
+          PRODUCTION_ANALYTICS_APPROVED: ${{ vars.PRODUCTION_ANALYTICS_APPROVED }}
         run: node scripts/assert-production-ready.mjs
 
       - name: Deploy

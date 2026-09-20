@@ -1,0 +1,43 @@
+---
+/**
+ * Head-injected analytics: GTM's loader script, direct GA4 gtag.js (only when
+ * no GTM container is configured — GTM normally carries the GA4 tag inside
+ * itself, so loading both would double-count every hit), and the Search
+ * Console ownership-verification meta tag.
+ *
+ * Renders nothing at all when `getAnalyticsConfig()` is disabled, which is
+ * the case for every preview build. See src/lib/analytics.ts for the gate.
+ *
+ * Consent note for whoever flips PRODUCTION_ANALYTICS_APPROVED: this loads
+ * unconditionally once enabled. German sites need a cookie/consent banner in
+ * front of GTM/GA4 (TTDSG §25, GDPR) before this goes live for real visitors
+ * — that consent layer does not exist in this repo and is not part of what
+ * this component does. Wire it through GTM's own consent mode or add a
+ * consent gate before enabling.
+ */
+import { getAnalyticsConfig } from "../../lib/analytics";
+
+const { enabled, ga4Id, gtmId, gscVerification } = getAnalyticsConfig();
+---
+
+{enabled && (
+  <>
+    {gscVerification && <meta name="google-site-verification" content={gscVerification} />}
+    {gtmId && (
+      <script is:inline define:vars={{ gtmId }}>
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',gtmId);
+      </script>
+    )}
+    {!gtmId && ga4Id && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>
+        <script is:inline define:vars={{ ga4Id }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', ga4Id);
+        </script>
+      </>
+    )}
+  </>
+)}

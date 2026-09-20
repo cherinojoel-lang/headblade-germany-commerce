@@ -16,7 +16,12 @@ Bindend für jeden Agenten in diesem Repo. Ergänzt `AGENTS.md`.
 - **Irgendetwas an `headblade.info`**: DNS, Routing, Custom Domain, `routes`-Block
 - `wrangler deploy` gegen eine andere Zieladresse als den Review-Worker
 - Entfernen von `noindex` oder des Review-Banners
-- Hinzufügen von Warenkorb, Checkout, Zahlungsanbieter, Formularen, Analytics
+- Hinzufügen von Warenkorb, Checkout, Zahlungsanbieter, Formularen
+- **Setzen von `PRODUCTION_ANALYTICS_APPROVED=true`** oder Eintragen echter
+  `PUBLIC_GA4_ID`/`PUBLIC_GTM_ID`/`PUBLIC_GSC_VERIFICATION`-Werte im
+  `production`-Environment — die Vorbereitung in `src/lib/analytics.ts` ist
+  fertig, die Aktivierung ist eine eigene Freigabe (`docs/OWNER_GATE.md`,
+  `docs/PRODUCTION_CUTOVER.md` Abschnitt 3a)
 - Preise, Rechtstexte oder Versandangaben ändern oder als geprüft ausgeben
 - Zertifizierungs-, Auszeichnungs- oder Referenzclaims ohne Beleg
 - `rm`, `git reset --hard`, force-push

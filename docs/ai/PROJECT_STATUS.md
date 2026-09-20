@@ -23,7 +23,7 @@ unbekannte Pfade `404`, `x-robots-tag: noindex`, zehn Produktbilder `200` als
 | Gate | Ergebnis |
 | --- | --- |
 | `npm run check` | 0 Fehler |
-| `npm test` | 81/81 |
+| `npm test` | 89/89 |
 | `npm run build` | 28 Seiten |
 | `npm run validate:preview` | `PREVIEW_VALIDATION_OK` |
 | Chromium-e2e | 6/6 |
@@ -47,6 +47,19 @@ unbekannte Pfade `404`, `x-robots-tag: noindex`, zehn Produktbilder `200` als
 5. **Betriebs-Gerüst** — `AGENTS.md`, `CLAUDE.md`, `docs/ai/` nach dem Muster
    von auto-hub und hsb-boden ergänzt; Produktions-Deploy-Pfad angelegt und
    durch ein Readiness-Gate gesperrt.
+6. **Bildschärfe** — zwei Quellen (`moto-detail`, `moto-package`) lagen unnötig
+   klein vor (350×350), obwohl 600×600-Varianten auf der eigenen Seite
+   existierten; neu importiert. Ein CSS-Spezifitätsfehler hat das
+   Breitenlimit im Hero seit dessen Einführung wirkungslos gemacht — selbe
+   Fehlerklasse wie die Kontrastbefunde. Schlimmster Hochskalierungsfaktor
+   4.65× → 1.99×.
+7. **Analytics vorbereitet, nicht aktiv** — GA4, Search Console und Tag
+   Manager sind fertig verdrahtet (`src/lib/analytics.ts`), bleiben aber ohne
+   `PRODUCTION_ANALYTICS_APPROVED=true` vollständig inaktiv. Zwei
+   automatisierte Gegenproben stellen das sicher: `validate:preview` bricht
+   bei jedem Tracking-Marker in der Preview ab, `assert:production` bricht
+   ab, wenn Freigabe-Flag und tatsächlicher Build-Inhalt auseinanderlaufen.
+   Details in `docs/PRODUCTION_CUTOVER.md` Abschnitt 3a.
 
 ## Offen
 
@@ -55,9 +68,12 @@ unbekannte Pfade `404`, `x-robots-tag: noindex`, zehn Produktbilder `200` als
 | PR #3 reviewen und mergen | Inhaber |
 | Entscheidung Weg A/B/C aus `docs/PRODUCTION_CUTOVER.md` | Inhaber |
 | Preise und Rechtstexte für Produktion neu freigeben | Inhaber |
+| Analytics aktivieren (`PRODUCTION_ANALYTICS_APPROVED` + IDs) | Inhaber, eigene Entscheidung |
+| Cookie-/Consent-Lösung vor echter Analytics-Aktivierung | noch nicht begonnen |
 | Shop-Funktionen (Warenkorb, Checkout, Zahlung) | eigenes Projekt, nicht begonnen |
 
 ## Bewusst nicht vorhanden
 
-Warenkorb, Checkout, Zahlung, Formulare, Kundendatenerfassung, Analytics,
-Consent-Layer, Produktionsdomain, Produktionsrouting.
+Warenkorb, Checkout, Zahlung, Formulare, Kundendatenerfassung, aktives
+Analytics/Tracking, Consent-Layer, Produktionsdomain, Produktionsrouting.
+Analytics-Anbindung ist vorbereitet (siehe oben), aber bewusst nicht scharf.

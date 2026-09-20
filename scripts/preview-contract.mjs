@@ -4,6 +4,13 @@ const PAYMENT_PROVIDER = /paypal|stripe|klarna|checkout\.com/i;
 const TRANSACTIONAL_COPY = /jetzt bezahlen|bestellung absenden/i;
 const MERCHANT_SCHEMA = /"(?:offers|availability)"\s*:|"@type"\s*:\s*"Offer"/i;
 const CHECKOUT_ENDPOINT = /(?:href|action)=["'][^"']*(?:\/checkout\b|\/warenkorb\b|\/cart\b)/i;
+// docs/OWNER_GATE.md: "analytics activation" is its own explicit decision,
+// separate from a positive review. src/lib/analytics.ts stays off unless
+// deploy-production.yml sets PUBLIC_ANALYTICS_ENABLED from an explicit
+// PRODUCTION_ANALYTICS_APPROVED — never on the preview path. This regexp is
+// the check that a future change to that gate, or a stray env var in the
+// preview workflow, cannot ship tracking to the review preview undetected.
+const ANALYTICS_MARKER = /googletagmanager\.com|google-analytics\.com|google-site-verification|gtag\(|dataLayer/i;
 
 export function validateHtml(html, label = "document") {
   const text = String(html);
@@ -18,6 +25,12 @@ export function validateHtml(html, label = "document") {
   }
   if (MERCHANT_SCHEMA.test(text)) {
     throw new Error(`Merchant Offer structured data detected in review HTML: ${label}`);
+  }
+  if (ANALYTICS_MARKER.test(text)) {
+    throw new Error(
+      `Analytics/tracking marker detected on the review preview: ${label}. ` +
+        `docs/OWNER_GATE.md requires a separate explicit approval before analytics activates.`,
+    );
   }
 }
 

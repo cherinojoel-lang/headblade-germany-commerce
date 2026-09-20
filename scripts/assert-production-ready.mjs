@@ -96,6 +96,42 @@ if (process.env.PRODUCTION_CUTOVER_ACKNOWLEDGED !== "true") {
   );
 }
 
+// 6. Analytics consistency. docs/OWNER_GATE.md treats "analytics activation"
+//    as its own explicit decision, independent of general production
+//    go-live -- a production deploy without analytics is a valid outcome.
+//    What is never valid is the two signals disagreeing: an approval with no
+//    tracking actually wired (the owner said yes and got nothing), or
+//    tracking markers shipping without the approval env var having been set
+//    (someone passed PUBLIC_GTM_ID straight into the build, bypassing the
+//    gate in src/lib/analytics.ts). Both are checked against the built HTML,
+//    not against the env vars alone, so this catches drift between the gate
+//    and what actually renders.
+{
+  const approved = process.env.PRODUCTION_ANALYTICS_APPROVED === "true";
+  const marker = /googletagmanager\.com|google-analytics\.com|google-site-verification|gtag\(/i;
+  let hasMarker = false;
+  for (const file of pages) {
+    if (marker.test(await readFile(file, "utf8"))) {
+      hasMarker = true;
+      break;
+    }
+  }
+  if (approved && !hasMarker) {
+    failures.push(
+      "PRODUCTION_ANALYTICS_APPROVED is \"true\" but no GTM/GA4/GSC marker was found in " +
+        "the build. Set PUBLIC_GA4_ID, PUBLIC_GTM_ID or PUBLIC_GSC_VERIFICATION on the " +
+        "production Environment, or the approval is a no-op.",
+    );
+  }
+  if (!approved && hasMarker) {
+    failures.push(
+      "The build contains an analytics/tracking marker but PRODUCTION_ANALYTICS_APPROVED " +
+        "is not \"true\". This means a tracking ID reached the build without going through " +
+        "the explicit approval gate -- refusing to ship it.",
+    );
+  }
+}
+
 if (failures.length) {
   console.error("PRODUCTION_READINESS_FAILED\n");
   for (const [i, f] of failures.entries()) console.error(`  ${i + 1}. ${f}`);

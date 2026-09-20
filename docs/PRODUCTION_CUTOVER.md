@@ -58,12 +58,62 @@ bricht ab, solange sie offen sind. Aktueller Lauf gegen den Build:
    Auf einem Live-Shop sind beide bindend (Preisangabenverordnung,
    Impressumspflicht) und müssen neu freigegeben werden.
 5. **`PRODUCTION_CUTOVER_ACKNOWLEDGED` ist nicht gesetzt.** Siehe Punkt 1 oben.
+6. **Analytics ist vorbereitet, aber nicht aktiviert.** Siehe Abschnitt 3a unten —
+   das ist eine eigene, unabhängige Entscheidung, keine Vorbedingung für den
+   übrigen Cutover.
 
 Nicht maschinell prüfbar, aber ebenso offen: **Die Preview hat keine
 Shop-Funktion.** Warenkorb, Checkout, Zahlung, Bestellabwicklung und
 Kundendatenverarbeitung existieren in diesem Projekt bewusst nicht. Ein Ersatz
 des Gambio-Shops setzt voraus, dass diese Funktionen gebaut und rechtlich
 abgesichert werden — das ist ein eigenes Projekt, kein Restpunkt.
+
+## 3a. Analytics (GA4, Search Console, Tag Manager) — vorbereitet, nicht aktiv
+
+Auf Wunsch des Inhabers ist die Anbindung an Google Analytics 4, Google Search
+Console und Google Tag Manager **fertig im Code**, aber **inaktiv**. Das ist
+eine eigene, von den Punkten 1–6 oben unabhängige Entscheidung —
+`docs/OWNER_GATE.md` nennt „analytics activation" ausdrücklich als eigenen
+Freigabepunkt, getrennt von einer positiven Design-Review und getrennt vom
+übrigen Produktions-Cutover.
+
+**Wie es funktioniert:** `src/lib/analytics.ts` liest drei build-time
+Variablen und einen Freigabe-Schalter. Ohne den Schalter passiert nichts —
+selbst wenn eine ID versehentlich gesetzt wäre.
+
+| Variable | Zweck |
+| --- | --- |
+| `PRODUCTION_ANALYTICS_APPROVED` (Environment-Variable, nicht Secret) | Muss `"true"` sein, sonst bleibt alles Übrige wirkungslos |
+| `PUBLIC_GA4_ID` | GA4-Messwert-ID (`G-XXXXXXX`); wird nur geladen, wenn **keine** GTM-ID gesetzt ist — sonst zählt es doppelt, weil GTM GA4 selbst mitführt |
+| `PUBLIC_GTM_ID` | Tag-Manager-Container-ID (`GTM-XXXXXXX`) |
+| `PUBLIC_GSC_VERIFICATION` | Search-Console-Verifizierungstoken (`<meta name="google-site-verification">`) |
+
+Alle vier gehören ins GitHub-Environment `production` als **Variablen**
+(nicht Secrets — GA4-/GTM-IDs stehen ohnehin offen im HTML jeder Seite, die
+sie einsetzt). `deploy-production.yml` reicht sie nur durch, wenn
+`PRODUCTION_ANALYTICS_APPROVED == 'true'`; sonst baut der Schritt mit leeren
+Werten, identisch zum Preview-Pfad.
+
+**Zwei unabhängige Sicherungen, beide automatisiert geprüft:**
+
+- `scripts/preview-contract.mjs` lässt `npm run validate:preview` fehlschlagen,
+  sobald irgendein Tracking-Marker (`googletagmanager.com`,
+  `google-analytics.com`, `google-site-verification`, `gtag(`, `dataLayer`) im
+  Preview-HTML auftaucht. `deploy-preview.yml` setzt nie eine der vier
+  Variablen, also darf das nie passieren.
+- `scripts/assert-production-ready.mjs` prüft beim Produktions-Build, dass
+  Freigabe-Flag und tatsächlicher Build-Inhalt **übereinstimmen**: freigegeben
+  ohne jeden Marker im Build bricht ab (die Freigabe wäre wirkungslos gewesen),
+  und ein Marker ohne Freigabe bricht ebenfalls ab (eine ID hätte das Gate
+  umgangen). `test/analytics.test.ts` deckt beide Richtungen zusätzlich mit
+  festen Testfällen ab.
+
+**Vor der echten Aktivierung offen, nicht Teil dieser Vorbereitung:** eine
+Cookie-/Consent-Lösung. GTM und GA4 laden nach diesem Schalter sofort und
+bedingungslos; für echte Besucher in Deutschland braucht es vorher eine
+Einwilligung (TTDSG §25, DSGVO). Das ist in `Analytics.astro` als Kommentar
+vermerkt, aber nicht gebaut — das gehört in dieselbe Freigabe-Entscheidung wie
+die Aktivierung selbst, nicht in diese Vorbereitung.
 
 ## 4. Mögliche Wege
 
