@@ -20,7 +20,7 @@ describe("Cart Drawer and E-Commerce Interactions", () => {
   it("provides add-to-cart button on ProductHero with required data attributes", async () => {
     const hero = await read("src/components/commerce/ProductHero.astro");
     expect(hero).toContain('class="button button--red button--add-cart js-add-to-cart"');
-    expect(hero).toContain("data-id={product.id}");
+    expect(hero).toContain("data-id={product.slug}");
     expect(hero).toContain("data-name={product.name}");
     expect(hero).toContain("data-price={product.price}");
     expect(hero).toContain("In den Warenkorb");
