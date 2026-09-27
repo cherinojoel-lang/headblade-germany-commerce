@@ -1,6 +1,7 @@
 ---
 import Footer from "../components/layout/Footer.astro";
 import Header from "../components/layout/Header.astro";
+import CartDrawer from "../components/commerce/CartDrawer.astro";
 import PreviewBanner from "../components/layout/PreviewBanner.astro";
 import Analytics from "../components/seo/Analytics.astro";
 import AnalyticsNoScript from "../components/seo/AnalyticsNoScript.astro";
@@ -41,5 +42,6 @@ const { title, description, image, jsonLd } = Astro.props;
       <slot />
     </main>
     <Footer />
+    <CartDrawer />
   </body>
 </html>

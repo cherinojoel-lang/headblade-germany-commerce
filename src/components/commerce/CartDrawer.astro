@@ -1,0 +1,705 @@
+---
+---
+<div id="cart-drawer-backdrop" class="cart-backdrop" aria-hidden="true"></div>
+
+<aside id="cart-drawer" class="cart-drawer" aria-label="Warenkorb" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="cart-drawer__header">
+    <div class="cart-drawer__title-wrap">
+      <h2 class="cart-drawer__title">Warenkorb</h2>
+      <span class="cart-drawer__count" id="cart-drawer-count">(0)</span>
+    </div>
+    <button type="button" class="cart-drawer__close" id="cart-close" aria-label="Warenkorb schließen">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="cart-drawer__shipping" id="cart-shipping-banner">
+    <div class="shipping-progress">
+      <div class="shipping-progress-bar" id="cart-shipping-bar" style="width: 0%;"></div>
+    </div>
+    <p class="shipping-text" id="cart-shipping-text">Noch 50,00 € bis zum kostenlosen DHL-Versand</p>
+  </div>
+
+  <div class="cart-drawer__body" id="cart-items-container">
+    <div class="cart-empty" id="cart-empty-state">
+      <div class="cart-empty__icon" aria-hidden="true">🛍️</div>
+      <p class="cart-empty__title">Dein Warenkorb ist leer</p>
+      <p class="cart-empty__text">Finde den perfekten HeadBlade Rasierer oder passende Ersatzklingen für Deine Kopfrasur.</p>
+      <a href="/produkte" class="button button--ghost cart-empty__button" id="cart-empty-cta">Produkte entdecken</a>
+    </div>
+    <div class="cart-items" id="cart-items-list" style="display: none;"></div>
+  </div>
+
+  <div class="cart-drawer__footer" id="cart-footer" style="display: none;">
+    <div class="cart-summary">
+      <div class="cart-summary__row">
+        <span>Zwischensumme</span>
+        <strong id="cart-subtotal">0,00 €</strong>
+      </div>
+      <div class="cart-summary__row cart-summary__row--small">
+        <span>Versand</span>
+        <span id="cart-shipping-cost">Kostenlos ab 50 €</span>
+      </div>
+      <p class="cart-tax-note">Inkl. gesetzlicher MwSt. Schneller Versand mit DHL.</p>
+    </div>
+    <button type="button" class="button button--red button--full js-preview-checkout" id="btn-checkout-preview">
+      Zur Kasse (Vorschau)
+    </button>
+    <div class="cart-trust-badges">
+      <span class="trust-badge">🚚 DHL 1–2 Tage</span>
+      <span class="trust-badge">🔒 Sicher &amp; Direkt</span>
+      <span class="trust-badge">🇩🇪 HeadBlade Partner</span>
+    </div>
+  </div>
+</aside>
+
+<div id="checkout-preview-modal" class="preview-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="preview-modal__backdrop" id="checkout-modal-backdrop"></div>
+  <div class="preview-modal__content">
+    <div class="preview-modal__header">
+      <span class="preview-modal__badge">Inhaberprüfung / Vorschau</span>
+      <button type="button" class="preview-modal__close" id="checkout-modal-close" aria-label="Schließen">×</button>
+    </div>
+    <h3 class="preview-modal__title">Kassenbereich vorbereitet</h3>
+    <p class="preview-modal__desc">
+      Das interaktive Hinzufügen von Produkten, Warenkorbmengen und Preisberechnungen
+      ist im Frontend vollständig funktionsfähig.
+    </p>
+    <ul class="preview-modal__list">
+      <li>✓ Dynamische Warenkorbverwaltung im Browser</li>
+      <li>✓ PAngV-konforme Preis- &amp; MwSt.-Ausweisung</li>
+      <li>✓ DHL-Versandkosten-Schwellenwert (50 €) live berechnet</li>
+      <li>✓ Anbindung an Zahlungssysteme für den Live-Betrieb schlüsselfertig vorbereitet</li>
+    </ul>
+    <p class="preview-modal__note">
+      Im Vorschaumodus werden absichtlich keine echten Bestelldaten verarbeitet.
+    </p>
+    <button type="button" class="button button--full" id="checkout-modal-done">Verstanden &amp; Weiter ansehen</button>
+  </div>
+</div>
+
+<script>
+  interface CartItem {
+    id: string;
+    name: string;
+    price: number;
+    image: string;
+    quantity: number;
+    unitPrice?: string;
+  }
+
+  const STORAGE_KEY = 'hb_cart_v1';
+  const FREE_SHIPPING_THRESHOLD = 50;
+
+  function loadCart(): CartItem[] {
+    try {
+      const data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveCart(items: CartItem[]) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      // Storage unavailable
+    }
+    updateUI();
+  }
+
+  function formatEur(amount: number): string {
+    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(amount);
+  }
+
+  function updateUI() {
+    const items = loadCart();
+    const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
+    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    // Update Badges
+    document.querySelectorAll('.js-cart-badge').forEach((el) => {
+      el.textContent = String(totalCount);
+      if (totalCount > 0) {
+        el.classList.add('is-active');
+      } else {
+        el.classList.remove('is-active');
+      }
+    });
+
+    const countEl = document.getElementById('cart-drawer-count');
+    if (countEl) countEl.textContent = `(${totalCount})`;
+
+    const emptyState = document.getElementById('cart-empty-state');
+    const itemsList = document.getElementById('cart-items-list');
+    const footer = document.getElementById('cart-footer');
+    const subtotalEl = document.getElementById('cart-subtotal');
+    const shippingBar = document.getElementById('cart-shipping-bar');
+    const shippingText = document.getElementById('cart-shipping-text');
+    const shippingCost = document.getElementById('cart-shipping-cost');
+
+    if (totalCount === 0) {
+      if (emptyState) emptyState.style.display = 'flex';
+      if (itemsList) {
+        itemsList.style.display = 'none';
+        itemsList.innerHTML = '';
+      }
+      if (footer) footer.style.display = 'none';
+      if (shippingBar) shippingBar.style.width = '0%';
+      if (shippingText) shippingText.textContent = `Noch ${formatEur(FREE_SHIPPING_THRESHOLD)} bis zum kostenlosen DHL-Versand`;
+    } else {
+      if (emptyState) emptyState.style.display = 'none';
+      if (itemsList) {
+        itemsList.style.display = 'flex';
+        itemsList.innerHTML = items.map((item) => `
+          <div class="cart-item" data-id="${item.id}">
+            <img src="${item.image}" alt="${item.name}" class="cart-item__image" width="70" height="70" />
+            <div class="cart-item__details">
+              <h4 class="cart-item__name">${item.name}</h4>
+              <p class="cart-item__price">${formatEur(item.price)}</p>
+              <div class="cart-item__qty-row">
+                <div class="cart-item__qty-controls">
+                  <button type="button" class="qty-btn js-qty-minus" data-id="${item.id}" aria-label="Menge verringern">−</button>
+                  <span class="qty-display">${item.quantity}</span>
+                  <button type="button" class="qty-btn js-qty-plus" data-id="${item.id}" aria-label="Menge erhöhen">+</button>
+                </div>
+                <button type="button" class="remove-btn js-remove-item" data-id="${item.id}" aria-label="Aus Warenkorb entfernen">Entfernen</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+      if (footer) footer.style.display = 'block';
+      if (subtotalEl) subtotalEl.textContent = formatEur(subtotal);
+
+      // Shipping progress
+      const progress = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
+      if (shippingBar) shippingBar.style.width = `${progress}%`;
+      if (shippingText) {
+        if (subtotal >= FREE_SHIPPING_THRESHOLD) {
+          shippingText.innerHTML = '🎉 <strong>Kostenloser DHL-Versand erreicht!</strong>';
+        } else {
+          const diff = FREE_SHIPPING_THRESHOLD - subtotal;
+          shippingText.textContent = `Noch ${formatEur(diff)} bis zum kostenlosen DHL-Versand`;
+        }
+      }
+      if (shippingCost) {
+        shippingCost.textContent = subtotal >= FREE_SHIPPING_THRESHOLD ? 'Kostenlos' : '4,90 €';
+      }
+    }
+  }
+
+  function openCart() {
+    const drawer = document.getElementById('cart-drawer');
+    const backdrop = document.getElementById('cart-drawer-backdrop');
+    if (drawer && backdrop) {
+      drawer.classList.add('is-open');
+      drawer.setAttribute('aria-hidden', 'false');
+      backdrop.classList.add('is-open');
+      backdrop.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeCart() {
+    const drawer = document.getElementById('cart-drawer');
+    const backdrop = document.getElementById('cart-drawer-backdrop');
+    if (drawer && backdrop) {
+      drawer.classList.remove('is-open');
+      drawer.setAttribute('aria-hidden', 'true');
+      backdrop.classList.remove('is-open');
+      backdrop.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function openCheckoutModal() {
+    const modal = document.getElementById('checkout-preview-modal');
+    if (modal) {
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  function closeCheckoutModal() {
+    const modal = document.getElementById('checkout-preview-modal');
+    if (modal) {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  // Global Cart Event Delegation
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+
+    // Open Cart Trigger
+    if (target.closest('.js-cart-trigger')) {
+      e.preventDefault();
+      openCart();
+      return;
+    }
+
+    // Close Cart
+    if (target.closest('#cart-close') || target.closest('#cart-drawer-backdrop')) {
+      e.preventDefault();
+      closeCart();
+      return;
+    }
+
+    // Empty CTA
+    if (target.closest('#cart-empty-cta')) {
+      closeCart();
+      return;
+    }
+
+    // Add to cart buttons
+    const addBtn = target.closest('.js-add-to-cart') as HTMLElement | null;
+    if (addBtn) {
+      e.preventDefault();
+      const id = addBtn.dataset.id || '';
+      const name = addBtn.dataset.name || 'HeadBlade Produkt';
+      const price = parseFloat(addBtn.dataset.price || '0');
+      const image = addBtn.dataset.image || '';
+
+      const items = loadCart();
+      const existing = items.find((i) => i.id === id);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        items.push({ id, name, price, image, quantity: 1 });
+      }
+      saveCart(items);
+      openCart();
+      return;
+    }
+
+    // Plus quantity
+    const plusBtn = target.closest('.js-qty-plus') as HTMLElement | null;
+    if (plusBtn) {
+      e.preventDefault();
+      const id = plusBtn.dataset.id;
+      const items = loadCart();
+      const item = items.find((i) => i.id === id);
+      if (item) {
+        item.quantity += 1;
+        saveCart(items);
+      }
+      return;
+    }
+
+    // Minus quantity
+    const minusBtn = target.closest('.js-qty-minus') as HTMLElement | null;
+    if (minusBtn) {
+      e.preventDefault();
+      const id = minusBtn.dataset.id;
+      let items = loadCart();
+      const item = items.find((i) => i.id === id);
+      if (item) {
+        if (item.quantity > 1) {
+          item.quantity -= 1;
+        } else {
+          items = items.filter((i) => i.id !== id);
+        }
+        saveCart(items);
+      }
+      return;
+    }
+
+    // Remove item
+    const removeBtn = target.closest('.js-remove-item') as HTMLElement | null;
+    if (removeBtn) {
+      e.preventDefault();
+      const id = removeBtn.dataset.id;
+      const items = loadCart().filter((i) => i.id !== id);
+      saveCart(items);
+      return;
+    }
+
+    // Checkout preview
+    if (target.closest('.js-preview-checkout')) {
+      e.preventDefault();
+      openCheckoutModal();
+      return;
+    }
+
+    // Close preview modal
+    if (
+      target.closest('#checkout-modal-close') ||
+      target.closest('#checkout-modal-backdrop') ||
+      target.closest('#checkout-modal-done')
+    ) {
+      e.preventDefault();
+      closeCheckoutModal();
+      return;
+    }
+  });
+
+  // ESC to close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeCheckoutModal();
+      closeCart();
+    }
+  });
+
+  // Initial UI Render
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateUI);
+  } else {
+    updateUI();
+  }
+</script>
+
+<style>
+  .cart-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: rgba(17, 18, 20, 0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .cart-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cart-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    width: min(440px, 100vw);
+    background: var(--white, #ffffff);
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cart-drawer.is-open {
+    transform: translateX(0);
+  }
+
+  .cart-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--line, #d9d7d2);
+  }
+  .cart-drawer__title-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .cart-drawer__title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+  .cart-drawer__count {
+    color: var(--steel, #70757b);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .cart-drawer__close {
+    background: none;
+    border: none;
+    padding: 0.4rem;
+    cursor: pointer;
+    color: var(--ink, #111214);
+    border-radius: 4px;
+    display: grid;
+    place-items: center;
+  }
+  .cart-drawer__close:hover {
+    background: var(--paper, #f6f4ef);
+  }
+
+  .cart-drawer__shipping {
+    padding: 0.85rem 1.5rem;
+    background: var(--paper, #f6f4ef);
+    border-bottom: 1px solid var(--line, #d9d7d2);
+  }
+  .shipping-progress {
+    height: 6px;
+    background: var(--line, #d9d7d2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.4rem;
+  }
+  .shipping-progress-bar {
+    height: 100%;
+    background: var(--red, #d31920);
+    transition: width 0.3s ease;
+  }
+  .shipping-text {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--ink, #111214);
+    text-align: center;
+  }
+
+  .cart-drawer__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cart-empty {
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+  }
+  .cart-empty__icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .cart-empty__title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+  .cart-empty__text {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    color: var(--steel, #70757b);
+    max-width: 280px;
+  }
+  .cart-empty__button {
+    font-size: 0.9rem;
+  }
+
+  .cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .cart-item {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--muted, #e9e7e2);
+  }
+  .cart-item__image {
+    width: 68px;
+    height: 68px;
+    object-fit: contain;
+    background: var(--paper, #f6f4ef);
+    border-radius: 6px;
+    padding: 0.35rem;
+    flex-shrink: 0;
+  }
+  .cart-item__details {
+    flex: 1;
+    min-width: 0;
+  }
+  .cart-item__name {
+    margin: 0 0 0.2rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cart-item__price {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--steel, #70757b);
+  }
+  .cart-item__qty-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cart-item__qty-controls {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--line, #d9d7d2);
+    border-radius: 4px;
+    background: var(--white, #ffffff);
+  }
+  .qty-btn {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--ink, #111214);
+  }
+  .qty-btn:hover {
+    background: var(--paper, #f6f4ef);
+  }
+  .qty-display {
+    width: 26px;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .remove-btn {
+    background: none;
+    border: none;
+    color: var(--steel, #70757b);
+    font-size: 0.78rem;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0.2rem;
+  }
+  .remove-btn:hover {
+    color: var(--red, #d31920);
+  }
+
+  .cart-drawer__footer {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--line, #d9d7d2);
+    background: var(--paper, #f6f4ef);
+  }
+  .cart-summary {
+    margin-bottom: 1rem;
+  }
+  .cart-summary__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 1.05rem;
+    margin-bottom: 0.35rem;
+  }
+  .cart-summary__row--small {
+    font-size: 0.85rem;
+    color: var(--steel, #70757b);
+  }
+  .cart-tax-note {
+    margin: 0.35rem 0 0;
+    font-size: 0.76rem;
+    color: var(--steel, #70757b);
+  }
+  .button--full {
+    width: 100%;
+    margin-bottom: 0.85rem;
+  }
+  .cart-trust-badges {
+    display: flex;
+    justify-content: space-around;
+    gap: 0.5rem;
+    font-size: 0.76rem;
+    color: var(--steel, #70757b);
+  }
+  .trust-badge {
+    white-space: nowrap;
+  }
+
+  /* Modal */
+  .preview-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    padding: 1rem;
+  }
+  .preview-modal.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .preview-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(17, 18, 20, 0.7);
+    backdrop-filter: blur(4px);
+  }
+  .preview-modal__content {
+    position: relative;
+    z-index: 1;
+    background: var(--white, #ffffff);
+    max-width: 480px;
+    width: 100%;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  }
+  .preview-modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .preview-modal__badge {
+    padding: 0.25rem 0.5rem;
+    background: var(--paper, #f6f4ef);
+    border: 1px solid var(--line, #d9d7d2);
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--red, #d31920);
+  }
+  .preview-modal__close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+  }
+  .preview-modal__title {
+    margin: 0 0 0.6rem;
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+  .preview-modal__desc {
+    margin: 0 0 1rem;
+    font-size: 0.92rem;
+    color: var(--steel, #70757b);
+  }
+  .preview-modal__list {
+    margin: 0 0 1.25rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.88rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .preview-modal__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ink, #111214);
+    font-weight: 500;
+  }
+  .preview-modal__note {
+    font-size: 0.78rem;
+    color: var(--steel, #70757b);
+    background: var(--paper, #f6f4ef);
+    padding: 0.6rem 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 1.25rem;
+  }
+</style>

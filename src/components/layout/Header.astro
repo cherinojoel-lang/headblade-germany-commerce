@@ -25,8 +25,21 @@ const navigation = [
       {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
       <a href="/produkte">Alle Produkte</a>
       <a href="/lifestyle">Lifestyle & Zubehör</a>
+      <button type="button" class="mobile-cart-button js-cart-trigger">
+        Warenkorb (<span class="js-cart-badge">0</span>)
+      </button>
     </nav>
   </details>
 
-  <a class="header-cta" href="/finder">HeadBlade Fit</a>
+  <div class="header-actions">
+    <a class="header-cta" href="/finder">HeadBlade Fit</a>
+    <button type="button" class="cart-trigger js-cart-trigger" aria-label="Warenkorb öffnen">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <path d="M16 10a4 4 0 0 1-8 0"></path>
+      </svg>
+      <span class="cart-badge js-cart-badge" aria-hidden="true">0</span>
+    </button>
+  </div>
 </header>

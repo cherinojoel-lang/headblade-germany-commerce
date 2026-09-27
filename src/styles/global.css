@@ -46,6 +46,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .button--light { background: var(--white); color: var(--ink); border-color: var(--white); }
 .button--ghost { background: transparent; color: inherit; border-color: currentColor; }
 .button--red { background: var(--red); border-color: var(--red); }
+.header-actions { display: flex; align-items: center; gap: 0.75rem; }
+.cart-trigger { position: relative; min-width: 48px; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; background: var(--white); border: 1px solid var(--line); border-radius: 4px; color: var(--ink); cursor: pointer; transition: border-color .18s ease, transform .18s ease; }
+.cart-trigger:hover { border-color: var(--red); transform: translateY(-1px); }
+.cart-badge { position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; padding: 0 4px; border-radius: 10px; background: var(--red); color: var(--white); font-size: 0.72rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.7); transition: opacity .18s ease, transform .18s ease; }
+.cart-badge.is-active { opacity: 1; transform: scale(1); }
+.mobile-cart-button { margin-top: 0.5rem; width: 100%; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; background: var(--red); color: var(--white); border: none; font-weight: 700; border-radius: 4px; cursor: pointer; }
 
 .section { padding: clamp(4rem, 8vw, 7.5rem) max(24px, calc((100vw - var(--max))/2)); }
 .section--dark { background: var(--ink); color: var(--white); }
