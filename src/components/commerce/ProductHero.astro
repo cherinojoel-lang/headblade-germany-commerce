@@ -28,7 +28,16 @@ const secondarySize = imageSize(product.secondaryImage);
   <div class="product-hero__copy">
     <p class="eyebrow">HeadBlade Germany · Produktdetail</p>
     <h1 id="product-title">{product.name}</h1>
-    <p class="product-hero__price">{formatPrice(product.price)} {product.compareAtPrice && <del>{formatPrice(product.compareAtPrice)}</del>}</p>
+    <p class="product-hero__price">
+      {formatPrice(product.price)}
+      {product.compareAtPrice && <del>{formatPrice(product.compareAtPrice)}</del>}
+      {product.unitPrice && <span class="product-hero__unit-price">({product.unitPrice})</span>}
+    </p>
+    <p class="product-hero__tax-note">inkl. gesetzl. MwSt., versandkostenfrei ab 50 € in DE</p>
+    <div class="product-hero__badges-row">
+      <span class="trust-pill">🚚 1–2 Tage Lieferzeit</span>
+      <span class="trust-pill">🇩🇪 Offizieller HeadBlade Partner</span>
+    </div>
     <p class="product-hero__lead">{product.short}</p>
     <ul>{product.benefits.map((benefit) => <li>{benefit}</li>)}</ul>
     {product.bestFor?.[0] && <p class="product-hero__fit"><strong>Passt besonders, wenn:</strong> {product.bestFor[0]}</p>}
@@ -55,8 +64,12 @@ const secondarySize = imageSize(product.secondaryImage);
   .product-hero__copy { display:flex; flex-direction:column; justify-content:center; padding:clamp(3rem,7vw,7rem); }
   .product-hero--copy-only .product-hero__copy { padding:clamp(2rem,5vw,5rem); }
   .product-hero h1 { margin:.3rem 0 1rem; font-size:clamp(3rem,6vw,6.6rem); line-height:.88; letter-spacing:-.06em; text-transform:uppercase; }
-  .product-hero__price { margin:.5rem 0; font-size:1.55rem; font-weight:800; }
-  .product-hero__price del { margin-left:.55rem; color:var(--steel); font-size:1rem; font-weight:500; }
+  .product-hero__price { margin:.5rem 0 .2rem; font-size:1.55rem; font-weight:800; display:flex; align-items:baseline; gap:.6rem; flex-wrap:wrap; }
+  .product-hero__price del { color:var(--steel); font-size:1rem; font-weight:500; }
+  .product-hero__unit-price { color:var(--steel); font-size:.9rem; font-weight:500; }
+  .product-hero__tax-note { margin:0 0 1rem; color:var(--steel); font-size:.82rem; }
+  .product-hero__badges-row { display:flex; gap:.6rem; flex-wrap:wrap; margin-bottom:1.2rem; }
+  .trust-pill { display:inline-flex; align-items:center; gap:.35rem; padding:.3rem .65rem; background:var(--paper-warm,#f6f3ed); border-radius:4px; font-size:.8rem; font-weight:600; color:var(--ink); }
   .product-hero__lead { max-width:620px; color:var(--steel); font-size:1.12rem; }
   .product-hero ul { padding-left:1.2rem; }
   .product-hero__fit { max-width:620px; padding:.9rem 1rem; background:var(--paper-warm,#f6f3ed); }

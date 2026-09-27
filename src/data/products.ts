@@ -11,6 +11,7 @@ export interface Product {
   name: string;
   price: number | null;
   compareAtPrice: number | null;
+  unitPrice?: string;
   categories: readonly ProductCategoryId[];
   compatibility: string;
   image: string;
@@ -196,6 +197,7 @@ export const products: readonly Product[] = [
     name: "HeadSlick ShaveCream 5oz",
     price: 13.95,
     compareAtPrice: null,
+    unitPrice: "9,30 € / 100 ml",
     categories: ["pflege"],
     compatibility: "Pflegeprodukt für die Kopfrasur",
     image: slickImage,
