@@ -13,6 +13,7 @@ const { product, reviewLabel, showVisual = true } = Astro.props;
 const mainImage = product.detailImage ?? product.image;
 const mainSize = imageSize(mainImage);
 const secondarySize = imageSize(product.secondaryImage);
+const subPrice = Math.round(product.price * 0.85 * 100) / 100;
 ---
 
 <section class:list={["product-hero", { "product-hero--copy-only": !showVisual }]} aria-labelledby="product-title">
@@ -41,6 +42,35 @@ const secondarySize = imageSize(product.secondaryImage);
     <p class="product-hero__lead">{product.short}</p>
     <ul>{product.benefits.map((benefit) => <li>{benefit}</li>)}</ul>
     {product.bestFor?.[0] && <p class="product-hero__fit"><strong>Passt besonders, wenn:</strong> {product.bestFor[0]}</p>}
+
+    <!-- Replenishment Subscription Toggle -->
+    <div class="purchase-plans" role="radiogroup" aria-label="Bestelloption wählen">
+      <label class="purchase-plan purchase-plan--selected js-plan-single">
+        <input type="radio" name="order-type" value="single" checked class="purchase-plan__radio" />
+        <div class="purchase-plan__body">
+          <div class="purchase-plan__header">
+            <span class="purchase-plan__title">Einmalkauf</span>
+            <span class="purchase-plan__price">{formatPrice(product.price)}</span>
+          </div>
+          <p class="purchase-plan__desc">Standardbestellung, keine automatische Nachbestellung</p>
+        </div>
+      </label>
+
+      <label class="purchase-plan js-plan-sub">
+        <input type="radio" name="order-type" value="sub" class="purchase-plan__radio" />
+        <div class="purchase-plan__body">
+          <div class="purchase-plan__header">
+            <span class="purchase-plan__title">
+              Nachfüll-Abo
+              <span class="badge-discount">-15% Dauerrabatt</span>
+            </span>
+            <span class="purchase-plan__price purchase-plan__price--discount">{formatPrice(subPrice)}</span>
+          </div>
+          <p class="purchase-plan__desc">Klingen &amp; Pflege alle 60 Tage frei Haus. Jederzeit pausierbar.</p>
+        </div>
+      </label>
+    </div>
+
     <div class="product-hero__review" role="status">
       <strong>{reviewLabel}</strong>
       <span>Preis und Produktdarstellung dienen hier ausschließlich der Inhaberprüfung.</span>
@@ -61,13 +91,40 @@ const secondarySize = imageSize(product.secondaryImage);
   </div>
 </section>
 
+<script define:vars={{ originalName: product.name, originalPrice: product.price, subPrice }}>
+  const singleRadio = document.querySelector('.js-plan-single input');
+  const subRadio = document.querySelector('.js-plan-sub input');
+  const singleLabel = document.querySelector('.js-plan-single');
+  const subLabel = document.querySelector('.js-plan-sub');
+  const addCartBtn = document.querySelector('.js-add-to-cart');
+
+  function updatePlan(isSub) {
+    if (!addCartBtn) return;
+    if (isSub) {
+      singleLabel?.classList.remove('purchase-plan--selected');
+      subLabel?.classList.add('purchase-plan--selected');
+      addCartBtn.dataset.price = subPrice.toString();
+      addCartBtn.dataset.name = `${originalName} (Abo alle 60 Tage)`;
+      addCartBtn.dataset.subscription = "true";
+      addCartBtn.textContent = `Abo sichern (${subPrice.toFixed(2).replace('.', ',')} €)`;
+    } else {
+      subLabel?.classList.remove('purchase-plan--selected');
+      singleLabel?.classList.add('purchase-plan--selected');
+      addCartBtn.dataset.price = originalPrice.toString();
+      addCartBtn.dataset.name = originalName;
+      delete addCartBtn.dataset.subscription;
+      addCartBtn.textContent = "In den Warenkorb";
+    }
+  }
+
+  singleRadio?.addEventListener('change', () => updatePlan(false));
+  subRadio?.addEventListener('change', () => updatePlan(true));
+</script>
+
 <style>
   .product-hero { display:grid; grid-template-columns:1fr 1fr; min-height:650px; background:var(--white); }
   .product-hero--copy-only { grid-template-columns:1fr; min-height:0; }
   .product-hero__visual { position:relative; display:grid; place-items:center; min-height:560px; padding:clamp(2rem,6vw,5rem); background:linear-gradient(145deg,#e7e5df,#f8f7f3); }
-  /* Capped to what the sources actually hold. The largest product cut-out is
-     473px wide; 620px meant a 2.6x upscale on a 2x screen, which was the most
-     visible softness anywhere on the site. */
   .product-hero__media { width:min(70%,470px); max-height:560px; display:grid; place-items:center; }
   .product-hero__media img { width:100%; max-height:560px; object-fit:contain; filter:drop-shadow(0 28px 30px rgba(0,0,0,.22)); }
   .product-hero__media--pair { width:min(88%,700px); grid-template-columns:1fr 1fr; gap:1rem; }
@@ -85,6 +142,20 @@ const secondarySize = imageSize(product.secondaryImage);
   .product-hero__lead { max-width:620px; color:var(--steel); font-size:1.12rem; }
   .product-hero ul { padding-left:1.2rem; }
   .product-hero__fit { max-width:620px; padding:.9rem 1rem; background:var(--paper-warm,#f6f3ed); }
+
+  /* Subscription selector */
+  .purchase-plans { display:grid; gap:.8rem; margin:1.2rem 0; max-width:560px; }
+  .purchase-plan { display:flex; align-items:flex-start; gap:.8rem; padding:1rem 1.2rem; border:2px solid #e5e7eb; border-radius:8px; cursor:pointer; background:#fff; transition:border-color .15s, background-color .15s; }
+  .purchase-plan--selected { border-color:var(--red,#c51d24); background:#fffaf9; }
+  .purchase-plan__radio { margin-top:.3rem; accent-color:var(--red,#c51d24); }
+  .purchase-plan__body { flex:1; }
+  .purchase-plan__header { display:flex; justify-content:space-between; align-items:center; margin-bottom:.2rem; }
+  .purchase-plan__title { font-weight:750; font-size:.98rem; display:flex; align-items:center; gap:.5rem; }
+  .purchase-plan__price { font-weight:800; font-size:1.05rem; }
+  .purchase-plan__price--discount { color:var(--red,#c51d24); }
+  .badge-discount { font-size:.7rem; font-weight:800; background:var(--red,#c51d24); color:#fff; padding:.15rem .45rem; border-radius:4px; text-transform:uppercase; }
+  .purchase-plan__desc { font-size:.82rem; color:var(--steel,#6b7280); margin:0; }
+
   .product-hero__review { display:grid; gap:.2rem; margin:1.3rem 0; padding:1rem; border-left:4px solid var(--red); background:#f1dadb; color:#5f0a0e; }
   .product-hero__review span { font-size:.88rem; }
   .product-hero__actions { display:flex; gap:1rem; flex-wrap:wrap; margin-top:.5rem; align-items:center; }

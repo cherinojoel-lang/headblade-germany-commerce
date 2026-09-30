@@ -4,6 +4,7 @@ import Breadcrumbs from "../../components/navigation/Breadcrumbs.astro";
 import ProductHero from "../../components/commerce/ProductHero.astro";
 import ProductMediaGallery from "../../components/commerce/ProductMediaGallery.astro";
 import ProductDecisionSupport from "../../components/commerce/ProductDecisionSupport.astro";
+import ProductReviews from "../../components/commerce/ProductReviews.astro";
 import CompatibilityCard from "../../components/commerce/CompatibilityCard.astro";
 import RelatedProducts from "../../components/commerce/RelatedProducts.astro";
 import { products, type Product } from "../../data/products";
@@ -46,6 +47,7 @@ const jsonLd = [
     <ProductHero {product} {reviewLabel} showVisual={false} />
   </div>
   <ProductDecisionSupport {product} />
+  <ProductReviews productName={product.name} />
   <section class="section section--compact">
     <CompatibilityCard {product} />
   </section>
