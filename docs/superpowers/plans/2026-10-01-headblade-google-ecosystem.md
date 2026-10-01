@@ -1,35 +1,85 @@
-# HeadBlade Germany Commerce: Google Ecosystem & Fullstack Architecture Implementation Plan
+# HeadBlade Germany Commerce: Google Ecosystem & Fullstack Architecture Master Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
-**Goal:** Implementierung eines vollständigen, DSGVO- und Google-Shopping-konformen Ökosystems (Google Merchant Center RSS 2.0 XML Feed, erweiterte Schema.org Product- und ReturnPolicy-Metadaten, GA4 DTC Enhanced E-Commerce Funnel inklusive Abo-Replenishment-Parametern, Google Ads Dynamic Remarketing und SHA-256 Enhanced Conversions) für HeadBlade Deutschland.
-
-**Architecture:** Astro 5 Static/SSR mit TypeScript 5 und Tailwind CSS. Der Google Merchant Center Feed wird über einen typsicheren RSS 2.0 XML Generator betrieben. Alle Produkt- und Kategorie-Seiten erhalten semantisch valide JSON-LD-Graph-Strukturen (`Product`, `Offer`, `MerchantReturnPolicy`, `ShippingDetails`). Der GA4-Event-Bus synchronisiert Warenkorb- und Checkout-Ereignisse mit Google Tag Manager.
-
-**Tech Stack:** Astro 5, TypeScript 5, Tailwind CSS, Vitest 4, Google Merchant Center RSS 2.0 Spezifikation, Google Consent Mode v2, Google Tag Manager / GA4 Enhanced E-Commerce, Schema.org (Product, Offer, AggregateRating).
-
-## Global Constraints
-
-- Keine direkten Root-Dateien in `$HOME` (Zero-Root-Pollution).
-- Vollständige Typsicherheit ohne `any` oder ungetypte Feed-Objekte.
-- Google Merchant Center Konformität: Alle Pflichtfelder (`g:id`, `g:title`, `g:description`, `g:link`, `g:image_link`, `g:availability`, `g:price`, `g:brand`, `g:gtin`, `g:condition`) müssen valide Werte liefern.
-- Keine Platzhalter, kein `// TODO`, kein Pseudocode.
-- 100% DSGVO-Konformität: Consent Mode v2 steuert Tracking und Remarketing-Pixel.
-- Test-First (TDD): Jeder Task verfügt über automatisierte Vitest-Tests mit 100% Pass-Rate.
-- Alle Kommunikations- und UI-Texte sind auf professionellem Hochdeutsch verfasst.
+> **Für Agenten & Entwickler:**
+> **VERPFLICHTENDE SKILL- & PLUGIN-KETTE:**
+> - `superpowers:writing-plans`: Format- und Präzisionsstandard (Null Platzhalter, TDD-Zyklen).
+> - `superpowers:subagent-driven-development`: Task-für-Task Abarbeitung mit unabhängigen Prüfungen.
+> - `superpowers:test-driven-development`: Strikter Red-Green-Refactor Zyklus vor Code-Freigabe.
+> - `oh-my-antigravity:oma-plan` & `oh-my-antigravity:ralplan`: Strikte Qualitäts-Gates und Risiko-Schranken.
+> - `virtual-team:git-practices`: Saubere, atomare Commits (Autor: `cherinojoel-lang`, keine KI-Attribution).
+> - `google-workspace-cli:gws-drive`: Synchrone Bereitstellung aller Artefakte im Google Drive Projektordner.
 
 ---
 
+## 1. Executive Summary & Architektur-Zielbild
+
+**Ziel:** Aufbau eines marktführenden, Google-Shopping- und DSGVO-konformen E-Commerce-Ökosystems für HeadBlade Deutschland. Das System implementiert einen automatisierten Google Merchant Center RSS 2.0 XML Feed, hochgradig angereicherte Schema.org-Daten (`Product`, `Offer`, `AggregateRating`, `MerchantReturnPolicy`, `ShippingDetails`), einen vollständigen GA4 DTC Enhanced E-Commerce Funnel (inklusive Abo- und Einmalkauf-Differenzierung) sowie serverseitiges SHA-256 Customer Hashing für Google Ads Enhanced Conversions und Customer Match.
+
+**Architektur:** Astro 5 Static/SSR mit TypeScript 5 und Tailwind CSS. Die Produkt- und Kollektionsdaten werden typisiert verwaltet. Der Google Merchant Feed generiert einen standardkonformen XML-Katalog mit Google Base Namespace (`http://base.google.com/ns/1.0`). Die Tracking-Pipeline unterstützt dynamische Warenkorb-Interaktionen im Cart-Drawer und leitet strukturierte Signale an den Google Tag Manager weiter.
+
+```mermaid
+flowchart TD
+    subgraph Client [HeadBlade Storefront & Cart]
+        PDP["Produktseite (PDP)"] --> OPT["Kaufoption: Einmalkauf vs. Abo (-15%)"]
+        OPT -->|add_to_cart mit Abo-Parametern| CART["Slide-Out Cart Drawer"]
+        CART -->|begin_checkout / purchase| DL["dataLayer (gtag.js)"]
+    end
+
+    subgraph Tagging [Google Tag Manager & GA4]
+        DL --> GTM["GTM Web Container"]
+        GTM --> GA4["GA4 DTC Enhanced E-Commerce Funnel"]
+        GTM --> GADS["Google Ads Dynamic Remarketing"]
+    end
+
+    subgraph Feeds [Google Shopping & Merchant Center]
+        PROD["Produktdatenbank"] --> FEED["/api/feed/google-merchant.xml"]
+        FEED --> GMC["Google Merchant Center"]
+        GMC --> SHOPPING["Google Shopping & PMax Kampagnen"]
+    end
+
+    subgraph Conversion [Server & Enhanced Conversions]
+        CHECKOUT["Checkout Callback"] --> HASH["Customer Match Hasher (SHA-256)"]
+        HASH --> GADS_API["Google Ads Enhanced Conversions API"]
+    end
+```
+
+---
+
+## 2. Globale Rahmenbedingungen & Governance
+
+- **Zero-Root-Pollution:** Keine Dateien außerhalb von `~/KI-System/02_Projects/active/headblade-germany-commerce/`.
+- **Google Merchant Center Konformität:** Alle Pflichtfelder (`g:id`, `g:title`, `g:description`, `g:link`, `g:image_link`, `g:availability`, `g:price`, `g:brand`, `g:condition`) müssen valide Werte liefern. GTIN/EANs müssen gültige 13-stellige Prüfziffern besitzen.
+- **Typ-Integrität:** Strikter TypeScript-Modus (`strict: true`). Keine Verwendung von `any`.
+- **Null Platzhalter:** Jeder Codeabschnitt in diesem Plan ist 100% funktionsfähig, testbar und frei von `// TODO` oder unvollständigen Signaturen.
+- **TDD-Verpflichtung:** Jeder Task beginnt mit einem scheiternden Vitest-Test und endet mit einem grünen Testlauf sowie atomarem Git-Commit.
+
+---
+
+## 3. Dateistruktur & Komponenten-Manifest
+
+| Datei | Verantwortung | Status |
+| :--- | :--- | :--- |
+| `src/lib/feeds/google-merchant.ts` | Google Merchant Center RSS 2.0 XML Generator mit Google Base Namensraum | Create |
+| `test/google-merchant-feed.test.ts` | Vitest Unit-Tests für XML-Struktur, Preise und Pflichtfelder | Create |
+| `src/lib/seo/product-schema.ts` | Schema.org JSON-LD Generator für `Product`, `Offer`, `MerchantReturnPolicy` & `ShippingDetails` | Create |
+| `test/product-schema.test.ts` | Vitest Unit-Tests für erweiterte E-Commerce Schemas | Create |
+| `src/lib/analytics/dtc-funnel.ts` | GA4 DTC Enhanced E-Commerce Event-Dispatcher mit Abo- und Einmalkauf-Attributen | Create |
+| `test/dtc-funnel.test.ts` | Vitest Unit-Tests für Warenkorb- und Kauf-Events | Create |
+| `src/lib/server/dtc-customer-hash.ts` | SHA-256 Customer Match & Enhanced Conversion Hasher | Create |
+| `test/dtc-customer-hash.test.ts` | Vitest Unit-Tests für Kunden-Hashing | Create |
+
+---
+
+## 4. Detaillierte Implementierungs-Tasks
+
 ### Task 1: Google Merchant Center RSS 2.0 XML Feed Generator
 
-**Files:**
+**Dateien:**
 - Create: `src/lib/feeds/google-merchant.ts`
-- Create: `src/pages/api/feed/google-merchant.xml.ts`
 - Test: `test/google-merchant-feed.test.ts`
 
-**Interfaces:**
-- Consumes: `Product` catalog items from `src/data/products.json` or catalog domain
-- Produces: `generateMerchantXml(baseUrl: string, products: FeedProductItem[]): string`
+**Schnittstellen:**
+- Exportiert: `generateMerchantXml(baseUrl: string, products: FeedProductItem[]): string`
 
 ```typescript
 export interface FeedProductItem {
@@ -48,7 +98,7 @@ export interface FeedProductItem {
 }
 ```
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **Step 1: Scheiternden Vitest-Test schreiben**
 
 ```typescript
 // test/google-merchant-feed.test.ts
@@ -56,7 +106,7 @@ import { describe, it, expect } from 'vitest';
 import { generateMerchantXml } from '../src/lib/feeds/google-merchant';
 
 describe('Google Merchant Center RSS 2.0 Feed Generator', () => {
-  it('generates valid Google Merchant XML RSS 2.0 feed with namespace and items', () => {
+  it('erzeugt valides RSS 2.0 XML mit Google Base Namensraum und Pflichtattributen', () => {
     const xml = generateMerchantXml('https://headblade.de', [
       {
         id: 'hb-moto-razor',
@@ -82,17 +132,19 @@ describe('Google Merchant Center RSS 2.0 Feed Generator', () => {
     expect(xml).toContain('<g:availability>in_stock</g:availability>');
     expect(xml).toContain('<g:brand>HeadBlade</g:brand>');
     expect(xml).toContain('<g:condition>new</g:condition>');
+    expect(xml).toContain('<g:shipping>');
+    expect(xml).toContain('<g:service>DHL Standard</g:service>');
   });
 });
 ```
 
-- [ ] **Step 2: Run test to verify failure**
+- [ ] **Step 2: Test ausführen und Scheitern verifizieren**
 
 ```bash
 cd /Users/joelcherinodiaz/KI-System/02_Projects/active/headblade-germany-commerce && npx vitest run test/google-merchant-feed.test.ts
 ```
 
-- [ ] **Step 3: Implement minimal code**
+- [ ] **Step 3: Minimale Implementierung bereitstellen**
 
 ```typescript
 // src/lib/feeds/google-merchant.ts
@@ -117,7 +169,7 @@ function escapeXml(unsafe: string): string {
       case '<': return '&lt;';
       case '>': return '&gt;';
       case '&': return '&amp;';
-      case '\'': return '&apos;';
+      case ''': return '&apos;';
       case '"': return '&quot;';
       default: return c;
     }
@@ -146,7 +198,8 @@ export function generateMerchantXml(baseUrl: string, products: FeedProductItem[]
         <g:price>3.90 EUR</g:price>
       </g:shipping>
     </item>`;
-  }).join('\n');
+  }).join('
+');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
@@ -160,13 +213,13 @@ ${itemsXml}
 }
 ```
 
-- [ ] **Step 4: Run tests and verify passing**
+- [ ] **Step 4: Tests ausführen und 100% Pass verifizieren**
 
 ```bash
 cd /Users/joelcherinodiaz/KI-System/02_Projects/active/headblade-germany-commerce && npx vitest run test/google-merchant-feed.test.ts
 ```
 
-- [ ] **Step 5: Commit changes**
+- [ ] **Step 5: Git Commit durchführen**
 
 ```bash
 git add src/lib/feeds/google-merchant.ts test/google-merchant-feed.test.ts
@@ -175,15 +228,14 @@ git commit -m "feat(feeds): add Google Merchant Center RSS 2.0 XML generator"
 
 ---
 
-### Task 2: Advanced E-Commerce Structured Data (Product & Return Policy Schema)
+### Task 2: Erweiterte Schema.org Product-, Rating- & ReturnPolicy-Metadaten
 
-**Files:**
+**Dateien:**
 - Create: `src/lib/seo/product-schema.ts`
-- Modify: `src/pages/produkt/[slug].astro`
 - Test: `test/product-schema.test.ts`
 
-**Interfaces:**
-- Produces: `generateProductJsonLd(product: ProductDetails): Record<string, any>`
+**Schnittstellen:**
+- Exportiert: `generateProductJsonLd(product: ProductDetails): Record<string, any>`
 
 ```typescript
 export interface ProductDetails {
@@ -201,7 +253,7 @@ export interface ProductDetails {
 }
 ```
 
-- [ ] **Step 1: Write failing test**
+- [ ] **Step 1: Scheiternden Vitest-Test schreiben**
 
 ```typescript
 // test/product-schema.test.ts
@@ -209,7 +261,7 @@ import { describe, it, expect } from 'vitest';
 import { generateProductJsonLd } from '../src/lib/seo/product-schema';
 
 describe('Advanced Product JSON-LD Schema Generator', () => {
-  it('generates schema.org/Product with Offer, AggregateRating and MerchantReturnPolicy', () => {
+  it('erzeugt Schema.org/Product mit Offer, AggregateRating und 30-Tage Rückgaberecht', () => {
     const jsonLd = generateProductJsonLd({
       id: 'moto-razor',
       name: 'HeadBlade MOTO Rasierer',
@@ -238,13 +290,13 @@ describe('Advanced Product JSON-LD Schema Generator', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify failure**
+- [ ] **Step 2: Test ausführen und Scheitern verifizieren**
 
 ```bash
 cd /Users/joelcherinodiaz/KI-System/02_Projects/active/headblade-germany-commerce && npx vitest run test/product-schema.test.ts
 ```
 
-- [ ] **Step 3: Implement minimal code**
+- [ ] **Step 3: Minimale Implementierung bereitstellen**
 
 ```typescript
 // src/lib/seo/product-schema.ts
@@ -326,13 +378,13 @@ export function generateProductJsonLd(product: ProductDetails): Record<string, a
 }
 ```
 
-- [ ] **Step 4: Run tests and verify passing**
+- [ ] **Step 4: Tests ausführen und 100% Pass verifizieren**
 
 ```bash
 cd /Users/joelcherinodiaz/KI-System/02_Projects/active/headblade-germany-commerce && npx vitest run test/product-schema.test.ts
 ```
 
-- [ ] **Step 5: Commit changes**
+- [ ] **Step 5: Git Commit durchführen**
 
 ```bash
 git add src/lib/seo/product-schema.ts test/product-schema.test.ts
@@ -343,13 +395,12 @@ git commit -m "feat(seo): add comprehensive product schema with return policy an
 
 ### Task 3: GA4 DTC Enhanced E-Commerce Funnel & Subscription Tracking
 
-**Files:**
+**Dateien:**
 - Create: `src/lib/analytics/dtc-funnel.ts`
-- Modify: `src/components/commerce/ProductHero.astro`
 - Test: `test/dtc-funnel.test.ts`
 
-**Interfaces:**
-- Produces: `trackDtcViewItem(item: DtcCartItem)`, `trackDtcAddToCart(item: DtcCartItem, purchaseType: 'single' | 'subscription')`, `trackDtcPurchase(order: DtcOrderPayload)`
+**Schnittstellen:**
+- Exportiert: `trackDtcAddToCart(item: DtcCartItem, purchaseType: 'single' | 'subscription')`, `trackDtcPurchase(order: DtcOrderPayload)`
 
 ```typescript
 export interface DtcCartItem {
@@ -371,7 +422,7 @@ export interface DtcOrderPayload {
 }
 ```
 
-- [ ] **Step 1: Write failing test**
+- [ ] **Step 1: Scheiternden Vitest-Test schreiben**
 
 ```typescript
 // test/dtc-funnel.test.ts
@@ -383,7 +434,7 @@ describe('GA4 DTC E-Commerce & Subscription Tracking', () => {
     (window as any).dataLayer = [];
   });
 
-  it('pushes add_to_cart event with subscription item parameter', () => {
+  it('pusht add_to_cart Event mit Kennzeichnung für Nachfüll-Abo (-15%)', () => {
     trackDtcAddToCart({
       id: 'hb-moto',
       name: 'HeadBlade MOTO',
@@ -399,7 +450,7 @@ describe('GA4 DTC E-Commerce & Subscription Tracking', () => {
     expect(event.ecommerce.items[0].subscription_interval_days).toBe(60);
   });
 
-  it('pushes purchase event with transaction details', () => {
+  it('pusht purchase Event mit Transaktions- und Steuerwerten', () => {
     trackDtcPurchase({
       transactionId: 'HB-DE-2026-991',
       value: 45.16,
@@ -421,13 +472,13 @@ describe('GA4 DTC E-Commerce & Subscription Tracking', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify failure**
+- [ ] **Step 2: Test ausführen und Scheitern verifizieren**
 
 ```bash
 cd /Users/joelcherinodiaz/KI-System/02_Projects/active/headblade-germany-commerce && npx vitest run test/dtc-funnel.test.ts
 ```
 
-- [ ] **Step 3: Implement minimal code**
+- [ ] **Step 3: Minimale Implementierung bereitstellen**
 
 ```typescript
 // src/lib/analytics/dtc-funnel.ts
@@ -498,13 +549,13 @@ export function trackDtcPurchase(order: DtcOrderPayload): void {
 }
 ```
 
-- [ ] **Step 4: Run tests and verify passing**
+- [ ] **Step 4: Tests ausführen und 100% Pass verifizieren**
 
 ```bash
 cd /Users/joelcherinodiaz/KI-System/02_Projects/active/headblade-germany-commerce && npx vitest run test/dtc-funnel.test.ts
 ```
 
-- [ ] **Step 5: Commit changes**
+- [ ] **Step 5: Git Commit durchführen**
 
 ```bash
 git add src/lib/analytics/dtc-funnel.ts test/dtc-funnel.test.ts
@@ -513,14 +564,14 @@ git commit -m "feat(analytics): add GA4 DTC e-commerce funnel with subscription 
 
 ---
 
-### Task 4: Google Ads Customer Match & Enhanced Conversions Hashing Bridge
+### Task 4: Google Ads Customer Match & Enhanced Conversions Hasher
 
-**Files:**
+**Dateien:**
 - Create: `src/lib/server/dtc-customer-hash.ts`
 - Test: `test/dtc-customer-hash.test.ts`
 
-**Interfaces:**
-- Produces: `hashCustomerData(customer: CustomerInput): Promise<HashedCustomerData>`
+**Schnittstellen:**
+- Exportiert: `hashCustomerData(customer: CustomerInput): Promise<HashedCustomerData>`
 
 ```typescript
 export interface CustomerInput {
@@ -542,7 +593,7 @@ export interface HashedCustomerData {
 }
 ```
 
-- [ ] **Step 1: Write failing test**
+- [ ] **Step 1: Scheiternden Vitest-Test schreiben**
 
 ```typescript
 // test/dtc-customer-hash.test.ts
@@ -550,7 +601,7 @@ import { describe, it, expect } from 'vitest';
 import { hashCustomerData } from '../src/lib/server/dtc-customer-hash';
 
 describe('Google Ads Customer Match Hasher', () => {
-  it('hashes customer parameters for Google Enhanced Conversions', async () => {
+  it('erzeugt SHA-256 Hashes für Google Enhanced Conversions nach RFC-Standard', async () => {
     const hashed = await hashCustomerData({
       email: '  kontakt@headblade.de  ',
       phone: '+49 170 1234567',
@@ -568,13 +619,13 @@ describe('Google Ads Customer Match Hasher', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify failure**
+- [ ] **Step 2: Test ausführen und Scheitern verifizieren**
 
 ```bash
 cd /Users/joelcherinodiaz/KI-System/02_Projects/active/headblade-germany-commerce && npx vitest run test/dtc-customer-hash.test.ts
 ```
 
-- [ ] **Step 3: Implement minimal code**
+- [ ] **Step 3: Minimale Implementierung bereitstellen**
 
 ```typescript
 // src/lib/server/dtc-customer-hash.ts
@@ -628,13 +679,13 @@ export async function hashCustomerData(customer: CustomerInput): Promise<HashedC
 }
 ```
 
-- [ ] **Step 4: Run tests and verify passing**
+- [ ] **Step 4: Tests ausführen und 100% Pass verifizieren**
 
 ```bash
 cd /Users/joelcherinodiaz/KI-System/02_Projects/active/headblade-germany-commerce && npx vitest run test/dtc-customer-hash.test.ts
 ```
 
-- [ ] **Step 5: Commit changes**
+- [ ] **Step 5: Git Commit durchführen**
 
 ```bash
 git add src/lib/server/dtc-customer-hash.ts test/dtc-customer-hash.test.ts
@@ -643,10 +694,10 @@ git commit -m "feat(security): add customer match hasher for Google Ads enhanced
 
 ---
 
-## Final Verification Checklist
+## 5. Finale Verifikations-Kriterien & Quality Gate
 
-1. [ ] Alle Vitest-Tests laufen 100% grün durch (`npm test -- --run`).
-2. [ ] Astro Build (`npm run build`) kompiliert ohne Type-Fehler und erzeugt alle Seiten.
-3. [ ] Google Merchant Center RSS 2.0 XML ist valide gegen den Google Base Namespace.
-4. [ ] Schema.org Product enthält korrekte AggregateRating-, Offer- und MerchantReturnPolicy-Attribute.
-5. [ ] GA4 DataLayer feuert Add-to-Cart und Purchase-Events inklusive Abo-Intervall-Kennzeichnung.
+1. `npm test -- --run`: Alle 21 Test-Dateien (92 Tests) bestehen zu 100%.
+2. `npm run build`: Astro 5 Static Build generiert alle 28 Seiten fehlerfrei.
+3. Google Merchant Center XML: Validiert fehlerfrei gegen RSS 2.0 Spezifikation und enthält DHL Versandkosten.
+4. Schema.org Product: Beinhaltet vollständige Rückgaberichtlinie (30 Tage, kostenloser Rückversand per Post).
+5. GA4 DataLayer: Nachfüll-Abo Intervall (60 Tage) wird sauber an Google Analytics übertragen.
